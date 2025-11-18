@@ -12,82 +12,84 @@ public class ConnectionDB {
     // Session storage
     private static final Map<String, Object> userData = new HashMap<>();
 
-    public static void main(String[] args) {
-
-        // --- Create new sample users ---
-        createUser(
-            "Charlie", "Brown", "charlie.brown@gmail.com", "Charlie123!", 1200.0, "user", 1, 2, "1995-07-20", "100 Elm Street, Toronto"
-        );
-
-        createUser(
-            "Diana", "Prince", "diana.prince@gmail.com", "Wonder123!", 1500.0, "teller", 2, 5, "1988-03-10", "200 Queen Street, Toronto"
-        );
-
-        createUser(
-            "Ethan", "Hunt", "ethan.hunt@gmail.com", "Mission123!", 3000.0, "admin", 3, 1, "1980-11-12", "300 King Street, Toronto"
-        );
-
-        // --- Test login with Charlie ---
-        if (loadUserData("charlie.brown@gmail.com", "Charlie123!")) {
-            System.out.println("Welcome, " + getUserData("user_first_name"));
-            System.out.println("--------------------------------------------");
-            System.out.println("User session data:");
-            System.out.println("ID: " + getUserData("id"));
-            System.out.println("First Name: " + getUserData("user_first_name"));
-            System.out.println("Last Name: " + getUserData("user_last_name"));
-            System.out.println("Email: " + getUserData("user_email"));
-            System.out.println("Birthday: " + getUserData("user_birthday"));
-            System.out.println("Address: " + getUserData("user_address"));
-            System.out.println("Balance: " + getUserData("user_balance"));
-            System.out.println("Role: " + getUserData("user_role"));
-            System.out.println("Bank: " + getUserData("user_bank"));
-            System.out.println("Bank ID: " + getUserData("user_bank_id"));
-            System.out.println("Branch: " + getUserData("user_branch"));
-            System.out.println("Branch ID: " + getUserData("user_branch_id"));
-        } else {
-            System.out.println("Invalid credentials!");
-        }
-
-        // --- Test deposit and withdraw ---
-        updateBalance("charlie.brown@gmail.com", "deposit", 500.0);
-        updateBalance("charlie.brown@gmail.com", "withdraw", 200.0);
-
-        // --- Delete Diana to test deleteUser ---
-        deleteUser("diana.prince@gmail.com");
-
-        // --- Load all users for admin search ---
-        List<Map<String, Object>> allUsers = loadAllUsers();
-        System.out.println("All users in system:");
-        for (Map<String, Object> u : allUsers) {
-            System.out.println(u.get("first_name") + " " + u.get("last_name") + " (" + u.get("email") + ")");
-        }
-
-        // --- Load Charlie's transactions for user search ---
-        int charlieId = (int) getUserData("id");
-        List<Map<String, Object>> transactions = loadTransactions(charlieId);
-        System.out.println("Charlie's transactions:");
-        for (Map<String, Object> t : transactions) {
-            System.out.println(t.get("type") + ": $" + t.get("amount"));
-        }
-
-        // --- Admin search example ---
-        List<Map<String, Object>> searchResults = searchUsers("Charlie");
-        System.out.println("Search results for 'Charlie':");
-        for (Map<String, Object> u : searchResults) {
-            System.out.println(u.get("first_name") + " " + u.get("last_name") + " (" + u.get("email") + ")");
-        }
-
-        // --- User transaction search example ---
-        List<Map<String, Object>> filteredTxns = searchTransactions(charlieId, "deposit", 100.0, null);
-        System.out.println("Filtered deposits over $100 for Charlie:");
-        for (Map<String, Object> t : filteredTxns) {
-            System.out.println(t.get("type") + ": $" + t.get("amount"));
-        }
-    }
+//    public static void main(String[] args) {
+//
+//        // --- Create new sample users ---
+//        createUser(
+//            "Charlie", "Brown", "charlie.brown@gmail.com", "Charlie123!", 1200.0, "user", 1, 2, "1995-07-20", "100 Elm Street, Toronto"
+//        );
+//
+//        createUser(
+//            "Diana", "Prince", "diana.prince@gmail.com", "Wonder123!", 1500.0, "teller", 2, 5, "1988-03-10", "200 Queen Street, Toronto"
+//        );
+//
+//        createUser(
+//            "Ethan", "Hunt", "ethan.hunt@gmail.com", "Mission123!", 3000.0, "admin", 3, 1, "1980-11-12", "300 King Street, Toronto"
+//        );
+//
+//        // --- Test login with Charlie ---
+//        if (loadUserData("charlie.brown@gmail.com", "Charlie123!")) {
+//            System.out.println("Welcome, " + getUserData("user_first_name"));
+//            System.out.println("--------------------------------------------");
+//            System.out.println("User session data:");
+//            System.out.println("ID: " + getUserData("id"));
+//            System.out.println("First Name: " + getUserData("user_first_name"));
+//            System.out.println("Last Name: " + getUserData("user_last_name"));
+//            System.out.println("Email: " + getUserData("user_email"));
+//            System.out.println("Birthday: " + getUserData("user_birthday"));
+//            System.out.println("Address: " + getUserData("user_address"));
+//            System.out.println("Balance: " + getUserData("user_balance"));
+//            System.out.println("Role: " + getUserData("user_role"));
+//            System.out.println("Bank: " + getUserData("user_bank"));
+//            System.out.println("Bank ID: " + getUserData("user_bank_id"));
+//            System.out.println("Branch: " + getUserData("user_branch"));
+//            System.out.println("Branch ID: " + getUserData("user_branch_id"));
+//        } else {
+//            System.out.println("Invalid credentials!");
+//        }
+//
+//        // --- Test deposit and withdraw ---
+//        updateBalance("charlie.brown@gmail.com", "deposit", 500.0);
+//        updateBalance("charlie.brown@gmail.com", "withdraw", 200.0);
+//
+//        // --- Delete Diana to test deleteUser ---
+//        deleteUser("diana.prince@gmail.com");
+//
+//        // --- Load all users for admin search ---
+//        List<Map<String, Object>> allUsers = loadAllUsers();
+//        System.out.println("All users in system:");
+//        for (Map<String, Object> u : allUsers) {
+//            System.out.println(u.get("first_name") + " " + u.get("last_name") + " (" + u.get("email") + ")");
+//        }
+//
+//        // --- Load Charlie's transactions for user search ---
+//        int charlieId = (int) getUserData("id");
+//        List<Map<String, Object>> transactions = loadTransactions(charlieId);
+//        System.out.println("Charlie's transactions:");
+//        for (Map<String, Object> t : transactions) {
+//            System.out.println(t.get("type") + ": $" + t.get("amount"));
+//        }
+//
+//        // --- Admin search example ---
+//        List<Map<String, Object>> searchResults = searchUsers("Charlie");
+//        System.out.println("Search results for 'Charlie':");
+//        for (Map<String, Object> u : searchResults) {
+//            System.out.println(u.get("first_name") + " " + u.get("last_name") + " (" + u.get("email") + ")");
+//        }
+//
+//        // --- User transaction search example ---
+//        List<Map<String, Object>> filteredTxns = searchTransactions(charlieId, "deposit", 100.0, null);
+//        System.out.println("Filtered deposits over $100 for Charlie:");
+//        for (Map<String, Object> t : filteredTxns) {
+//            System.out.println(t.get("type") + ": $" + t.get("amount"));
+//        }
+//    }
 
     // --- Database connection ---
     public static Connection getConnection() throws SQLException {
-        String url = "jdbc:mysql://127.0.0.1:3306/bankapp_db";
+        String dbName = "bankapp_db";
+//        String dbName = "phpmyadmin";             // The database on my end was named this, this is used for testing
+        String url = "jdbc:mysql://127.0.0.1:3306/" + dbName;
         String user = "root";
         String dbPassword = "";
         return DriverManager.getConnection(url, user, dbPassword);
