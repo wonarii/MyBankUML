@@ -13,18 +13,38 @@ public class ConnectionDB {
     private static final Map<String, Object> userData = new HashMap<>();
 
     public static void main(String[] args) {
-
-        // --- Create new sample users ---
+        // --- Create sample users (new people) ---
+        // Charlie = regular user -> default balance 0.0 (if null passed)
         createUser(
-            "Charlie", "Brown", "charlie.brown@gmail.com", "Charlie123!", 1200.0, "user", 1, 2, "1995-07-20", "100 Elm Street, Toronto"
+                "Charlie", "Brown", "charlie.brown@gmail.com", "Charlie123!",
+                null,               // balance (null means default for regular user -> becomes 0.0)
+                "user",             // role
+                1,                  // bankId
+                2,                  // branchId
+                "1995-07-20",       // birthday (yyyy-MM-dd)
+                "100 Elm Street, Toronto"
         );
 
+        // Diana = teller -> balance must be NULL
         createUser(
-            "Diana", "Prince", "diana.prince@gmail.com", "Wonder123!", 1500.0, "teller", 2, 5, "1988-03-10", "200 Queen Street, Toronto"
+                "Diana", "Prince", "diana.prince@gmail.com", "Wonder123!",
+                null,               // ignored for tellers -> will be inserted as SQL NULL
+                "teller",
+                2,
+                5,
+                "1988-03-10",
+                "200 Queen Street, Toronto"
         );
 
+        // Ethan = admin -> balance must be NULL
         createUser(
-            "Ethan", "Hunt", "ethan.hunt@gmail.com", "Mission123!", 3000.0, "admin", 3, 1, "1980-11-12", "300 King Street, Toronto"
+                "Ethan", "Hunt", "ethan.hunt@gmail.com", "Mission123!",
+                null,
+                "admin",
+                3,
+                1,
+                "1980-11-12",
+                "300 King Street, Toronto"
         );
 
         // --- Test login with Charlie ---
@@ -38,7 +58,7 @@ public class ConnectionDB {
             System.out.println("Email: " + getUserData("user_email"));
             System.out.println("Birthday: " + getUserData("user_birthday"));
             System.out.println("Address: " + getUserData("user_address"));
-            System.out.println("Balance: " + getUserData("user_balance"));
+            System.out.println("Balance: " + getUserData("user_balance")); // may be Double or null
             System.out.println("Role: " + getUserData("user_role"));
             System.out.println("Bank: " + getUserData("user_bank"));
             System.out.println("Bank ID: " + getUserData("user_bank_id"));
@@ -63,25 +83,20 @@ public class ConnectionDB {
         }
 
         // --- Load Charlie's transactions for user search ---
-        int charlieId = (int) getUserData("id");
-        List<Map<String, Object>> transactions = loadTransactions(charlieId);
-        System.out.println("Charlie's transactions:");
-        for (Map<String, Object> t : transactions) {
-            System.out.println(t.get("type") + ": $" + t.get("amount"));
-        }
+        Integer charlieId = (Integer) getUserData("id");
+        if (charlieId != null) {
+            List<Map<String, Object>> transactions = loadTransactions(charlieId);
+            System.out.println("Charlie's transactions:");
+            for (Map<String, Object> t : transactions) {
+                System.out.println(t.get("type") + ": $" + t.get("amount"));
+            }
 
-        // --- Admin search example ---
-        List<Map<String, Object>> searchResults = searchUsers("Charlie");
-        System.out.println("Search results for 'Charlie':");
-        for (Map<String, Object> u : searchResults) {
-            System.out.println(u.get("first_name") + " " + u.get("last_name") + " (" + u.get("email") + ")");
-        }
-
-        // --- User transaction search example ---
-        List<Map<String, Object>> filteredTxns = searchTransactions(charlieId, "deposit", 100.0, null);
-        System.out.println("Filtered deposits over $100 for Charlie:");
-        for (Map<String, Object> t : filteredTxns) {
-            System.out.println(t.get("type") + ": $" + t.get("amount"));
+            // --- User transaction search example ---
+            List<Map<String, Object>> filteredTxns = searchTransactions(charlieId, "deposit", 100.0, null);
+            System.out.println("Filtered deposits over $100 for Charlie:");
+            for (Map<String, Object> t : filteredTxns) {
+                System.out.println(t.get("type") + ": $" + t.get("amount"));
+            }
         }
     }
 
@@ -116,7 +131,7 @@ public class ConnectionDB {
 
     // --- Role & age validation ---
     private static boolean isValidRole(String role) {
-        return role.equalsIgnoreCase("user") || role.equalsIgnoreCase("teller") || role.equalsIgnoreCase("admin");
+        return role != null && (role.equalsIgnoreCase("user") || role.equalsIgnoreCase("teller") || role.equalsIgnoreCase("admin"));
     }
 
     private static boolean isAdult(String birthday) {
@@ -140,9 +155,9 @@ public class ConnectionDB {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 String storedHash = rs.getString("user_password");
-                if (storedHash.startsWith("$2y$")) storedHash = "$2a$" + storedHash.substring(4);
+                if (storedHash != null && storedHash.startsWith("$2y$")) storedHash = "$2a$" + storedHash.substring(4);
 
-                if (!BCrypt.checkpw(password, storedHash)) {
+                if (storedHash == null || !BCrypt.checkpw(password, storedHash)) {
                     System.out.println("Invalid credentials!");
                     return false;
                 }
@@ -154,7 +169,11 @@ public class ConnectionDB {
                 userData.put("user_email", rs.getString("user_email"));
                 userData.put("user_birthday", rs.getString("user_birthday"));
                 userData.put("user_address", rs.getString("user_address"));
-                userData.put("user_balance", rs.getDouble("user_balance"));
+
+                // user_balance may be NULL in DB -> use getObject to allow null
+                Double balanceObj = (Double) rs.getObject("user_balance");
+                userData.put("user_balance", balanceObj);
+
                 userData.put("user_role", rs.getString("user_role"));
                 userData.put("user_bank", rs.getString("user_bank"));
                 userData.put("user_bank_id", rs.getInt("user_bank_id"));
@@ -175,26 +194,44 @@ public class ConnectionDB {
     }
 
     // --- Create user ---
+    // balanceParam: nullable Double. For "user" role: if null => default 0.0. For "admin"/"teller": always inserted as NULL.
     public static boolean createUser(String firstName, String lastName, String email, String plainPassword,
-                                     double balance, String role, int bankId, int branchId,
+                                     Double balanceParam, String role, int bankId, int branchId,
                                      String birthday, String address) {
 
-        if (!isValidRole(role)) { System.out.println("Invalid role!"); return false; }
-        if (!isAdult(birthday)) { System.out.println("User must be 18+!"); return false; }
+        if (!isValidRole(role)) { System.out.println("Invalid role! Must be 'user', 'teller', or 'admin'."); return false; }
+        if (!isAdult(birthday)) { System.out.println("User must be at least 18 years old!"); return false; }
 
         String bankName = getBankNameById(bankId);
         String branchName = getBranchNameById(branchId);
         if (bankName == null || branchName == null) { System.out.println("Invalid bank or branch ID!"); return false; }
 
-        String query = "INSERT INTO account_list (user_first_name, user_last_name, user_email, user_password, " +
-                       "user_balance, user_role, user_bank, user_bank_id, user_branch, user_branch_id, user_birthday, user_address) " +
-                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO account_list " +
+                "(user_first_name, user_last_name, user_email, user_password, user_balance, user_role, " +
+                "user_bank, user_bank_id, user_branch, user_branch_id, user_birthday, user_address) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            // decide what to insert into user_balance
+            // if role is admin/teller -> insert SQL NULL
+            // else (regular user) -> use provided balanceParam or default 0.0
+            boolean insertNullBalance = role.equalsIgnoreCase("admin") || role.equalsIgnoreCase("teller");
+            Double balanceToInsert = null;
+            if (!insertNullBalance) {
+                balanceToInsert = (balanceParam == null) ? 0.0 : balanceParam;
+            }
+
+            String hashedPassword = hashPassword(plainPassword);
+
             stmt.setString(1, firstName);
             stmt.setString(2, lastName);
             stmt.setString(3, email);
-            stmt.setString(4, hashPassword(plainPassword));
-            stmt.setDouble(5, balance);
+            stmt.setString(4, hashedPassword);
+
+            if (insertNullBalance) stmt.setNull(5, Types.DOUBLE);
+            else stmt.setDouble(5, balanceToInsert);
+
             stmt.setString(6, role);
             stmt.setString(7, bankName);
             stmt.setInt(8, bankId);
@@ -217,25 +254,53 @@ public class ConnectionDB {
     // --- Deposit/withdraw with transaction logging ---
     public static boolean updateBalance(String email, String transactionType, double amount) {
         if (amount <= 0) { System.out.println("Amount must be greater than zero."); return false; }
+        if (!transactionType.equalsIgnoreCase("deposit") && !transactionType.equalsIgnoreCase("withdraw")) {
+            System.out.println("Invalid transaction type. Use 'deposit' or 'withdraw'.");
+            return false;
+        }
+
         try (Connection conn = getConnection()) {
+            // Get current balance and user ID
             String selectQuery = "SELECT user_balance, id FROM account_list WHERE user_email = ?";
-            double currentBalance = 0; int userId = -1;
+            Double currentBalanceObj = null;
+            int userId = -1;
+
             try (PreparedStatement selectStmt = conn.prepareStatement(selectQuery)) {
                 selectStmt.setString(1, email);
                 ResultSet rs = selectStmt.executeQuery();
-                if (rs.next()) { currentBalance = rs.getDouble("user_balance"); userId = rs.getInt("id"); }
-                else { System.out.println("User not found: " + email); return false; }
+                if (rs.next()) {
+                    currentBalanceObj = (Double) rs.getObject("user_balance"); // may be null
+                    userId = rs.getInt("id");
+                } else {
+                    System.out.println("User not found: " + email);
+                    return false;
+                }
             }
+
+            // If user_balance is NULL and transaction is withdraw -> disallow
+            if (currentBalanceObj == null && transactionType.equalsIgnoreCase("withdraw")) {
+                System.out.println("Cannot withdraw: user balance is NULL.");
+                return false;
+            }
+
+            double currentBalance = (currentBalanceObj == null) ? 0.0 : currentBalanceObj;
             double newBalance = transactionType.equalsIgnoreCase("deposit") ? currentBalance + amount : currentBalance - amount;
+
             if (transactionType.equalsIgnoreCase("withdraw") && amount > currentBalance) {
-                System.out.println("Insufficient balance!"); return false;
+                System.out.println("Insufficient balance!");
+                return false;
             }
+
+            // Update balance (if balance column for this user is NULL and user role is admin/teller,
+            // behaviour: after deposit we will set a numeric balance (makes sense) — we still allow deposits.)
             String updateQuery = "UPDATE account_list SET user_balance = ? WHERE user_email = ?";
             try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
                 updateStmt.setDouble(1, newBalance);
                 updateStmt.setString(2, email);
                 updateStmt.executeUpdate();
             }
+
+            // Insert transaction record
             String transactionQuery = "INSERT INTO transaction_list (user_id, type, amount) VALUES (?, ?, ?)";
             try (PreparedStatement transStmt = conn.prepareStatement(transactionQuery)) {
                 transStmt.setInt(1, userId);
@@ -243,28 +308,57 @@ public class ConnectionDB {
                 transStmt.setDouble(3, amount);
                 transStmt.executeUpdate();
             }
+
             System.out.println(transactionType + " of $" + amount + " completed. New balance: $" + newBalance);
             return true;
-        } catch (SQLException e) { System.out.println("Error updating balance or recording transaction!"); e.printStackTrace(); return false; }
+        } catch (SQLException e) {
+            System.out.println("Error updating balance or recording transaction!");
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // --- Specific setters ---
     public static boolean updateFirstName(String email, String newFirstName) { return updateField(email, "user_first_name", newFirstName); }
     public static boolean updateLastName(String email, String newLastName) { return updateField(email, "user_last_name", newLastName); }
     public static boolean updateEmail(String email, String newEmail) { return updateField(email, "user_email", newEmail); }
-    public static boolean updateBalanceField(String email, double newBalance) { return updateField(email, "user_balance", newBalance); }
+
+    // updateBalanceField accepts nullable Double; if null -> sets SQL NULL
+    public static boolean updateBalanceField(String email, Double newBalance) {
+        String query = "UPDATE account_list SET user_balance = ? WHERE user_email = ?";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            if (newBalance == null) stmt.setNull(1, Types.DOUBLE);
+            else stmt.setDouble(1, newBalance);
+            stmt.setString(2, email);
+            int rows = stmt.executeUpdate();
+            if (rows > 0) { System.out.println("user_balance updated for " + email); return true; }
+            else { System.out.println("No user found with email: " + email); return false; }
+        } catch (SQLException e) { System.out.println("Error updating user_balance!"); e.printStackTrace(); return false; }
+    }
+
     public static boolean updateRole(String email, String newRole) {
         if (!isValidRole(newRole)) { System.out.println("Invalid role!"); return false; }
-        return updateField(email, "user_role", newRole);
+        // if role changes to teller/admin, set balance to NULL by policy
+        boolean ok = updateField(email, "user_role", newRole);
+        if (ok && (newRole.equalsIgnoreCase("admin") || newRole.equalsIgnoreCase("teller"))) {
+            updateBalanceField(email, null);
+        }
+        return ok;
     }
+
     public static boolean updateBank(String email, int newBankId) {
-        String newBankName = getBankNameById(newBankId); if (newBankName == null) return false;
-        return updateField(email, "user_bank", newBankName) && updateField(email, "user_bank_id", newBankId);
+        String newBankName = getBankNameById(newBankId); if (newBankName == null) { System.out.println("Invalid bank id"); return false; }
+        boolean nameUpdated = updateField(email, "user_bank", newBankName);
+        boolean idUpdated = updateField(email, "user_bank_id", newBankId);
+        return nameUpdated && idUpdated;
     }
     public static boolean updateBranch(String email, int newBranchId) {
-        String newBranchName = getBranchNameById(newBranchId); if (newBranchName == null) return false;
-        return updateField(email, "user_branch", newBranchName) && updateField(email, "user_branch_id", newBranchId);
+        String newBranchName = getBranchNameById(newBranchId); if (newBranchName == null) { System.out.println("Invalid branch id"); return false; }
+        boolean nameUpdated = updateField(email, "user_branch", newBranchName);
+        boolean idUpdated = updateField(email, "user_branch_id", newBranchId);
+        return nameUpdated && idUpdated;
     }
+
     public static boolean updateBirthday(String email, String newBirthday) {
         if (!isAdult(newBirthday)) { System.out.println("User must be 18+!"); return false; }
         return updateField(email, "user_birthday", newBirthday);
@@ -274,22 +368,34 @@ public class ConnectionDB {
     // --- Delete user ---
     public static boolean deleteUser(String email) { return updateField(email, "DELETE", null); }
 
-    // --- Generic update helper ---
+    // --- Generic update helper (for most fields) ---
     private static boolean updateField(String email, String fieldName, Object newValue) {
-        String query = fieldName.equals("DELETE") ? "DELETE FROM account_list WHERE user_email = ?" 
-                                                  : "UPDATE account_list SET " + fieldName + " = ? WHERE user_email = ?";
+        String query = fieldName.equals("DELETE") ? "DELETE FROM account_list WHERE user_email = ?"
+                : "UPDATE account_list SET " + fieldName + " = ? WHERE user_email = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            if (fieldName.equals("DELETE")) stmt.setString(1, email);
-            else { stmt.setObject(1, newValue); stmt.setString(2, email); }
+            if (fieldName.equals("DELETE")) {
+                stmt.setString(1, email);
+            } else {
+                if (newValue == null) stmt.setNull(1, Types.VARCHAR); // default to VARCHAR NULL for generic fields
+                else stmt.setObject(1, newValue);
+                stmt.setString(2, email);
+            }
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println((fieldName.equals("DELETE") ? "User deleted: " : fieldName + " updated: ") + email);
                 return true;
-            } else { System.out.println("No user found with email: " + email); return false; }
-        } catch (SQLException e) { System.out.println("Error updating field: " + fieldName); e.printStackTrace(); return false; }
+            } else {
+                System.out.println("No user found with email: " + email);
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error updating field: " + fieldName);
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    // --- Load all users (admin search) ---
+    // --- Load all users (for admin search) ---
     public static List<Map<String, Object>> loadAllUsers() {
         List<Map<String, Object>> userList = new ArrayList<>();
         String query = "SELECT * FROM account_list";
@@ -300,7 +406,7 @@ public class ConnectionDB {
                 userMap.put("first_name", rs.getString("user_first_name"));
                 userMap.put("last_name", rs.getString("user_last_name"));
                 userMap.put("email", rs.getString("user_email"));
-                userMap.put("balance", rs.getDouble("user_balance"));
+                userMap.put("balance", rs.getObject("user_balance")); // may be null
                 userMap.put("role", rs.getString("user_role"));
                 userMap.put("bank", rs.getString("user_bank"));
                 userMap.put("branch", rs.getString("user_branch"));
@@ -312,7 +418,7 @@ public class ConnectionDB {
         return userList;
     }
 
-    // --- Load transactions for a user ---
+    // --- Load transactions for a user (cached for search) ---
     public static List<Map<String, Object>> loadTransactions(int userId) {
         List<Map<String, Object>> transactions = new ArrayList<>();
         String query = "SELECT * FROM transaction_list WHERE user_id = ? ORDER BY transaction_id DESC";
@@ -330,7 +436,7 @@ public class ConnectionDB {
         return transactions;
     }
 
-    // --- Admin search users ---
+    // --- Admin search users by name/email ---
     public static List<Map<String, Object>> searchUsers(String keyword) {
         List<Map<String, Object>> results = new ArrayList<>();
         String query = "SELECT * FROM account_list WHERE user_first_name LIKE ? OR user_last_name LIKE ? OR user_email LIKE ?";
@@ -346,7 +452,7 @@ public class ConnectionDB {
                 userMap.put("first_name", rs.getString("user_first_name"));
                 userMap.put("last_name", rs.getString("user_last_name"));
                 userMap.put("email", rs.getString("user_email"));
-                userMap.put("balance", rs.getDouble("user_balance"));
+                userMap.put("balance", rs.getObject("user_balance"));
                 userMap.put("role", rs.getString("user_role"));
                 userMap.put("bank", rs.getString("user_bank"));
                 userMap.put("branch", rs.getString("user_branch"));
@@ -356,7 +462,7 @@ public class ConnectionDB {
         return results;
     }
 
-    // --- User search transactions ---
+    // --- User search transactions by type and/or amount range ---
     public static List<Map<String, Object>> searchTransactions(int userId, String type, Double minAmount, Double maxAmount) {
         List<Map<String, Object>> results = new ArrayList<>();
         StringBuilder queryBuilder = new StringBuilder("SELECT * FROM transaction_list WHERE user_id = ?");
@@ -383,18 +489,16 @@ public class ConnectionDB {
         return results;
     }
 
-    // --- Hash password ---
+    // --- Password hashing ---
     public static String hashPassword(String plainPassword) {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
 
-    // --- Access session data ---
+    // --- Session accessor & logout ---
     public static Object getUserData(String key) { return userData.get(key); }
-
-    // --- Clear session ---
     public static void clearUserData() { userData.clear(); System.out.println("User session cleared."); }
-
 }
+
 
 
 
