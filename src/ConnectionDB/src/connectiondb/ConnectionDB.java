@@ -1,5 +1,3 @@
-package connectiondb;
-
 import java.sql.*;
 import java.util.*;
 import java.time.LocalDate;
@@ -87,12 +85,58 @@ public class ConnectionDB {
 
     // --- Database connection ---
     public static Connection getConnection() throws SQLException {
-        String dbName = "bankapp_db";
+        String dbName = "phpmyadmin";
 //        String dbName = "phpmyadmin";             // The database on my end was named this, this is used for testing
         String url = "jdbc:mysql://127.0.0.1:3306/" + dbName;
         String user = "root";
         String dbPassword = "";
         return DriverManager.getConnection(url, user, dbPassword);
+    }
+
+    public static void createCustomer(Customer customer) {
+        String query = "INSERT INTO customers values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, customer.getFirstName());
+            stmt.setString(2, customer.getLastName());
+            stmt.setString(3, customer.getEmail());
+            stmt.setInt(4, customer.getAccountId());
+            stmt.setInt(5, customer.getBranch());
+            stmt.setString(6, customer.getPhone());
+            stmt.setString(7, customer.getBirthday());
+            stmt.setDouble(8, customer.getBalance());
+            //stmt.setDouble(9, customer.getTransactions());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createBankTeller(BankTeller bankTeller) {
+        String query = "INSERT INTO banktellers values (?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, bankTeller.getFirstName());
+            stmt.setString(2, bankTeller.getLastName());
+            stmt.setString(3, bankTeller.getEmail());
+            stmt.setInt(4, bankTeller.getAccountId());
+            stmt.setInt(5, bankTeller.getBranch());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createAdministrator(Administrator administrator) {
+        String query = "INSERT INTO administrators values (?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, administrator.getFirstName());
+            stmt.setString(2, administrator.getLastName());
+            stmt.setString(3, administrator.getEmail());
+            stmt.setInt(4, administrator.getAccountId());
+            stmt.setInt(5, administrator.getBranch());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     // --- Bank/branch name lookup ---

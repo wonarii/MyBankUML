@@ -1,6 +1,3 @@
-import connectiondb.ConnectionDB;
-
-import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
