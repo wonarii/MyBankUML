@@ -10,4 +10,9 @@ public class ViewTransactionHistoryPage {
 
     // Step 3: in the same loop, format the information and add to the JTable using table1.addRow(new Object[] { ....})
 
+
+    private void createUIComponents() {
+
+    }
+
 }

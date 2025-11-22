@@ -11,4 +11,8 @@ public class AdminDashboard {
     private JButton createBankBranchButton;
     private JButton createUserAccountButton1;
     private JButton logOutButton;
+
+    private void createUIComponents() {
+
+    }
 }
