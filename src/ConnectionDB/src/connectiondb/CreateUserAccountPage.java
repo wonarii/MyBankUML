@@ -8,4 +8,8 @@ public class CreateUserAccountPage {
     private JTextField textField5;
     private JButton createButton;
     private JButton cancelButton;
+
+    private void createUIComponents() {
+
+    }
 }

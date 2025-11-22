@@ -6,4 +6,7 @@ public class LoginPage {
     private JPasswordField enterPasswordPasswordField;
 
 
+    private void createUIComponents() {
+
+    }
 }

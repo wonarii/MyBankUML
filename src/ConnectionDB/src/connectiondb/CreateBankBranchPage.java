@@ -7,4 +7,8 @@ public class CreateBankBranchPage {
     private JButton createButton;
     private JButton cancelButton;
     private JTextField textField4;
+
+    private void createUIComponents() {
+
+    }
 }
