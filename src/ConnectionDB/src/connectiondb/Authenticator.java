@@ -17,6 +17,14 @@ public class Authenticator {
     }
 
 
+    private int changePassword(ConnectionDB db){
+
+
+
+
+        return 0;
+    }
+
 
 
 

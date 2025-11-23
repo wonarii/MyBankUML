@@ -390,23 +390,22 @@ public class ConnectionDB {
         return null;
     }
 
-    // --- Create transaction method (inserts date via NOW() and accepts description) ---
-    public boolean createTransaction(int userId, String type, double amount, String description) {
+    // --- Create transaction method (inserts date via NOW()) ---
+    public boolean createTransaction(int userId, String type, double amount) {
         if (!"deposit".equalsIgnoreCase(type) && !"withdraw".equalsIgnoreCase(type)) {
             System.out.println("Invalid transaction type. Must be 'deposit' or 'withdraw'.");
             return false;
         }
 
         String q = "INSERT INTO transaction_list " +
-                   "(user_id, type, amount, transaction_description, transaction_date) " +
-                   "VALUES (?, ?, ?, ?, NOW())";
+                   "(user_id, type, amount, transaction_date) " +
+                   "VALUES (?, ?, ?, NOW())";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(q)) {
 
             stmt.setInt(1, userId);
             stmt.setString(2, type.toLowerCase());
             stmt.setDouble(3, amount);
-            stmt.setString(4, description);
             int rows = stmt.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
@@ -551,8 +550,8 @@ public class ConnectionDB {
             boolean transOk = createTransaction(
                     targetId,
                     type.toLowerCase(),
-                    amount,
-                    (description == null ? "" : description)
+                    amount
+//                    (description == null ? "" : description)
             );
             if (!transOk) {
                 System.out.println("Warning: balance updated but transaction write failed.");

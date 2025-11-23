@@ -1,10 +1,14 @@
+import java.sql.Connection;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 
 public class Transaction {
 
     private int transactionID;
     private int userID;
-    private Date date;
+    private java.sql.Date date;
     private String type;
     private Double amount;
     private String description;
@@ -21,7 +25,7 @@ public class Transaction {
      * @param branch The Branch location that the deposit / withdrawal is associated with
      *TODO: Firgure out the TransactionID stuff
      */
-    public Transaction(int transactionID, int userID, Date date, String type, Double amount, BankBranch branch, String description) {
+    public Transaction(int transactionID, int userID, java.sql.Date date, String type, Double amount, BankBranch branch, String description) {
         this.transactionID = transactionID;
         this.userID = userID;
         this.date = date;
@@ -33,11 +37,11 @@ public class Transaction {
     }
 
     /***
-     * This function should display the information of a Transaction on the GUI?
+     * This function should display the information of a Transaction on the GUI
      * Ideally, we would loop through a list of Transactions to display a series on transactions
      */
     public Object[] display(){
-        Object[] obj = new Object[5];
+        Object[] obj = new Object[6];
         obj[0] = this.transactionID;
         obj[1] = this.userID;
         obj[2] = this.date;
@@ -48,12 +52,81 @@ public class Transaction {
     }
 
 
+    /***
+     * This is a static function that will parse through the transactions list of a user in the database
+     * and return a Transaction[]
+     * @param db
+     * @param userID
+     * @return Transaction[] a list of Transaction objects
+     */
+    public static Transaction[] convertTransactionsFromDatabase(ConnectionDB db, int userID) {
+        List<Map<String, Object>> transactions = db.loadTransactions(userID);
+
+        Transaction[] transaction = new Transaction[transactions.size()];
+
+        // Use this index to place the Transaction into the array
+        int index = 0;
+        for (Map<String, Object> t : transactions) {
+            // Parse all the fields from the database to a Transaction Object
+            int newTransactionID = (int) t.get("transaction_id");
+            int newUserID = userID;
+//            java.sql.Date date = java.sql.Date.valueOf((String)t.get("date"));
+            java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
+            String type = (String) t.get("type");
+            Double amount = (Double) t.get("amount");
+
+//            BankBranch branch = (BankBranch) t.get("branch");
+            BankBranch branch = new BankBranch("TD", "123 Sesame Street", 100,"5141234567");
+//            String description = (String) t.get("description");
+            String description = "Testing Description";
+
+            // Create a new entry and add it to the array
+            Transaction newEntry = new Transaction(newTransactionID, newUserID, date, type, amount, branch, description);
+            transaction[index] = newEntry;
+            index++;
+        }
+        return transaction;
+    }
 
 
+    public static int createTransaction(double amount, String type) {
+
+        try{
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+
+            //TODO: Get the user stored in the BankDriver
+            int currentUserId = BankDriver.currentUserID;
+
+            // Use the function from the database
+            boolean success = db.createTransaction(currentUserId, type, amount);
+
+            if (!success) {
+                System.err.println("Error creating transaction.");
+                return -1;
+            }
+
+            return 0;
+
+        } catch (Exception e){
+            return -1;
+        }
+    }
 
 
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "transactionID=" + transactionID +
+                ", userID=" + userID +
+                ", date=" + date +
+                ", type='" + type + '\'' +
+                ", amount=" + amount +
+                ", description='" + description + '\'' +
+                ", branch=" + branch +
+                '}';
+    }
 
-// --------------------------  Getters and Setters -------------------------------------
+    // --------------------------  Getters and Setters -------------------------------------
 //  Remove any getters and setters as needed
     public int getTransactionID() {
         return transactionID;
@@ -71,11 +144,11 @@ public class Transaction {
         this.userID = userID;
     }
 
-    public Date getDate() {
+    public java.sql.Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(java.sql.Date date) {
         this.date = date;
     }
 
