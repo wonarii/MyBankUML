@@ -1,3 +1,4 @@
+import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +86,27 @@ public class Transaction {
             index++;
         }
         return transaction;
+    }
+
+
+    public static int createTransaction(double amount, String type, String description) {
+
+        try{
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+
+            //TODO: Get Email from user
+            String tempEmail = "ABC@gmail.com";
+
+            db.updateBalance(tempEmail, type, amount);
+
+
+
+        } catch (Exception e){
+
+        }
+
+
+        return 0;
     }
 
 
