@@ -89,24 +89,27 @@ public class Transaction {
     }
 
 
-    public static int createTransaction(double amount, String type, String description) {
+    public static int createTransaction(double amount, String type) {
 
         try{
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
 
-            //TODO: Get Email from user
-            String tempEmail = "ABC@gmail.com";
+            //TODO: Get the user stored in the BankDriver
+            int currentUserId = BankDriver.currentUserID;
 
-            db.updateBalance(tempEmail, type, amount);
+            // Use the function from the database
+            boolean success = db.createTransaction(currentUserId, type, amount);
 
+            if (!success) {
+                System.err.println("Error creating transaction.");
+                return -1;
+            }
 
+            return 0;
 
         } catch (Exception e){
-
+            return -1;
         }
-
-
-        return 0;
     }
 
 

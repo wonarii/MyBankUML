@@ -21,6 +21,17 @@ SET time_zone = "+00:00";
 -- Database: `bankapp_db`
 --
 
+-- WIPE THE DATABASE CLEAN BEFORE RUNNING
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `bank_list`;
+DROP TABLE IF EXISTS `branch_list`;
+DROP TABLE IF EXISTS `transaction_list`;
+DROP TABLE IF EXISTS `account_list`;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+
 -- --------------------------------------------------------
 
 --
@@ -117,18 +128,19 @@ CREATE TABLE `transaction_list` (
   `transaction_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `type` varchar(30) NOT NULL,
-  `amount` double NOT NULL
+  `amount` double NOT NULL,
+  `transaction_date` DATE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `transaction_list`
 --
 
-INSERT INTO `transaction_list` (`transaction_id`, `user_id`, `type`, `amount`) VALUES
-(1, 1, 'Withdraw', 90),
-(2, 2, 'Deposit', 50),
-(5, 9, 'deposit', 500),
-(6, 9, 'withdraw', 200);
+INSERT INTO `transaction_list` (`transaction_id`, `user_id`, `type`, `amount`, `transaction_date`) VALUES
+(1, 1, 'Withdraw', 90, '2025-11-22'),
+(2, 2, 'Deposit', 50, '2021-12-01'),
+(5, 9, 'deposit', 500, '2019-04-07'),
+(6, 9, 'withdraw', 200, '2023-01-14');
 
 --
 -- Indexes for dumped tables

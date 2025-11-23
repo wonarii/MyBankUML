@@ -19,7 +19,7 @@ public class WithdrawPage {
                 try{
                     amountInput.getText();
                     double amount = Double.parseDouble(amountInput.getText());
-                    Transaction.createTransaction(amount, "withdraw", "We need to add a description box");
+                    Transaction.createTransaction(amount, "withdraw");
 
                 } catch(Exception ex){
 
@@ -32,10 +32,11 @@ public class WithdrawPage {
     private void createUIComponents() {
         // TODO: place custom component creation code here
         withdrawPanel = new JPanel();
-        nextButton = new JButton("Next");
-        cancelButton = new JButton("Cancel");
-        amountInput = new JTextField();
 
+    }
+
+    public JPanel getPanel() {
+        return withdrawPanel;
     }
 
 
