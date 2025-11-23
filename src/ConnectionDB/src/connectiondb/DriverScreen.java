@@ -7,6 +7,9 @@ public class DriverScreen {
     // Panels for the main scenes
     private JPanel transactionsPanel;
     private JPanel withdrawPanel;
+    private JPanel depositPanel;
+    private JPanel userDashboardPanel;
+    private CardLayout layout;
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
@@ -22,9 +25,23 @@ public class DriverScreen {
         withdrawPanel = withdrawPage.getPanel();
         activeScene.add(withdrawPanel, "withdraw");
 
-        CardLayout layout = (CardLayout) activeScene.getLayout();
-        layout.show(activeScene, "withdraw");
+        //Set Up Withdraw Page
+        DepositPage depositPage = new DepositPage();
+        depositPanel = depositPage.getPanel();
+        activeScene.add(depositPanel, "deposit");
 
+        //Set Up User Dashboard Page
+        UserDashboard userDashboard = new UserDashboard();
+        userDashboardPanel = userDashboard.getPanel();
+        activeScene.add(userDashboardPanel, "userDashboard");
+
+        // Choose the starting scene
+        CardLayout layout = (CardLayout) activeScene.getLayout();
+        layout.show(activeScene, "userDashboard");
+
+    }
+    public CardLayout getCardLayout(){
+        return layout;
     }
 
     public JPanel getPanel() {

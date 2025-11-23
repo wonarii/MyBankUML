@@ -9,13 +9,13 @@ import java.util.Map;
 
 public class BankDriver
 {
-    public static int currentUserID;
+    public static User currentUser;
 
     public static void main(String[] args) {
 
         try {
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
-            currentUserID = 9;
+            currentUser = new Customer("John", "Doe", "joe123@gmail.com", 2, "5141231235", "2002-01-02", 5000.0);
 
 //            Transaction[] transactions = Transaction.convertTransactionsFromDatabase(db, 9);
 //

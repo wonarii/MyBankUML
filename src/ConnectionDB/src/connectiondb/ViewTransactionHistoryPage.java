@@ -1,5 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ViewTransactionHistoryPage {
@@ -15,8 +17,20 @@ public class ViewTransactionHistoryPage {
     // Step 3: in the same loop, format the information and add to the JTable using table1.addRow(new Object[] { ....})
 
 
+    // TODO: Make sure userDashboard goes to the right type of user later
+    public ViewTransactionHistoryPage() {
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Container parent = transactionsPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "userDashboard");
+            }
+        });
+    }
+
     private void createUIComponents() {
-        String[] columns = {"TransactionID","User ID","Date","Type","Amount","Description"};
+        String[] columns = {"TransactionID","User ID","Date","Type","Amount"};
 
         model = new DefaultTableModel(columns, 0);
         transactionsPanel = new JPanel();
@@ -27,8 +41,10 @@ public class ViewTransactionHistoryPage {
         table1.getColumnModel().getColumn(0).setPreferredWidth(25);
         table1.getColumnModel().getColumn(1).setPreferredWidth(25);
 
-        // Adding Dummy Data
-        model.addRow(new Object[]{1,2, "12-12-2021", "Deposit", 500.00, "Stuff"});
+        //TODO: Change this
+        int tempUserID = 1;
+
+        displayTransactions(Transaction.convertTransactionsFromDatabase(tempUserID));
 
     }
 
