@@ -50,8 +50,4 @@ public class Customer extends User {
         this.balance = this.balance - amount;
         // Update in database?
     }
-
-    public void createCustomerAccount(){
-        ConnectionDB.createCustomer(this);
-    }
 }
