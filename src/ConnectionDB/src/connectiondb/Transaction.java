@@ -95,10 +95,11 @@ public class Transaction {
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
 
             //TODO: Get the user stored in the BankDriver
-            int currentUserId = BankDriver.currentUserID;
+//            int currentUserId = BankDriver.currentUserID;
+            String currentUserEmail = "joe123@gmail.com";
 
             // Use the function from the database
-            boolean success = db.createTransaction(currentUserId, type, amount);
+            boolean success = db.applyTransaction(currentUserEmail, amount, type, currentUserEmail);
 
             if (!success) {
                 System.err.println("Error creating transaction.");

@@ -97,7 +97,6 @@ public class ConnectionDB {
                     "charlie.brown@gmail.com",
                     500.0,
                     "deposit",
-                    "Initial deposit",
                     "charlie.brown@gmail.com"
             );
 
@@ -106,7 +105,6 @@ public class ConnectionDB {
                     "charlie.brown@gmail.com",
                     200.0,
                     "withdraw",
-                    "ATM withdrawal",
                     "charlie.brown@gmail.com"
             );
 
@@ -115,7 +113,6 @@ public class ConnectionDB {
                     "charlie.brown@gmail.com",
                     300.0,
                     "deposit",
-                    "Teller cash deposit",
                     "diana.prince@gmail.com"
             );
 
@@ -124,7 +121,6 @@ public class ConnectionDB {
                     "charlie.brown@gmail.com",
                     50.0,
                     "withdraw",
-                    "Attempted teller withdrawal",
                     "diana.prince@gmail.com"
             );
 
@@ -133,7 +129,6 @@ public class ConnectionDB {
                     "charlie.brown@gmail.com",
                     100.0,
                     "deposit",
-                    "Admin deposit",
                     "ethan.hunt@gmail.com"
             );
 
@@ -142,7 +137,6 @@ public class ConnectionDB {
                     "diana.prince@gmail.com",
                     50.0,
                     "deposit",
-                    "Invalid admin deposit",
                     "ethan.hunt@gmail.com"
             );
 
@@ -429,7 +423,6 @@ public class ConnectionDB {
     public boolean applyTransaction(String targetEmail,
                                     double amount,
                                     String type,
-                                    String description,
                                     String performerEmail) {
 
         if (amount <= 0) {
@@ -551,7 +544,6 @@ public class ConnectionDB {
                     targetId,
                     type.toLowerCase(),
                     amount
-//                    (description == null ? "" : description)
             );
             if (!transOk) {
                 System.out.println("Warning: balance updated but transaction write failed.");

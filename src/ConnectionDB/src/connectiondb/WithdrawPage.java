@@ -9,10 +9,12 @@ public class WithdrawPage {
     private JButton nextButton;
     private JButton cancelButton;
     private JPanel withdrawPanel;
+    private JLabel currentDateLabel;
 
 
     // TODO: We need a description box
     public WithdrawPage() {
+
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -32,6 +34,8 @@ public class WithdrawPage {
     private void createUIComponents() {
         // TODO: place custom component creation code here
         withdrawPanel = new JPanel();
+        currentDateLabel = new JLabel();
+        currentDateLabel.setText((new java.sql.Date(System.currentTimeMillis())).toString());
 
     }
 
