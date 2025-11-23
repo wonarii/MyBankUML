@@ -158,9 +158,9 @@ public class ConnectionDB {
                 for (Map<String, Object> t : transactions) {
                     System.out.println(
                             t.get("transaction_date") + " | " +
-                            t.get("type") + ": $" +
-                            t.get("amount") + " - " +
-                            t.get("description")
+                                    t.get("type") + ": $" +
+                                    t.get("amount") + " - " +
+                                    t.get("description")
                     );
                 }
 
@@ -171,9 +171,9 @@ public class ConnectionDB {
                 for (Map<String, Object> t : filteredTxns) {
                     System.out.println(
                             t.get("transaction_date") + " | " +
-                            t.get("type") + ": $" +
-                            t.get("amount") + " - " +
-                            t.get("description")
+                                    t.get("type") + ": $" +
+                                    t.get("amount") + " - " +
+                                    t.get("description")
                     );
                 }
             }
@@ -188,6 +188,52 @@ public class ConnectionDB {
         String user = "root";
         String dbPassword = "";
         return DriverManager.getConnection(url, user, dbPassword);
+    }
+
+    public void createCustomer(Customer customer) {
+        String query = "INSERT INTO customers (first_name, last_name, email, branch, phone, dob, balance) values (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, customer.getFirstName());
+            stmt.setString(2, customer.getLastName());
+            stmt.setString(3, customer.getEmail());
+            stmt.setInt(4, customer.getBranch());
+            stmt.setString(5, customer.getPhone());
+            stmt.setString(6, customer.getBirthday());
+            stmt.setDouble(7, customer.getBalance());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createBankTeller(BankTeller bankTeller) {
+        String query = "INSERT INTO banktellers (first_name, last_name, email, branch) values (?, ?, ?, ?)";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, bankTeller.getFirstName());
+            stmt.setString(2, bankTeller.getLastName());
+            stmt.setString(3, bankTeller.getEmail());
+            stmt.setInt(4, bankTeller.getBranch());
+
+            int rs = stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createAdministrator(Administrator administrator) {
+        String query = "INSERT INTO administrators (admin_first_name, admin_last_name, admin_email, branch_id) values (?, ?, ?, ?)";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, administrator.getFirstName());
+            stmt.setString(2, administrator.getLastName());
+            stmt.setString(3, administrator.getEmail());
+            stmt.setInt(4, administrator.getBranch());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     // --- Bank/branch name lookup ---
@@ -392,8 +438,8 @@ public class ConnectionDB {
         }
 
         String q = "INSERT INTO transaction_list " +
-                   "(user_id, type, amount, transaction_date) " +
-                   "VALUES (?, ?, ?, NOW())";
+                "(user_id, type, amount, transaction_date) " +
+                "VALUES (?, ?, ?, NOW())";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(q)) {
 
@@ -714,8 +760,8 @@ public class ConnectionDB {
     public List<Map<String, Object>> loadTransactions(int userId) {
         List<Map<String, Object>> transactions = new ArrayList<>();
         String query = "SELECT transaction_id, user_id, type, amount, " +
-                       "transaction_description, transaction_date " +
-                       "FROM transaction_list WHERE user_id = ? ORDER BY transaction_id DESC";
+                "transaction_description, transaction_date " +
+                "FROM transaction_list WHERE user_id = ? ORDER BY transaction_id DESC";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -739,7 +785,7 @@ public class ConnectionDB {
     public List<Map<String, Object>> searchUsers(String keyword) {
         List<Map<String, Object>> results = new ArrayList<>();
         String query = "SELECT * FROM account_list " +
-                       "WHERE user_first_name LIKE ? OR user_last_name LIKE ? OR user_email LIKE ?";
+                "WHERE user_first_name LIKE ? OR user_last_name LIKE ? OR user_email LIKE ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -774,8 +820,8 @@ public class ConnectionDB {
         StringBuilder queryBuilder =
                 new StringBuilder(
                         "SELECT transaction_id, user_id, type, amount, " +
-                        "transaction_description, transaction_date " +
-                        "FROM transaction_list WHERE user_id = ?"
+                                "transaction_description, transaction_date " +
+                                "FROM transaction_list WHERE user_id = ?"
                 );
         if (type != null && !type.isEmpty()) queryBuilder.append(" AND type = ?");
         if (minAmount != null) queryBuilder.append(" AND amount >= ?");
@@ -818,14 +864,3 @@ public class ConnectionDB {
         System.out.println("User session cleared.");
     }
 }
-
-
-
-
-
-
-
-
-
-
-
