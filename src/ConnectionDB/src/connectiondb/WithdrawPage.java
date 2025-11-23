@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.EventListener;
@@ -12,7 +13,6 @@ public class WithdrawPage {
     private JLabel currentDateLabel;
 
 
-    // TODO: We need a description box
     public WithdrawPage() {
 
         nextButton.addActionListener(new ActionListener() {
@@ -27,6 +27,14 @@ public class WithdrawPage {
 
                 }
 
+            }
+        });
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Container parent = withdrawPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "userDashboard");
             }
         });
     }

@@ -241,7 +241,7 @@
             </constraints>
             <properties>
               <background color="-2104859"/>
-              <text value="$0.00"/>
+              <text value="0.00"/>
             </properties>
           </component>
           <hspacer id="7a582">

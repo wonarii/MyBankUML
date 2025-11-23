@@ -159,8 +159,7 @@ public class ConnectionDB {
                     System.out.println(
                             t.get("transaction_date") + " | " +
                                     t.get("type") + ": $" +
-                                    t.get("amount") + " - " +
-                                    t.get("description")
+                                    t.get("amount") + " - "
                     );
                 }
 
@@ -172,8 +171,7 @@ public class ConnectionDB {
                     System.out.println(
                             t.get("transaction_date") + " | " +
                                     t.get("type") + ": $" +
-                                    t.get("amount") + " - " +
-                                    t.get("description")
+                                    t.get("amount") + " - "
                     );
                 }
             }
@@ -760,7 +758,7 @@ public class ConnectionDB {
     public List<Map<String, Object>> loadTransactions(int userId) {
         List<Map<String, Object>> transactions = new ArrayList<>();
         String query = "SELECT transaction_id, user_id, type, amount, " +
-                "transaction_description, transaction_date " +
+                "transaction_date " +
                 "FROM transaction_list WHERE user_id = ? ORDER BY transaction_id DESC";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -773,8 +771,7 @@ public class ConnectionDB {
                 txn.put("user_id", rs.getInt("user_id"));
                 txn.put("type", rs.getString("type"));
                 txn.put("amount", rs.getDouble("amount"));
-                txn.put("description", rs.getString("transaction_description"));
-                txn.put("transaction_date", rs.getTimestamp("transaction_date"));
+                txn.put("transaction_date", rs.getDate("transaction_date"));
                 transactions.add(txn);
             }
         } catch (SQLException e) { e.printStackTrace(); }
@@ -820,7 +817,7 @@ public class ConnectionDB {
         StringBuilder queryBuilder =
                 new StringBuilder(
                         "SELECT transaction_id, user_id, type, amount, " +
-                                "transaction_description, transaction_date " +
+                                "transaction_date " +
                                 "FROM transaction_list WHERE user_id = ?"
                 );
         if (type != null && !type.isEmpty()) queryBuilder.append(" AND type = ?");
@@ -843,7 +840,6 @@ public class ConnectionDB {
                 txn.put("transaction_id", rs.getInt("transaction_id"));
                 txn.put("type", rs.getString("type"));
                 txn.put("amount", rs.getDouble("amount"));
-                txn.put("description", rs.getString("transaction_description"));
                 txn.put("transaction_date", rs.getTimestamp("transaction_date"));
                 results.add(txn);
             }
