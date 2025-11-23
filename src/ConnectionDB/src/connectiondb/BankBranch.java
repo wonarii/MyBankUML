@@ -2,8 +2,15 @@ public class BankBranch {
     private String bankName;
     private String address;
     private int branchId;
-    private int branchPhone;
+    private String branchPhone;
 
+
+    public BankBranch(String bankName, String address, int branchId, String branchPhone) {
+        this.bankName = bankName;
+        this.address = address;
+        this.branchId = branchId;
+        this.branchPhone = branchPhone;
+    }
 
     public String getBank() {
         return bankName;
@@ -29,11 +36,11 @@ public class BankBranch {
         this.branchId = branchId;
     }
 
-    public int getBranchPhone() {
+    public String getBranchPhone() {
         return branchPhone;
     }
 
-    public void setBranchPhone(int branchPhone) {
+    public void setBranchPhone(String branchPhone) {
         this.branchPhone = branchPhone;
     }
 }
