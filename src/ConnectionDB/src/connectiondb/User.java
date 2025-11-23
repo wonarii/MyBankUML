@@ -2,15 +2,14 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
-    private int accountId;
+    //private int accountId;
     private int branch;
 
     // Constructor
-    public User(String firstName, String lastName, String email, int accountId, int branch) {
+    public User(String firstName, String lastName, String email, int branch) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.accountId = accountId;
         this.branch = branch;
     }
 
@@ -25,10 +24,6 @@ public class User {
 
     public String getEmail() {
         return this.email;
-    }
-
-    public int getAccountId() {
-        return this.accountId;
     }
 
     public int getBranch() {
@@ -46,10 +41,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
     }
 
     public void setBranch(int branch) {

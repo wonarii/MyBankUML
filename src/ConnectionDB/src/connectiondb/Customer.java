@@ -1,13 +1,13 @@
+import java.util.Date;
+
 public class Customer extends User {
     private String phone;
     private String birthday;
     private double balance;
-    // Array of transactions?
-    public Transaction transactions;
 
     // Constructor
-    public Customer(String firstName, String lastName, String email, int accountId, int branch, String phone, String birthday, double balance) {
-        super(firstName, lastName, email, accountId, branch);
+    public Customer(String firstName, String lastName, String email, int branch, String phone, String birthday, double balance) {
+        super(firstName, lastName, email, branch);
         this.phone = phone;
         this.birthday = birthday;
         this.balance = balance;
@@ -24,10 +24,6 @@ public class Customer extends User {
 
     public double getBalance() {
         return this.balance;
-    }
-
-    public Transaction getTransactions() {
-        return this.transactions;
     }
 
     // Setters
@@ -53,5 +49,9 @@ public class Customer extends User {
     public void withdraw (double amount) {
         this.balance = this.balance - amount;
         // Update in database?
+    }
+
+    public void createCustomerAccount(){
+        ConnectionDB.createCustomer(this);
     }
 }

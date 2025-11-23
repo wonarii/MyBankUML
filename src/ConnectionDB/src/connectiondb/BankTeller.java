@@ -1,13 +1,16 @@
 public class BankTeller extends User {
 
-    public BankTeller(String firstName, String lastName, String email, int accountID, int branch) {
-        super(firstName, lastName, email, accountID, branch);
+    public BankTeller(String firstName, String lastName, String email, int branch) {
+        super(firstName, lastName, email, branch);
     }
 
     // When the 'create Customer' button is called, this function is invoked.
-    public void addCustomer(String firstName, String lastName, String email, String password, String birthday, String phoneNumber, String branch) {
+    public void addCustomer(String firstName, String lastName, String email, int accountId, int branch, String phone, String birthday, double balance) {
         // Take fields from input and create new Customer object
+        Customer customer = new Customer(firstName, lastName, email, branch, phone, birthday, balance);
         // Pass the Customer object
+        ConnectionDB.createCustomer(customer);
+        System.out.println("Customer added");
     }
 
     // When the 'delete Customer' button is called, this function is invoked.

@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 //package connectiondb;
 
->>>>>>> ee5931215bd97bbf7c0b8e92874c253b21af3b28
 import java.sql.*;
 import java.util.*;
 import java.time.LocalDate;
@@ -13,11 +10,12 @@ import org.mindrot.jbcrypt.BCrypt;
 public class ConnectionDB {
 
     // Session storage
-    private static final Map<String, Object> userData = new HashMap<>();
+    static final Map<String, Object> userData = new HashMap<>();
 
     public static void main(String[] args) {
         // --- Create sample users (new people) ---
         // Charlie = regular user -> default balance 0.0 (if null passed)
+        /*
         createUser(
                 "Charlie", "Brown", "charlie.brown@gmail.com", "Charlie123!",
                 null,               // balance (null means default for regular user -> becomes 0.0)
@@ -26,10 +24,10 @@ public class ConnectionDB {
                 2,                  // branchId
                 "1995-07-20",       // birthday (yyyy-MM-dd)
                 "100 Elm Street, Toronto"
-        );
+        );*/
 
         // Diana = teller -> balance must be NULL
-        createUser(
+        /*createUser(
                 "Diana", "Prince", "diana.prince@gmail.com", "Wonder123!",
                 null,               // ignored for tellers -> will be inserted as SQL NULL
                 "teller",
@@ -48,10 +46,10 @@ public class ConnectionDB {
                 1,
                 "1980-11-12",
                 "300 King Street, Toronto"
-        );
+        );*/
 
         // --- Test login with Charlie ---
-        if (loadUserData("charlie.brown@gmail.com", "Charlie123!")) {
+        /*if (loadUserData("charlie.brown@gmail.com", "Charlie123!")) {
             System.out.println("Welcome, " + getUserData("user_first_name"));
             System.out.println("--------------------------------------------");
             System.out.println("User session data:");
@@ -100,64 +98,62 @@ public class ConnectionDB {
             for (Map<String, Object> t : filteredTxns) {
                 System.out.println(t.get("type") + ": $" + t.get("amount"));
             }
-        }
+        }*/
     }
 
     // --- Database connection ---
     public static Connection getConnection() throws SQLException {
-<<<<<<< HEAD
-        String dbName = "phpmyadmin";
-//        String dbName = "phpmyadmin";             // The database on my end was named this, this is used for testing
+
+        String dbName = "bankapp_db";
+        // The database on my end was named this, this is used for testing
         String url = "jdbc:mysql://127.0.0.1:3306/" + dbName;
-=======
-        String url = "jdbc:mysql://127.0.0.1:3306/bankapp_db";
->>>>>>> ee5931215bd97bbf7c0b8e92874c253b21af3b28
+
         String user = "root";
         String dbPassword = "";
         return DriverManager.getConnection(url, user, dbPassword);
     }
 
     public static void createCustomer(Customer customer) {
-        String query = "INSERT INTO customers values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO customers (first_name, last_name, email, branch, phone, dob, balance) values (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, customer.getFirstName());
             stmt.setString(2, customer.getLastName());
             stmt.setString(3, customer.getEmail());
-            stmt.setInt(4, customer.getAccountId());
-            stmt.setInt(5, customer.getBranch());
-            stmt.setString(6, customer.getPhone());
-            stmt.setString(7, customer.getBirthday());
-            stmt.setDouble(8, customer.getBalance());
-            //stmt.setDouble(9, customer.getTransactions());
+            stmt.setInt(4, customer.getBranch());
+            stmt.setString(5, customer.getPhone());
+            stmt.setString(6, customer.getBirthday());
+            stmt.setDouble(7, customer.getBalance());
+
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public static void createBankTeller(BankTeller bankTeller) {
-        String query = "INSERT INTO banktellers values (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO banktellers (first_name, last_name, email, branch) values (?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, bankTeller.getFirstName());
             stmt.setString(2, bankTeller.getLastName());
             stmt.setString(3, bankTeller.getEmail());
-            stmt.setInt(4, bankTeller.getAccountId());
-            stmt.setInt(5, bankTeller.getBranch());
+            stmt.setInt(4, bankTeller.getBranch());
+
+            int rs = stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public static void createAdministrator(Administrator administrator) {
-        String query = "INSERT INTO administrators values (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO administrators (admin_first_name, admin_last_name, admin_email, branch_id) values (?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, administrator.getFirstName());
             stmt.setString(2, administrator.getLastName());
             stmt.setString(3, administrator.getEmail());
-            stmt.setInt(4, administrator.getAccountId());
-            stmt.setInt(5, administrator.getBranch());
+            stmt.setInt(4, administrator.getBranch());
         } catch (SQLException e) {
             e.printStackTrace();
         }
