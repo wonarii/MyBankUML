@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.sql.SQLException;
 
 public class Authenticator {
 
@@ -16,16 +17,19 @@ public class Authenticator {
         return authenticatorInstance;
     }
 
-
     private int changePassword(ConnectionDB db){
-
-
-
 
         return 0;
     }
 
+    public void signUp(Customer customer) {
+        try {
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            db.createCustomer(customer);
+            System.out.println("Customer signed up successfully");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
-
-
+    }
 }
