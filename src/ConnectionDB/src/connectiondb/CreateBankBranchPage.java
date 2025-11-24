@@ -1,6 +1,5 @@
 import javax.swing.*;
 
-<<<<<<< HEAD
 public class CreateBankBranchPage {
     private JTextField textField1;
     private JTextField textField2;
@@ -18,14 +17,4 @@ public class CreateBankBranchPage {
     private void createUIComponents() {
 
     }
-=======
-public class CreateUserAccountPage {
-    JTextField textField1;
-    JTextField textField2;
-    JTextField textField3;
-    JTextField textField4;
-    JTextField textField5;
-    JButton createButton;
-    JButton cancelButton;
->>>>>>> 21e527d9cdc7351ed2bedfe2df3e066695c4e290
 }

@@ -9,4 +9,8 @@ public class TellerDashboard {
     private JButton deleteUserAccountButton;
     private JButton createUserAccountButton;
     private JButton logOutButton;
+
+    private void createUIComponents() {
+
+    }
 }

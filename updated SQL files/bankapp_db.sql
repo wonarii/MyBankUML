@@ -3,10 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 14, 2025 at 07:53 PM
+-- Generation Time: Nov 23, 2025 at 05:16 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
-
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -21,12 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `bankapp_db`
 --
-
--- WIPE THE DATABASE CLEAN BEFORE RUNNING
-
-DROP DATABASE IF EXISTS `bankapp_db`;
-CREATE DATABASE `bankapp_db`;
-
 
 -- --------------------------------------------------------
 
@@ -60,8 +53,10 @@ INSERT INTO `account_list` (`id`, `user_first_name`, `user_last_name`, `user_bir
 (3, 'John', 'Doe', '1995-05-16', '6373, PIX, Montreal, QC, H7Y 8U6 ', 'doe65@gmail.com', '$2y$10$5M.bT0g7bP3IjI5qqD8QEeeYwzg2RgHfWHh446zPrxVxGuPq7hDB2', 'teller', NULL, 4, 'CIBC', 10, 'CIBC_Montreal'),
 (4, 'Lizy', 'May', '1997-03-12', '6373, King Street, Toronto, ON, U8Y 7W3 ', 'liz123@gmail.com', '$2y$10$bLSm/oYkQDcNyY4PX90sJePSd84tVjSknmKwWhCgbx8yZ08AIO2cy', 'admin', NULL, 3, 'BMO', 8, 'BMO_Toronto'),
 (7, 'Alice', 'Johnson', '1990-05-15', '123 Main Street, Toronto', 'alice123@gmail.com', '$2a$10$3/OFA4rKCN/NYTvTS5Eblu1oGYzn8zm/QHvnLnxb9gWebNZFPZHcW', 'user', 1300, 1, 'Desjardins', 3, 'Desjardins_Sherbrook'),
-(9, 'Charlie', 'Brown', '1995-07-20', '100 Elm Street, Toronto', 'charlie.brown@gmail.com', '$2a$10$TwzGNKA2T9L3fL2NogHM0uTO5C/v8AEO1wuxLgF5Cd.9epBEstwFS', 'user', 1500, 1, 'Desjardins', 2, 'Desjardins_Quebec'),
-(11, 'Ethan', 'Hunt', '1980-11-12', '300 King Street, Toronto', 'ethan.hunt@gmail.com', '$2a$10$rr3G.8uSl53fpRVD4OvIWuvD9FKfE/Lu31np3Mlc87IS/BdVWxVqe', 'admin', 3000, 3, 'BMO', 1, 'Desjardins_Montreal');
+(9, 'Charlie', 'Brown', '1995-07-20', '100 Elm Street, Toronto', 'charlie.brown@gmail.com', '$2a$10$TwzGNKA2T9L3fL2NogHM0uTO5C/v8AEO1wuxLgF5Cd.9epBEstwFS', 'user', 2100, 1, 'Desjardins', 2, 'Desjardins_Quebec'),
+(11, 'Ethan', 'Hunt', '1980-11-12', '300 King Street, Toronto', 'ethan.hunt@gmail.com', '$2a$10$rr3G.8uSl53fpRVD4OvIWuvD9FKfE/Lu31np3Mlc87IS/BdVWxVqe', 'admin', 3000, 3, 'BMO', 1, 'Desjardins_Montreal'),
+(12, 'Charlie', 'Brown', '1995-07-20', '100 Elm Street, Toronto', 'charlie.brown@gmail.com', '$2a$10$mOpuffPSJttdKZc1jq9zL.JeZAp0xAB/TGDBS6lXC3R1K6zENtYJy', 'user', 2100, 1, 'Desjardins', 2, 'Desjardins_Quebec'),
+(14, 'Ethan', 'Hunt', '1980-11-12', '300 King Street, Toronto', 'ethan.hunt@gmail.com', '$2a$10$5HjIFC27lpmK.7rjxACsueK4UpnPi9510GJsZj8PJDGS/UarK9/YK', 'admin', NULL, 3, 'BMO', 1, 'Desjardins_Montreal');
 
 -- --------------------------------------------------------
 
@@ -123,20 +118,25 @@ INSERT INTO `branch_list` (`branch_id`, `branch_name`, `location`) VALUES
 CREATE TABLE `transaction_list` (
   `transaction_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
+  `transaction_date` date NOT NULL DEFAULT current_timestamp(),
   `type` varchar(30) NOT NULL,
   `amount` double NOT NULL,
-  `transaction_date` DATE
+  `transaction_description` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `transaction_list`
 --
 
-INSERT INTO `transaction_list` (`transaction_id`, `user_id`, `type`, `amount`, `transaction_date`) VALUES
-(1, 1, 'Withdraw', 90, '2025-11-22'),
-(2, 2, 'Deposit', 50, '2021-12-01'),
-(5, 9, 'deposit', 500, '2019-04-07'),
-(6, 9, 'withdraw', 200, '2023-01-14');
+INSERT INTO `transaction_list` (`transaction_id`, `user_id`, `transaction_date`, `type`, `amount`, `transaction_description`) VALUES
+(1, 1, '2025-11-23', 'Withdraw', 90, ''),
+(2, 2, '2025-11-23', 'Deposit', 50, ''),
+(5, 9, '2025-11-23', 'deposit', 500, ''),
+(6, 9, '2025-11-23', 'withdraw', 200, ''),
+(7, 9, '2025-11-23', 'deposit', 500, ''),
+(8, 9, '2025-11-23', 'withdraw', 200, ''),
+(9, 9, '2025-11-23', 'deposit', 500, ''),
+(10, 9, '2025-11-23', 'withdraw', 200, '');
 
 --
 -- Indexes for dumped tables
@@ -177,7 +177,7 @@ ALTER TABLE `transaction_list`
 -- AUTO_INCREMENT for table `account_list`
 --
 ALTER TABLE `account_list`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `bank_list`
@@ -195,7 +195,7 @@ ALTER TABLE `branch_list`
 -- AUTO_INCREMENT for table `transaction_list`
 --
 ALTER TABLE `transaction_list`
-  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
