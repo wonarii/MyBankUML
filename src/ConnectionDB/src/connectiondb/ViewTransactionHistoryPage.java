@@ -1,8 +1,11 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-public class ViewTransactionHistoryPage {
+public class ViewTransactionHistoryPage{
     private JTable table1;
     private JButton backButton;
     private JPanel transactionsPanel;
@@ -15,10 +18,27 @@ public class ViewTransactionHistoryPage {
     // Step 3: in the same loop, format the information and add to the JTable using table1.addRow(new Object[] { ....})
 
 
-    private void createUIComponents() {
-        String[] columns = {"TransactionID","User ID","Date","Type","Amount","Description"};
+    // TODO: Make sure userDashboard goes to the right type of user later
+    public ViewTransactionHistoryPage() {
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Container parent = transactionsPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "userDashboard");
+            }
+        });
+    }
 
-        model = new DefaultTableModel(columns, 0);
+    private void createUIComponents() {
+        String[] columns = {"TransactionID","User ID","Date","Type","Amount"};
+
+        model = new DefaultTableModel(columns, 0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // all cells non-editable
+            }
+        };
         transactionsPanel = new JPanel();
         table1 = new JTable(model);
         backButton = new JButton("Back");
@@ -27,8 +47,8 @@ public class ViewTransactionHistoryPage {
         table1.getColumnModel().getColumn(0).setPreferredWidth(25);
         table1.getColumnModel().getColumn(1).setPreferredWidth(25);
 
-        // Adding Dummy Data
-        model.addRow(new Object[]{1,2, "12-12-2021", "Deposit", 500.00, "Stuff"});
+        //TODO: Change this
+        updateTransactionsView();
 
     }
 
@@ -37,9 +57,15 @@ public class ViewTransactionHistoryPage {
         return transactionsPanel;
     }
 
+    public void updateTransactionsView() {
+        int tempUserID = 1;
+        displayTransactions(Transaction.convertTransactionsFromDatabase(tempUserID));
+    }
+
 
 
     public int displayTransactions(Transaction[] transactions) {
+        model.setRowCount(0);
         for(int i = 0; i < transactions.length; i++) {
             Transaction item = transactions[i];
             model.addRow(item.display());

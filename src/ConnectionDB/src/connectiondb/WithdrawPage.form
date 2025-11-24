@@ -39,7 +39,7 @@
               <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
-          <component id="a2356" class="javax.swing.JLabel">
+          <component id="a2356" class="javax.swing.JLabel" binding="currentDateLabel" custom-create="true">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -47,7 +47,6 @@
               <background color="-525570"/>
               <font size="16"/>
               <foreground color="-4143145"/>
-              <text value="Oct 17,2025"/>
             </properties>
           </component>
           <component id="28d99" class="javax.swing.JButton" binding="nextButton" default-binding="true">
@@ -242,7 +241,7 @@
             </constraints>
             <properties>
               <background color="-2104859"/>
-              <text value="$0.00"/>
+              <text value="0.00"/>
             </properties>
           </component>
           <hspacer id="7a582">

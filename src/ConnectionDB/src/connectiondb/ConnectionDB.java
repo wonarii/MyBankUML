@@ -97,7 +97,6 @@ public class ConnectionDB {
                     "charlie.brown@gmail.com",
                     500.0,
                     "deposit",
-                    "Initial deposit",
                     "charlie.brown@gmail.com"
             );
 
@@ -106,7 +105,6 @@ public class ConnectionDB {
                     "charlie.brown@gmail.com",
                     200.0,
                     "withdraw",
-                    "ATM withdrawal",
                     "charlie.brown@gmail.com"
             );
 
@@ -115,7 +113,6 @@ public class ConnectionDB {
                     "charlie.brown@gmail.com",
                     300.0,
                     "deposit",
-                    "Teller cash deposit",
                     "diana.prince@gmail.com"
             );
 
@@ -124,7 +121,6 @@ public class ConnectionDB {
                     "charlie.brown@gmail.com",
                     50.0,
                     "withdraw",
-                    "Attempted teller withdrawal",
                     "diana.prince@gmail.com"
             );
 
@@ -133,7 +129,6 @@ public class ConnectionDB {
                     "charlie.brown@gmail.com",
                     100.0,
                     "deposit",
-                    "Admin deposit",
                     "ethan.hunt@gmail.com"
             );
 
@@ -142,7 +137,6 @@ public class ConnectionDB {
                     "diana.prince@gmail.com",
                     50.0,
                     "deposit",
-                    "Invalid admin deposit",
                     "ethan.hunt@gmail.com"
             );
 
@@ -165,8 +159,7 @@ public class ConnectionDB {
                     System.out.println(
                             t.get("transaction_date") + " | " +
                                     t.get("type") + ": $" +
-                                    t.get("amount") + " - " +
-                                    t.get("description")
+                                    t.get("amount") + " - "
                     );
                 }
 
@@ -178,8 +171,7 @@ public class ConnectionDB {
                     System.out.println(
                             t.get("transaction_date") + " | " +
                                     t.get("type") + ": $" +
-                                    t.get("amount") + " - " +
-                                    t.get("description")
+                                    t.get("amount") + " - "
                     );
                 }
             }
@@ -475,7 +467,6 @@ public class ConnectionDB {
     public boolean applyTransaction(String targetEmail,
                                     double amount,
                                     String type,
-                                    String description,
                                     String performerEmail) {
 
         if (amount <= 0) {
@@ -597,7 +588,6 @@ public class ConnectionDB {
                     targetId,
                     type.toLowerCase(),
                     amount
-//                    (description == null ? "" : description)
             );
             if (!transOk) {
                 System.out.println("Warning: balance updated but transaction write failed.");
@@ -768,7 +758,7 @@ public class ConnectionDB {
     public List<Map<String, Object>> loadTransactions(int userId) {
         List<Map<String, Object>> transactions = new ArrayList<>();
         String query = "SELECT transaction_id, user_id, type, amount, " +
-                "transaction_description, transaction_date " +
+                "transaction_date " +
                 "FROM transaction_list WHERE user_id = ? ORDER BY transaction_id DESC";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -781,8 +771,7 @@ public class ConnectionDB {
                 txn.put("user_id", rs.getInt("user_id"));
                 txn.put("type", rs.getString("type"));
                 txn.put("amount", rs.getDouble("amount"));
-                txn.put("description", rs.getString("transaction_description"));
-                txn.put("transaction_date", rs.getTimestamp("transaction_date"));
+                txn.put("transaction_date", rs.getDate("transaction_date"));
                 transactions.add(txn);
             }
         } catch (SQLException e) { e.printStackTrace(); }
@@ -828,7 +817,7 @@ public class ConnectionDB {
         StringBuilder queryBuilder =
                 new StringBuilder(
                         "SELECT transaction_id, user_id, type, amount, " +
-                                "transaction_description, transaction_date " +
+                                "transaction_date " +
                                 "FROM transaction_list WHERE user_id = ?"
                 );
         if (type != null && !type.isEmpty()) queryBuilder.append(" AND type = ?");
@@ -851,7 +840,6 @@ public class ConnectionDB {
                 txn.put("transaction_id", rs.getInt("transaction_id"));
                 txn.put("type", rs.getString("type"));
                 txn.put("amount", rs.getDouble("amount"));
-                txn.put("description", rs.getString("transaction_description"));
                 txn.put("transaction_date", rs.getTimestamp("transaction_date"));
                 results.add(txn);
             }
