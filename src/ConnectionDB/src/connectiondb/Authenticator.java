@@ -30,6 +30,15 @@ public class Authenticator {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public void createBankTeller(BankTeller bankTeller) {
+        try {
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            db.createBankTeller(bankTeller);
+            System.out.println("Bank teller created successfully");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
