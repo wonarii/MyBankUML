@@ -860,4 +860,131 @@ public class ConnectionDB {
         userData.clear();
         System.out.println("User session cleared.");
     }
+
+    // ==============================
+//   BRANCH MANAGEMENT FUNCTIONS
+// ==============================
+
+// --- Create a new branch (branch_name + location) ---
+public boolean createBranch(String branchName, String location) {
+    String query = "INSERT INTO branch_list (branch_name, location) VALUES (?, ?)";
+
+    try (Connection conn = getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+
+        stmt.setString(1, branchName);
+        stmt.setString(2, location);
+
+        int rows = stmt.executeUpdate();
+        if (rows > 0) {
+            System.out.println("Branch created successfully: " + branchName);
+            return true;
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Error creating branch!");
+        e.printStackTrace();
+    }
+    return false;
+}
+
+// --- Delete a branch (safe delete: cannot delete if users are assigned to it) ---
+public boolean deleteBranch(int branchId) {
+    try (Connection conn = getConnection()) {
+
+        // Check if branch exists
+        String checkBranch = "SELECT branch_id FROM branch_list WHERE branch_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(checkBranch)) {
+            stmt.setInt(1, branchId);
+            ResultSet rs = stmt.executeQuery();
+            if (!rs.next()) {
+                System.out.println("Branch ID " + branchId + " does not exist.");
+                return false;
+            }
+        }
+
+        // Block deletion if ANY user is assigned to this branch
+        String checkUsage = "SELECT id FROM account_list WHERE user_branch_id = ?";
+        try (PreparedStatement stmt2 = conn.prepareStatement(checkUsage)) {
+            stmt2.setInt(1, branchId);
+            ResultSet rs2 = stmt2.executeQuery();
+            if (rs2.next()) {
+                System.out.println(
+                    "Cannot delete branch " + branchId +
+                    ": It is currently assigned to one or more user accounts."
+                );
+                return false;
+            }
+        }
+
+        // Safe delete
+        String deleteQuery = "DELETE FROM branch_list WHERE branch_id = ?";
+        try (PreparedStatement stmt3 = conn.prepareStatement(deleteQuery)) {
+            stmt3.setInt(1, branchId);
+            int rows = stmt3.executeUpdate();
+
+            if (rows > 0) {
+                System.out.println("Branch deleted successfully: " + branchId);
+                return true;
+            }
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Error deleting branch!");
+        e.printStackTrace();
+    }
+
+    return false;
+}
+
+// --- Load all branch records (for admin dashboards / dropdowns) ---
+public List<Map<String, Object>> loadAllBranches() {
+    List<Map<String, Object>> list = new ArrayList<>();
+    String query = "SELECT * FROM branch_list";
+
+    try (Connection conn = getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query);
+         ResultSet rs = stmt.executeQuery()) {
+
+        while (rs.next()) {
+            Map<String, Object> branch = new HashMap<>();
+            branch.put("branch_id", rs.getInt("branch_id"));
+            branch.put("branch_name", rs.getString("branch_name"));
+            branch.put("location", rs.getString("location"));
+            list.add(branch);
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Error loading branches!");
+        e.printStackTrace();
+    }
+
+    return list;
+}
+
+// --- Update a branch (rename or change location) ---
+public boolean updateBranch(int branchId, String newName, String newLocation) {
+    String query = "UPDATE branch_list SET branch_name = ?, location = ? WHERE branch_id = ?";
+
+    try (Connection conn = getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+
+        stmt.setString(1, newName);
+        stmt.setString(2, newLocation);
+        stmt.setInt(3, branchId);
+
+        int rows = stmt.executeUpdate();
+        if (rows > 0) {
+            System.out.println("Branch updated: " + branchId);
+            return true;
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Error updating branch!");
+        e.printStackTrace();
+    }
+
+    return false;
+}
+
 }
