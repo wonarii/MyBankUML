@@ -13,7 +13,7 @@ public class BankDriver
 
     public static void main(String[] args) {
 
-        try {
+        /*try {
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
             currentUserID = 9;
 
@@ -37,8 +37,7 @@ public class BankDriver
 
         } catch (Exception e){
 
-        }
-
-
+        }*/
+        new LoginPage();
     }
 }

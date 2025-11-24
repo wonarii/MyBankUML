@@ -4,13 +4,15 @@ public class Customer extends User {
     private String phone;
     private String birthday;
     private double balance;
+    private String password;
 
     // Constructor
-    public Customer(String firstName, String lastName, String email, int branch, String phone, String birthday, double balance) {
+    public Customer(String firstName, String lastName, String email, int branch, String phone, String birthday, double balance, String password) {
         super(firstName, lastName, email, branch);
         this.phone = phone;
         this.birthday = birthday;
         this.balance = balance;
+        this.password = password;
     }
 
     // Getters
@@ -24,6 +26,10 @@ public class Customer extends User {
 
     public double getBalance() {
         return this.balance;
+    }
+
+    public String getPassword() {
+        return this.password;
     }
 
     // Setters

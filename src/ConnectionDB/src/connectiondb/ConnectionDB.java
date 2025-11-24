@@ -189,7 +189,7 @@ public class ConnectionDB {
     }
 
     public void createCustomer(Customer customer) {
-        String query = "INSERT INTO customers (first_name, last_name, email, branch, phone, dob, balance) values (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO customers (first_name, last_name, email, branch, phone, dob, balance, password) values (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, customer.getFirstName());
@@ -199,6 +199,7 @@ public class ConnectionDB {
             stmt.setString(5, customer.getPhone());
             stmt.setString(6, customer.getBirthday());
             stmt.setDouble(7, customer.getBalance());
+            stmt.setString(8, customer.getPassword());
 
             stmt.executeUpdate();
         } catch (SQLException e) {

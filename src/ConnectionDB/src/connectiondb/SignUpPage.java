@@ -75,10 +75,8 @@ public class SignUpPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Call Authenticator class to write to db
-                Customer newCustomer = new Customer(firstNameField.getText(), lastNameField.getText(), emailField.getText(), Integer.parseInt(branchField.getText()), phoneField.getText(), dobField.getText(), 0);
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
-                auth.signUp(newCustomer);
-
+                auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), Integer.parseInt(branchField.getText()), phoneField.getText(), dobField.getText(), 0.0, passwordField.getText());
                 // Redirect to login page
                 new LoginPage();
                 dispose();
@@ -121,7 +119,7 @@ public class SignUpPage extends JFrame {
         char[] password = passwordField.getPassword();
         char[] password2 = passwordField2.getPassword();
 
-        if (Arrays.equals(password, password2) && password.length >0 && password2.length > 0) {
+        if (Arrays.equals(password, password2) && password.length > 0 && password2.length > 0) {
             return true;
         } return false;
     }
