@@ -1,4 +1,19 @@
 import javax.swing.*;
+<<<<<<< HEAD
+
+public class CreateTellerAccountPage {
+    private JTextField textField1;
+    private JTextField textField2;
+    private JTextField textField3;
+    private JTextField textField4;
+    private JButton createButton;
+    private JButton cancelButton;
+
+    private void createUIComponents() {
+
+    }
+}
+=======
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -145,3 +160,4 @@ class FieldDocumentListener implements DocumentListener {
     }
 }
 
+>>>>>>> 21e527d9cdc7351ed2bedfe2df3e066695c4e290
