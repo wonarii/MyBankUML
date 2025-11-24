@@ -11,32 +11,39 @@ public class DriverScreen {
     private JPanel userDashboardPanel;
     private CardLayout layout;
 
+    // Scenes
+    private ViewTransactionHistoryPage transactionPage;
+    private WithdrawPage withdrawPage;
+    private DepositPage depositPage;
+    private UserDashboard userDashboard;
+
+
     private void createUIComponents() {
         // TODO: place custom component creation code here
         activeScene = new JPanel(new CardLayout());
 
         // Set Up View Transactions Page (Delete Later)
-        ViewTransactionHistoryPage transactionPage = new ViewTransactionHistoryPage();
+        transactionPage = new ViewTransactionHistoryPage();
         transactionsPanel = transactionPage.getPanel();
         activeScene.add(transactionsPanel, "transactions");
 
         // Set Up Withdraw Page
-        WithdrawPage withdrawPage = new WithdrawPage();
+        withdrawPage = new WithdrawPage();
         withdrawPanel = withdrawPage.getPanel();
         activeScene.add(withdrawPanel, "withdraw");
 
         //Set Up Withdraw Page
-        DepositPage depositPage = new DepositPage();
+        depositPage = new DepositPage();
         depositPanel = depositPage.getPanel();
         activeScene.add(depositPanel, "deposit");
 
         //Set Up User Dashboard Page
-        UserDashboard userDashboard = new UserDashboard();
+        userDashboard = new UserDashboard(this);
         userDashboardPanel = userDashboard.getPanel();
         activeScene.add(userDashboardPanel, "userDashboard");
 
         // Choose the starting scene
-        CardLayout layout = (CardLayout) activeScene.getLayout();
+        layout = (CardLayout) activeScene.getLayout();
         layout.show(activeScene, "userDashboard");
 
     }
@@ -46,5 +53,9 @@ public class DriverScreen {
 
     public JPanel getPanel() {
         return activeScene;
+    }
+
+    public void updateTransactionsTable(){
+        transactionPage.updateTransactionsView();
     }
 }
