@@ -17,12 +17,31 @@ public class DepositPage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try{
-                    amountInput.getText();
-                    double amount = Double.parseDouble(amountInput.getText());
-                    Transaction.createTransaction(amount, "deposit");
+                    int confirmation = JOptionPane.showConfirmDialog(depositPanel, "Are you sure you want to continue?", "Confirm", JOptionPane.YES_NO_OPTION);
+
+                    if(confirmation == JOptionPane.YES_OPTION){
+                        amountInput.getText();
+                        double amount = Double.parseDouble(amountInput.getText());
+                        int status = Transaction.createTransaction(amount, "deposit");
+
+                        if(status == 0){
+                            JOptionPane.showMessageDialog(depositPanel, "Deposit was successful!");
+
+                            Container parent = depositPanel.getParent();
+                            CardLayout layout = (CardLayout) parent.getLayout();
+                            layout.show(parent, "userDashboard");
+                        } else {
+                            JOptionPane.showMessageDialog(depositPanel, "Deposit was unsuccessful, please try again.");
+                        }
+
+
+
+                    }
+
+
 
                 } catch(Exception ex){
-                    System.err.println(ex.getMessage());
+                    JOptionPane.showMessageDialog(depositPanel, "An error has occurred. Please try again.");
                 }
             }
         });
