@@ -89,6 +89,12 @@ public class Transaction {
     }
 
 
+    /***
+     * This function will connect to the database and attempt to make a deposit / withdrawal
+     * @param amount
+     * @param type
+     * @return
+     */
     public static int createTransaction(double amount, String type) {
 
         try{
