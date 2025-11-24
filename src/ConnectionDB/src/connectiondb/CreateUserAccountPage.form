@@ -55,7 +55,7 @@
                       <text value="First Name"/>
                     </properties>
                   </component>
-                  <component id="9a898" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+                  <component id="9a898" class="javax.swing.JTextField" binding="firstNameField">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -86,7 +86,7 @@
                       <text value="Last Name"/>
                     </properties>
                   </component>
-                  <component id="82b6f" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+                  <component id="82b6f" class="javax.swing.JTextField" binding="lastNameField">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -117,7 +117,7 @@
                       <text value="Date Of Birth"/>
                     </properties>
                   </component>
-                  <component id="bf5eb" class="javax.swing.JTextField" binding="textField3" default-binding="true">
+                  <component id="bf5eb" class="javax.swing.JTextField" binding="dobField">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -125,6 +125,7 @@
                     </constraints>
                     <properties>
                       <background color="-2104859"/>
+                      <text value=""/>
                     </properties>
                   </component>
                 </children>
@@ -148,7 +149,7 @@
                       <text value="Phone No."/>
                     </properties>
                   </component>
-                  <component id="9a5e" class="javax.swing.JTextField" binding="textField4" default-binding="true">
+                  <component id="9a5e" class="javax.swing.JTextField" binding="phoneField">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -180,7 +181,7 @@
                       <text value="Branch No."/>
                     </properties>
                   </component>
-                  <component id="1d342" class="javax.swing.JTextField" binding="textField5" default-binding="true">
+                  <component id="1d342" class="javax.swing.JTextField" binding="branchField">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
