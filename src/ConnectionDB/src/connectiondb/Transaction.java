@@ -95,7 +95,8 @@ public class Transaction {
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
 
             //TODO: Get the user stored in the BankDriver
-            String currentUserEmail = BankDriver.currentUser.getEmail();
+            //String currentUserEmail = BankDriver.currentUser.getEmail();
+            String currentUserEmail = "";
 
             // Use the function from the database
             boolean success = db.applyTransaction(currentUserEmail, amount, type, currentUserEmail);

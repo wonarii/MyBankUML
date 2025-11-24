@@ -1,19 +1,4 @@
 import javax.swing.*;
-<<<<<<< HEAD
-
-public class CreateTellerAccountPage {
-    private JTextField textField1;
-    private JTextField textField2;
-    private JTextField textField3;
-    private JTextField textField4;
-    private JButton createButton;
-    private JButton cancelButton;
-
-    private void createUIComponents() {
-
-    }
-}
-=======
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -21,15 +6,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SignUpPage extends JFrame {
     private JPanel contentPane;
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField emailField;
-    private JTextField passwordField;
-    private JTextField passwordVerifField;
+    private JPasswordField passwordField;
+    private JPasswordField passwordField2;
     private JButton signUpButton;
     private JButton backButton;
     private JTextField phoneField;
@@ -54,66 +42,86 @@ public class SignUpPage extends JFrame {
             }
         });
 
-        // Live validation for dates
-        dobField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                validateDate();
+        // Live validation for all fields
+        DocumentListener documentListener = new DocumentListener() {
+            private void validateForm() {
+                boolean firstNameValid = isFieldValid(firstNameField, "^[a-zA-Z]*$");
+                boolean lastNameValid = isFieldValid(lastNameField, "^[a-zA-Z]*$");
+                boolean emailValid = isFieldValid(emailField, "^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
+                boolean phoneValid = isFieldValid(phoneField, "^[0-9]{10}$");
+                boolean branchValid = isFieldValid(branchField, "^[0-9]{3}$");
+                boolean dobValid = isDateValid(dobField);
+                boolean doPasswordsMatch = doPasswordsMatch(passwordField, passwordField2);
+
+                boolean valid = firstNameValid && lastNameValid && emailValid && dobValid && phoneValid && branchValid && doPasswordsMatch;
+                signUpButton.setEnabled(valid);
             }
+            @Override public void insertUpdate(DocumentEvent e) { validateForm(); }
+            @Override public void removeUpdate(DocumentEvent e) { validateForm(); }
+            @Override public void changedUpdate(DocumentEvent e) { validateForm(); }
+        };
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                validateDate();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                validateDate();
-            }
-
-            private void validateDate() {
-                signUpButton.setEnabled(false);
-                String text = dobField.getText().trim();
-
-                if (text.isEmpty()) {
-                    dobField.setBackground(Color.WHITE);
-                    return;
-                }
-
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                df.setLenient(false);
-
-                try {
-                    Date date = df.parse(text);
-                    dobField.setBackground(new Color(200, 255, 200));  // green
-                    signUpButton.setEnabled(true);
-                } catch (ParseException ex) {
-                    dobField.setBackground(new Color(255, 200, 200)); // red
-                    signUpButton.setEnabled(false);
-                }
-            }
-        });
-
-        // Document listener to do input validation on these fields in real time
-        firstNameField.getDocument().addDocumentListener(new FieldDocumentListener(signUpButton, firstNameField, lastNameField, emailField, phoneField, dobField, branchField));
-        lastNameField.getDocument().addDocumentListener(new FieldDocumentListener(signUpButton, firstNameField, lastNameField, emailField, phoneField, dobField, branchField));
-        emailField.getDocument().addDocumentListener(new FieldDocumentListener(signUpButton, firstNameField, lastNameField, emailField, phoneField, dobField, branchField));
-        phoneField.getDocument().addDocumentListener(new FieldDocumentListener(signUpButton, firstNameField, lastNameField, emailField, phoneField, dobField, branchField));
-        dobField.getDocument().addDocumentListener(new FieldDocumentListener(signUpButton, firstNameField, lastNameField, emailField, phoneField, dobField, branchField));
-        branchField.getDocument().addDocumentListener(new FieldDocumentListener(signUpButton, firstNameField, lastNameField, emailField, phoneField, dobField, branchField));
+        firstNameField.getDocument().addDocumentListener(documentListener);
+        lastNameField.getDocument().addDocumentListener(documentListener);
+        emailField.getDocument().addDocumentListener(documentListener);
+        dobField.getDocument().addDocumentListener(documentListener);
+        phoneField.getDocument().addDocumentListener(documentListener);
+        branchField.getDocument().addDocumentListener(documentListener);
+        passwordField.getDocument().addDocumentListener(documentListener);
+        passwordField2.getDocument().addDocumentListener(documentListener);
 
         // Button to sign up - creates a new Customer (in the database)
         signUpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //If all fields are validated, add it to the database
-                //customer.createCustomerAccount();
-
-                // Bring user back to login page so that now they can login with the account they just created.
+                // Call Authenticator class to write to db
+                Authenticator auth = Authenticator.getAuthenticatorInstance();
+                auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), Integer.parseInt(branchField.getText()), phoneField.getText(), dobField.getText(), 0.0, passwordField.getText());
+                // Redirect to login page
                 new LoginPage();
                 dispose();
             }
         });
+    }
+
+    // Validator methods
+    private static boolean isFieldValid(JTextField field, String regexPattern) {
+        Pattern pattern = Pattern.compile(regexPattern);
+        boolean valid = pattern.matcher(field.getText()).matches();
+        if (field.getText().isEmpty()) {
+            field.setBackground(Color.WHITE);
+        } else if (valid) {
+            field.setBackground(new Color(200, 255, 200));
+        } else {
+            field.setBackground(new Color(255, 200, 200));
+        }
+        return valid;
+    }
+
+    private static boolean isDateValid(JTextField field) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        formatter.setLenient(false);
+        if (field.getText().isEmpty()) {
+            field.setBackground(Color.WHITE);
+            return false;
+        }
+        try {
+            Date date = formatter.parse(field.getText());
+            field.setBackground(new Color(200, 255, 200));
+        } catch (ParseException e) {
+            field.setBackground(new Color(255, 200, 200));
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean doPasswordsMatch(JPasswordField passwordField, JPasswordField passwordField2) {
+        char[] password = passwordField.getPassword();
+        char[] password2 = passwordField2.getPassword();
+
+        if (Arrays.equals(password, password2) && password.length > 0 && password2.length > 0) {
+            return true;
+        } return false;
     }
 
     public static void main(String[] args) {
@@ -121,43 +129,3 @@ public class SignUpPage extends JFrame {
     }
 }
 
-class FieldDocumentListener implements DocumentListener {
-    private JButton button;
-    private JTextField[] fields;
-
-    public FieldDocumentListener(JButton button, JTextField... fields) {
-        this.button = button;
-        this.fields = fields;
-    }
-
-    private void checkFields() {
-        boolean allFilled = true;
-
-        // Verify they are all filled
-        for (JTextField field : fields) {
-            if (field.getText().trim().isEmpty()) {
-                allFilled = false;
-                break;
-            }
-        }
-
-        button.setEnabled(allFilled);
-    }
-
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-        checkFields();
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-        checkFields();
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-        checkFields();
-    }
-}
-
->>>>>>> 21e527d9cdc7351ed2bedfe2df3e066695c4e290
