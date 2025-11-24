@@ -3,8 +3,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-public class ViewTransactionHistoryPage {
+public class ViewTransactionHistoryPage{
     private JTable table1;
     private JButton backButton;
     private JPanel transactionsPanel;
@@ -42,9 +43,7 @@ public class ViewTransactionHistoryPage {
         table1.getColumnModel().getColumn(1).setPreferredWidth(25);
 
         //TODO: Change this
-        int tempUserID = 1;
-
-        displayTransactions(Transaction.convertTransactionsFromDatabase(tempUserID));
+        updateTransactionsView();
 
     }
 
@@ -53,9 +52,15 @@ public class ViewTransactionHistoryPage {
         return transactionsPanel;
     }
 
+    public void updateTransactionsView() {
+        int tempUserID = 1;
+        displayTransactions(Transaction.convertTransactionsFromDatabase(tempUserID));
+    }
+
 
 
     public int displayTransactions(Transaction[] transactions) {
+        model.setRowCount(0);
         for(int i = 0; i < transactions.length; i++) {
             Transaction item = transactions[i];
             model.addRow(item.display());

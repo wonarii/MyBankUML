@@ -11,13 +11,17 @@ public class UserDashboard {
     private JButton logOutButton;
     private JPanel userDashboardPanel;
 
-    public UserDashboard() {
+    private DriverScreen driverScreen;
+
+    public UserDashboard(DriverScreen driverScreen) {
+        this.driverScreen = driverScreen;
 
         withdrawButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Container parent = userDashboardPanel.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
+
                 layout.show(parent, "withdraw");
             }
         });
@@ -32,6 +36,7 @@ public class UserDashboard {
         viewTransactionHistoryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                driverScreen.updateTransactionsTable();
                 Container parent = userDashboardPanel.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "transactions");
