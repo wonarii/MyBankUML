@@ -33,7 +33,12 @@ public class ViewTransactionHistoryPage{
     private void createUIComponents() {
         String[] columns = {"TransactionID","User ID","Date","Type","Amount"};
 
-        model = new DefaultTableModel(columns, 0);
+        model = new DefaultTableModel(columns, 0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // all cells non-editable
+            }
+        };
         transactionsPanel = new JPanel();
         table1 = new JTable(model);
         backButton = new JButton("Back");

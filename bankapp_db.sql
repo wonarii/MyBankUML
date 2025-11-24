@@ -7,6 +7,7 @@
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -22,14 +23,9 @@ SET time_zone = "+00:00";
 --
 
 -- WIPE THE DATABASE CLEAN BEFORE RUNNING
-SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS `bank_list`;
-DROP TABLE IF EXISTS `branch_list`;
-DROP TABLE IF EXISTS `transaction_list`;
-DROP TABLE IF EXISTS `account_list`;
-
-SET FOREIGN_KEY_CHECKS = 1;
+DROP DATABASE IF EXISTS `bankapp_db`;
+CREATE DATABASE `bankapp_db`;
 
 
 -- --------------------------------------------------------
