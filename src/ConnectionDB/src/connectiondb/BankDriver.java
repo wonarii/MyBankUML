@@ -9,13 +9,13 @@ import java.util.Map;
 
 public class BankDriver
 {
-    public static User currentUser;
+    public static int currentUserID;
 
     public static void main(String[] args) {
 
-        try {
+        /*try {
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
-            currentUser = new Customer("John", "Doe", "joe123@gmail.com", 2, "5141231235", "2002-01-02", 5000.0);
+            currentUserID = 9;
 
 //            Transaction[] transactions = Transaction.convertTransactionsFromDatabase(db, 9);
 //
@@ -37,8 +37,7 @@ public class BankDriver
 
         } catch (Exception e){
 
-        }
-
-
+        }*/
+        new LoginPage();
     }
 }
