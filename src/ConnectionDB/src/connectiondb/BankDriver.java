@@ -9,19 +9,19 @@ import java.util.Map;
 
 public class BankDriver
 {
-    public static int currentUserID;
+    public static User currentUser;
 
     public static void main(String[] args) {
 
-        /*try {
+        try {
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
-            currentUserID = 9;
+            currentUser = new Customer("john", "doe", "joe123@gmail.com", 3, "5141231234", "2002-03-02", 3000, "abc123");
 
 //            Transaction[] transactions = Transaction.convertTransactionsFromDatabase(db, 9);
 //
 //
 //
-            JFrame frame = new JFrame("Main Screen");
+            JFrame frame = new JFrame("MyBank");
             DriverScreen mainScreen = new DriverScreen();
 
 
@@ -37,7 +37,7 @@ public class BankDriver
 
         } catch (Exception e){
 
-        }*/
-        new LoginPage();
+        }
+//        new LoginPage();
     }
 }

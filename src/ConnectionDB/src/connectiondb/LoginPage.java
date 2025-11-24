@@ -11,24 +11,39 @@ public class LoginPage extends JFrame {
     private JButton createAccButton;
 
     public LoginPage() {
-        setContentPane(loginPane);
-        setTitle("Login");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setBounds(200, 200, 550, 400);
-        setVisible(true);
+//        setContentPane(loginPane);
+//        setTitle("Login");
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setLocationRelativeTo(null);
+//        setBounds(200, 200, 550, 400);
+//        setVisible(true);
 
         // To open create account page
         createAccButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new SignUpPage();
-                dispose();
+                resetFields();
+                // Get information from the parent panel (ScreenDriver) and switch the layout signup page
+                Container parent = loginPane.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "signup");
+//                new SignUpPage();
+//                dispose();
             }
         });
     }
 
-    public static void main(String[] args) {
-        new LoginPage();
+    public JPanel getPanel() {
+        return loginPane;
     }
+
+    public void resetFields() {
+        enterYourEmailTextField.setText("");
+        enterPasswordPasswordField.setText("");
+    }
+
+
+//    public static void main(String[] args) {
+//        new LoginPage();
+//    }
 }
