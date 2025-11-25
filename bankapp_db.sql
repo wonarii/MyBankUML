@@ -93,26 +93,28 @@ INSERT INTO `bank_list` (`bank_id`, `bank_name`) VALUES
 CREATE TABLE `branch_list` (
   `branch_id` int(11) NOT NULL,
   `branch_name` varchar(100) NOT NULL,
-  `location` varchar(100) NOT NULL
+  `location` varchar(100) NOT NULL,
+  `branch_phone` varchar(10) NOT NULL,
+  `bank_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `branch_list`
 --
 
-INSERT INTO `branch_list` (`branch_id`, `branch_name`, `location`) VALUES
-(1, 'Desjardins_Montreal', '2457, Saint Mishelle, Montreal, QC, HY0 5B2'),
-(2, 'Desjardins_Quebec', '6786, Bordeaux, Quebec, QC, JY0 5H3'),
-(3, 'Desjardins_Sherbrook', '1156, Red Street, Sherbrook, QC, UY0 5K6'),
-(4, 'RBC_Montreal', '2946, PIX, Montreal, QC, H7T 4R5'),
-(5, 'RBC_Quebec', '6732, Saint Rose, Quebec, QC, J6J 6F4'),
-(6, 'RBC_Sherbrook', '1184, Blue Street, Sherbrook, QC, U7T 4V9'),
-(7, 'BMO_Montreal', '2619, Rosemount, Montreal, QC, H5U 2D3'),
-(8, 'BMO_Toronto', '5675, King Street, Toronto, ON, M5U 2G4'),
-(9, 'BMO_Quebec', '6574, Saint Anne, Quebec, QC, A2U 7T9'),
-(10, 'CIBC_Montreal', '2985, Mont Royal, Montreal, QC, H1Y 6T4'),
-(11, 'CIBC_Quebec', '6438, Blache, Quebec, QC, U1T 8R3'),
-(12, 'CIBC_Sherbrook', '1173, Gray Street, Sherbrook, QC, U7Y 3L5');
+INSERT INTO `branch_list` (`branch_id`, `branch_name`, `location`, `branch_phone`, `bank_id`) VALUES
+(1, 'Desjardins_Montreal', '2457, Saint Mishelle, Montreal, QC, HY0 5B2', "5143261010", 1),
+(2, 'Desjardins_Quebec', '6786, Bordeaux, Quebec, QC, JY0 5H3', "43890283123", 1),
+(3, 'Desjardins_Sherbrook', '1156, Red Street, Sherbrook, QC, UY0 5K6', "1235749401", 1),
+(4, 'RBC_Montreal', '2946, PIX, Montreal, QC, H7T 4R5', "8484028340", 2),
+(5, 'RBC_Quebec', '6732, Saint Rose, Quebec, QC, J6J 6F4', "1234567890", 2),
+(6, 'RBC_Sherbrook', '1184, Blue Street, Sherbrook, QC, U7T 4V9', "1234567890", 2),
+(7, 'BMO_Montreal', '2619, Rosemount, Montreal, QC, H5U 2D3', "1234567890", 3),
+(8, 'BMO_Toronto', '5675, King Street, Toronto, ON, M5U 2G4', "1234567890", 3),
+(9, 'BMO_Quebec', '6574, Saint Anne, Quebec, QC, A2U 7T9', "1234567890", 3),
+(10, 'CIBC_Montreal', '2985, Mont Royal, Montreal, QC, H1Y 6T4', "1234567890", 4),
+(11, 'CIBC_Quebec', '6438, Blache, Quebec, QC, U1T 8R3', "1234567890", 4),
+(12, 'CIBC_Sherbrook', '1173, Gray Street, Sherbrook, QC, U7Y 3L5', "1234567890", 4);
 
 -- --------------------------------------------------------
 
@@ -160,7 +162,8 @@ ALTER TABLE `bank_list`
 -- Indexes for table `branch_list`
 --
 ALTER TABLE `branch_list`
-  ADD PRIMARY KEY (`branch_id`);
+  ADD PRIMARY KEY (`branch_id`),
+  ADD KEY `bank_id` (`bank_id`);
 
 --
 -- Indexes for table `transaction_list`

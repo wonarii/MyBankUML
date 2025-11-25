@@ -40,8 +40,13 @@ public class LoginPage extends JFrame {
         createAccButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new SignUpPage();
-                dispose();
+                resetFields();
+                // Get information from the parent panel (ScreenDriver) and switch the layout signup page
+                Container parent = loginPane.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "signup");
+//                new SignUpPage();
+//                dispose();
             }
         });
 
@@ -77,11 +82,20 @@ public class LoginPage extends JFrame {
         return valid;
     }
 
-    public static void main(String[] args) {
-        new LoginPage();
+    public JPanel getPanel() {
+        return loginPane;
     }
 
     public JPanel getPanel() {
         return contentPane;
     }
+    public void resetFields() {
+        enterYourEmailTextField.setText("");
+        enterPasswordPasswordField.setText("");
+    }
+
+
+//    public static void main(String[] args) {
+//        new LoginPage();
+//    }
 }

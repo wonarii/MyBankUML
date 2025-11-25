@@ -73,7 +73,7 @@ public class Transaction {
 
                 // TODO: Create Branch from the user
                 //BankBranch branch = (BankBranch) t.get("branch");
-                BankBranch branch = new BankBranch("TD", "123 Sesame Street", 100, "5141234567");
+                BankBranch branch = new BankBranch(1, "That Branch","123 Sesame Street", 100, "5141234567");
 
 
                 // Create a new entry and add it to the array
@@ -89,14 +89,20 @@ public class Transaction {
     }
 
 
+    /***
+     * This function will connect to the database and attempt to make a deposit / withdrawal
+     * @param amount
+     * @param type
+     * @return
+     */
     public static int createTransaction(double amount, String type) {
 
         try{
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
 
             //TODO: Get the user stored in the BankDriver
-            //String currentUserEmail = BankDriver.currentUser.getEmail();
-            String currentUserEmail = "";
+            String currentUserEmail = BankDriver.currentUser.getEmail();
+//            String currentUserEmail = "";
 
             // Use the function from the database
             boolean success = db.applyTransaction(currentUserEmail, amount, type, currentUserEmail);

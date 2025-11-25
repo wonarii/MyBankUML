@@ -25,20 +25,24 @@ public class SignUpPage extends JFrame {
     private JTextField branchField;
 
     public SignUpPage() {
-        setContentPane(contentPane);
-        setTitle("Sign Up");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 550, 500);
-        setLocationRelativeTo(null);
-        setVisible(true);
-        signUpButton.setEnabled(false);
+//        setContentPane(contentPane);
+//        setTitle("Sign Up");
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setBounds(100, 100, 550, 500);
+//        setLocationRelativeTo(null);
+//        setVisible(true);
+//        signUpButton.setEnabled(false);
 
         // Return to login page when the back button is pressed
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new LoginPage();
-                dispose();
+                resetFields();
+                Container parent = contentPane.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "login");
+//                new LoginPage();
+//                dispose();
             }
         });
 
@@ -79,8 +83,12 @@ public class SignUpPage extends JFrame {
                 auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), bankDropDown.getSelectedItem().toString(), phoneField.getText(), dobField.getText(), passwordField.getText(), Integer.parseInt(branchField.getText()));
 
                 // Redirect to login page
-                new LoginPage();
-                dispose();
+                Container parent = contentPane.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "login");
+                resetFields();
+//                new LoginPage();
+//                dispose();
             }
         });
     }
@@ -125,8 +133,23 @@ public class SignUpPage extends JFrame {
         } return false;
     }
 
-    public static void main(String[] args) {
-        new SignUpPage();
+    public JPanel getPanel() {
+        return contentPane;
     }
+
+    public void resetFields(){
+        firstNameField.setText("");
+        lastNameField.setText("");
+        emailField.setText("");
+        phoneField.setText("");
+        branchField.setText("");
+        dobField.setText("");
+        passwordField.setText("");
+        passwordField2.setText("");
+    }
+
+//    public static void main(String[] args) {
+//        new SignUpPage();
+//    }
 }
 
