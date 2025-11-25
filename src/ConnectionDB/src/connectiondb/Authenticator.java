@@ -4,10 +4,12 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import javax.swing.*;
 import java.sql.SQLException;
+import java.util.Map;
 
 public class Authenticator {
 
     private static Authenticator authenticatorInstance;
+    private Map<String, Object> currentUser;
 
     private Authenticator() {
 
@@ -21,21 +23,28 @@ public class Authenticator {
         return authenticatorInstance;
     }
 
+    public Map<String, Object> getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(Map<String, Object> currentUser) {
+        this.currentUser = currentUser;
+    }
+
     private int changePassword(ConnectionDB db){
 
         return 0;
     }
 
-    public void signUp(String firstName, String lastName, String email, int branch, String phone, String birthday, double balance, String password) {
+    public void signUp(String firstName, String lastName, String email, Bank bank, String phone, String birthday, String password, BankBranch branch) {
         try {
             // Get db connection
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
 
-            // Hash password
-            String hashedPassword = createPassword(password);
+            // Create Customer object
+            Customer customer = new Customer(firstName, lastName, email, branch, bank, password, phone, birthday, 0.0);
 
-            // Create new customer with hashed password
-            Customer customer = new Customer(firstName, lastName, email, branch, phone, birthday, balance, hashedPassword);
+            // Add customer object to database
             db.createCustomer(customer);
             System.out.println("Customer signed up successfully");
         } catch (SQLException e) {
@@ -62,6 +71,18 @@ public class Authenticator {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    // Validate a user's credentials on login
+    public boolean validateCredentials(String email, String password) {
+        try {
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            if (db.loadUserData(email, password)) {
+                setCurrentUser(db.getUserMap());
+            }
+             return db.loadUserData(email, password);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
