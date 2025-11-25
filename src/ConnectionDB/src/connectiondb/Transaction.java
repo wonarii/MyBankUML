@@ -101,7 +101,7 @@ public class Transaction {
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
 
             //TODO: Get the user stored in the BankDriver
-            String currentUserEmail = BankDriver.currentUser.getEmail();
+            String currentUserEmail = (String) Authenticator.getAuthenticatorInstance().getCurrentUser().get("user_email");
 //            String currentUserEmail = "";
 
             // Use the function from the database

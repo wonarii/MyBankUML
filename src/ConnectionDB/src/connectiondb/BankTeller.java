@@ -1,6 +1,6 @@
 public class BankTeller extends User {
     final String ROLE = "teller";
-    public BankTeller(String firstName, String lastName, String email, int branch, String bank, String password) {
+    public BankTeller(String firstName, String lastName, String email, BankBranch branch, Bank bank, String password) {
         super(firstName, lastName, email, branch, bank, password);
     }
 

@@ -10,10 +10,16 @@ public class UserDashboard {
     private JButton viewAccountInformationButton;
     private JButton logOutButton;
     private JPanel userDashboardPanel;
+    private JLabel balanceField;
+    private JLabel userNameField;
+    private JLabel headerUserNameField;
 
     private DriverScreen driverScreen;
 
     public UserDashboard(DriverScreen driverScreen) {
+        updateBalanceField();
+        updateUserName();
+
         this.driverScreen = driverScreen;
 
         withdrawButton.addActionListener(new ActionListener() {
@@ -47,6 +53,22 @@ public class UserDashboard {
     private void createUIComponents() {
         userDashboardPanel = new JPanel();
 
+
+    }
+    // TODO update with database
+    public void updateBalanceField() {
+            balanceField.setText("$" + Customer.getBalanceFromDatabase());
+    }
+
+    public void updateUserName(){
+        Authenticator auth = Authenticator.getAuthenticatorInstance();
+        if (auth.getCurrentUser() != null) {
+            userNameField.setText((String) auth.getCurrentUser().get("user_first_name")  + " " + auth.getCurrentUser().get("user_last_name"));
+            headerUserNameField.setText((String) auth.getCurrentUser().get("user_first_name")  + " " + auth.getCurrentUser().get("user_last_name"));
+        } else {
+            userNameField.setText("Friend!");
+            headerUserNameField.setText("Friend");
+        }
 
     }
 

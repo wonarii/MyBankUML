@@ -13,6 +13,8 @@ public class DriverScreen {
     private JPanel signupPanel;
     private JPanel createBankBranchPanel;
     private JPanel adminDashboardPanel;
+    private JPanel createUserAccountPanel;
+    private JPanel tellerDashboardPanel;
 
     private CardLayout layout;
 
@@ -25,6 +27,8 @@ public class DriverScreen {
     private SignUpPage signUpPage;
     private CreateBankBranchPage createBankBranchPage;
     private AdminDashboard adminDashboard;
+    private CreateUserAccountPage createUserAccountPage;
+    private TellerDashboard tellerDashboard;
 
 
     private void createUIComponents() {
@@ -37,12 +41,12 @@ public class DriverScreen {
         activeScene.add(transactionsPanel, "transactions");
 
         // Set Up Withdraw Page
-        withdrawPage = new WithdrawPage();
+        withdrawPage = new WithdrawPage(this);
         withdrawPanel = withdrawPage.getPanel();
         activeScene.add(withdrawPanel, "withdraw");
 
         //Set Up Withdraw Page
-        depositPage = new DepositPage();
+        depositPage = new DepositPage(this);
         depositPanel = depositPage.getPanel();
         activeScene.add(depositPanel, "deposit");
 
@@ -52,7 +56,7 @@ public class DriverScreen {
         activeScene.add(userDashboardPanel, "userDashboard");
 
         //Set Up Login IN Page
-        loginPage = new LoginPage();
+        loginPage = new LoginPage(this);
         loginPanel = loginPage.getPanel();
         activeScene.add(loginPanel, "login");
 
@@ -71,11 +75,21 @@ public class DriverScreen {
         adminDashboardPanel = adminDashboard.getPanel();
         activeScene.add(adminDashboardPanel, "adminDashboard");
 
+        //Setup CreateUserAccount Page
+        createUserAccountPage = new CreateUserAccountPage();
+        createUserAccountPanel = createUserAccountPage.getPanel();
+        activeScene.add(createUserAccountPanel, "createUserAccount");
+
+        //Set up Teller Dashboard Page
+        tellerDashboard = new TellerDashboard();
+        tellerDashboardPanel = tellerDashboard.getPanel();
+        activeScene.add(tellerDashboardPanel, "tellerDashboard");
+
 
 
         // Choose the starting scene
         layout = (CardLayout) activeScene.getLayout();
-        layout.show(activeScene, "adminDashboard");
+        layout.show(activeScene, "login");
 
     }
     public CardLayout getCardLayout(){
@@ -88,5 +102,10 @@ public class DriverScreen {
 
     public void updateTransactionsTable(){
         transactionPage.updateTransactionsView();
+    }
+
+    public void updateUserDashboard(){
+        userDashboard.updateBalanceField();
+        userDashboard.updateUserName();
     }
 }

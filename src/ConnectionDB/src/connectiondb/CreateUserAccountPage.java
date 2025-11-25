@@ -16,21 +16,25 @@ public class CreateUserAccountPage extends JFrame {
     JTextField lastNameField;
     JTextField dobField;
     JTextField phoneField;
-    JTextField branchField;
+    JComboBox branchField;
     JButton createButton;
     JButton cancelButton;
     private JTextField emailField;
     private JComboBox bankField;
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
+    private JPanel createUserAccountPanel;
 
     public CreateUserAccountPage() {
-        setContentPane(contentPane);
-        setTitle("Create User Account");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setVisible(true);
-        createButton.setEnabled(false);
+//        setContentPane(contentPane);
+//        setTitle("Create User Account");
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setLocationRelativeTo(null);
+//        setVisible(true);
+//        createButton.setEnabled(false);
+
+        updateBankOptions();
+        updateBranchOptions();
 
         // Document listener that validates all fields in real time
         DocumentListener documentListener = new DocumentListener() {
@@ -41,13 +45,13 @@ public class CreateUserAccountPage extends JFrame {
             private void validateForm() {
                 boolean firstNameValid = isFieldValid(firstNameField, "^[a-zA-Z]*$");
                 boolean lastNameValid = isFieldValid(lastNameField, "^[a-zA-Z]+$");
-                boolean bankBranchValid = isFieldValid(branchField, "^[0-9]{3}$");
+//                boolean bankBranchValid = isFieldValid(branchField, "^[0-9]{3}$");
                 boolean emailFieldValid = isFieldValid(emailField, "^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
                 boolean phoneNumberValid = isFieldValid(phoneField, "^[0-9]{10}$");
                 boolean dobValid = isDateValid(dobField);
                 boolean doPasswordsMatch = doPasswordsMatch(passwordField, confirmPasswordField);
 
-                boolean valid = firstNameValid && lastNameValid && bankBranchValid && phoneNumberValid && dobValid && emailFieldValid && doPasswordsMatch;
+                boolean valid = firstNameValid && lastNameValid && phoneNumberValid && dobValid && emailFieldValid && doPasswordsMatch;
                 createButton.setEnabled(valid);
             }
         };
@@ -56,7 +60,7 @@ public class CreateUserAccountPage extends JFrame {
         lastNameField.getDocument().addDocumentListener(documentListener);
         dobField.getDocument().addDocumentListener(documentListener);
         phoneField.getDocument().addDocumentListener(documentListener);
-        branchField.getDocument().addDocumentListener(documentListener);
+//        branchField.getDocument().addDocumentListener(documentListener);
         emailField.getDocument().addDocumentListener(documentListener);
         passwordField.getDocument().addDocumentListener(documentListener);
         confirmPasswordField.getDocument().addDocumentListener(documentListener);
@@ -66,9 +70,15 @@ public class CreateUserAccountPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
-                 auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), bankField.getSelectedItem().toString(), phoneField.getText(), dobField.getText(), passwordField.getText(), Integer.parseInt(branchField.getText()));
+                 auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (Bank) bankField.getSelectedItem(), phoneField.getText(), dobField.getText(), passwordField.getText(),(BankBranch) branchField.getSelectedItem());
 
                  // Return to bank teller dashboard
+            }
+        });
+        bankField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateBranchOptions();
             }
         });
     }
@@ -112,8 +122,34 @@ public class CreateUserAccountPage extends JFrame {
             return true;
         } return false;
     }
+    public void updateBankOptions(){
+        if(bankField.getItemCount() != 0){
+            bankField.removeAllItems();
+        }
+        Bank[] banks = Bank.getAllBanks();
 
-    public JPanel getContentPane() {
-        return contentPane;
+        for (Bank bank : banks) {
+            bankField.addItem(bank);
+        }
+        updateBranchOptions();
+    }
+
+    public void updateBranchOptions(){
+        if(branchField.getItemCount() != 0){
+            branchField.removeAllItems();
+        }
+        Bank selectedBank = (Bank) bankField.getSelectedItem();
+        BankBranch[] branches = BankBranch.getAllBankBranchForBankId(selectedBank.getBankID());
+
+        for (BankBranch branch : branches) {
+            branchField.addItem(branch);
+        }
+    }
+
+    public JPanel getPanel()
+    {
+        return createUserAccountPanel;
     }
 }
+
+

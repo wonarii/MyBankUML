@@ -10,9 +10,11 @@ public class DepositPage {
     private JPanel depositPanel;
     private JLabel currentDateLabel;
 
+    private DriverScreen driverScreen;
 
-    public DepositPage() {
+    public DepositPage(DriverScreen driverScreen) {
 
+        this.driverScreen = driverScreen;
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -26,11 +28,13 @@ public class DepositPage {
 
                         if(status == 0){
                             JOptionPane.showMessageDialog(depositPanel, "Deposit was successful!");
-
+                            resetFields();
+                            driverScreen.updateUserDashboard();
                             Container parent = depositPanel.getParent();
                             CardLayout layout = (CardLayout) parent.getLayout();
                             layout.show(parent, "userDashboard");
                         } else {
+
                             JOptionPane.showMessageDialog(depositPanel, "Deposit was unsuccessful, please try again.");
                         }
 
@@ -49,6 +53,7 @@ public class DepositPage {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                resetFields();
                 Container parent = depositPanel.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "userDashboard");
@@ -62,6 +67,10 @@ public class DepositPage {
         currentDateLabel = new JLabel();
         currentDateLabel.setText((new java.sql.Date(System.currentTimeMillis())).toString());
 
+    }
+
+    public void resetFields() {
+        amountInput.setText("0.00");
     }
 
     public JPanel getPanel() {
