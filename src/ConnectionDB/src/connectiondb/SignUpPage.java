@@ -1,0 +1,131 @@
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class SignUpPage extends JFrame {
+    private JPanel contentPane;
+    private JTextField firstNameField;
+    private JTextField lastNameField;
+    private JTextField emailField;
+    private JPasswordField passwordField;
+    private JPasswordField passwordField2;
+    private JButton signUpButton;
+    private JButton backButton;
+    private JTextField phoneField;
+    private JFormattedTextField dobField;
+    private JTextField branchField;
+
+    public SignUpPage() {
+        setContentPane(contentPane);
+        setTitle("Sign Up");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 550, 500);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        signUpButton.setEnabled(false);
+
+        // Return to login page when the back button is pressed
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new LoginPage();
+                dispose();
+            }
+        });
+
+        // Live validation for all fields
+        DocumentListener documentListener = new DocumentListener() {
+            private void validateForm() {
+                boolean firstNameValid = isFieldValid(firstNameField, "^[a-zA-Z]*$");
+                boolean lastNameValid = isFieldValid(lastNameField, "^[a-zA-Z]*$");
+                boolean emailValid = isFieldValid(emailField, "^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
+                boolean phoneValid = isFieldValid(phoneField, "^[0-9]{10}$");
+                boolean branchValid = isFieldValid(branchField, "^[0-9]{3}$");
+                boolean dobValid = isDateValid(dobField);
+                boolean doPasswordsMatch = doPasswordsMatch(passwordField, passwordField2);
+
+                boolean valid = firstNameValid && lastNameValid && emailValid && dobValid && phoneValid && branchValid && doPasswordsMatch;
+                signUpButton.setEnabled(valid);
+            }
+            @Override public void insertUpdate(DocumentEvent e) { validateForm(); }
+            @Override public void removeUpdate(DocumentEvent e) { validateForm(); }
+            @Override public void changedUpdate(DocumentEvent e) { validateForm(); }
+        };
+
+        firstNameField.getDocument().addDocumentListener(documentListener);
+        lastNameField.getDocument().addDocumentListener(documentListener);
+        emailField.getDocument().addDocumentListener(documentListener);
+        dobField.getDocument().addDocumentListener(documentListener);
+        phoneField.getDocument().addDocumentListener(documentListener);
+        branchField.getDocument().addDocumentListener(documentListener);
+        passwordField.getDocument().addDocumentListener(documentListener);
+        passwordField2.getDocument().addDocumentListener(documentListener);
+
+        // Button to sign up - creates a new Customer (in the database)
+        signUpButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call Authenticator class to write to db
+                Authenticator auth = Authenticator.getAuthenticatorInstance();
+                auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), Integer.parseInt(branchField.getText()), phoneField.getText(), dobField.getText(), 0.0, passwordField.getText());
+                // Redirect to login page
+                new LoginPage();
+                dispose();
+            }
+        });
+    }
+
+    // Validator methods
+    private static boolean isFieldValid(JTextField field, String regexPattern) {
+        Pattern pattern = Pattern.compile(regexPattern);
+        boolean valid = pattern.matcher(field.getText()).matches();
+        if (field.getText().isEmpty()) {
+            field.setBackground(Color.WHITE);
+        } else if (valid) {
+            field.setBackground(new Color(200, 255, 200));
+        } else {
+            field.setBackground(new Color(255, 200, 200));
+        }
+        return valid;
+    }
+
+    private static boolean isDateValid(JTextField field) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        formatter.setLenient(false);
+        if (field.getText().isEmpty()) {
+            field.setBackground(Color.WHITE);
+            return false;
+        }
+        try {
+            Date date = formatter.parse(field.getText());
+            field.setBackground(new Color(200, 255, 200));
+        } catch (ParseException e) {
+            field.setBackground(new Color(255, 200, 200));
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean doPasswordsMatch(JPasswordField passwordField, JPasswordField passwordField2) {
+        char[] password = passwordField.getPassword();
+        char[] password2 = passwordField2.getPassword();
+
+        if (Arrays.equals(password, password2) && password.length > 0 && password2.length > 0) {
+            return true;
+        } return false;
+    }
+
+    public static void main(String[] args) {
+        new SignUpPage();
+    }
+}
+
