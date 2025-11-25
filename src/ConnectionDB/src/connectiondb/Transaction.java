@@ -73,7 +73,7 @@ public class Transaction {
 
                 // TODO: Create Branch from the user
                 //BankBranch branch = (BankBranch) t.get("branch");
-                BankBranch branch = new BankBranch("TD", "That Branch","123 Sesame Street", 100, "5141234567");
+                BankBranch branch = new BankBranch(1, "That Branch","123 Sesame Street", 100, "5141234567");
 
 
                 // Create a new entry and add it to the array

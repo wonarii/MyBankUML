@@ -247,6 +247,25 @@ public class ConnectionDB {
         return null;
     }
 
+    // --- Bank/branch name lookup ---
+    public List<Map<String, Object>> getAllBanks() {
+        String query = "SELECT bank_name, bank_id FROM bank_list";
+        List<Map<String, Object>> banks = new ArrayList<>();
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> txn = new HashMap<>();
+                txn.put("bank_name", rs.getString("bank_name"));
+                txn.put("bank_id", rs.getInt("bank_id"));
+                banks.add(txn);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return banks;
+    }
+
+
+
     public String getBranchNameById(int branchId) {
         String query = "SELECT branch_name FROM branch_list WHERE branch_id = ?";
         try (Connection conn = getConnection();
@@ -866,14 +885,16 @@ public class ConnectionDB {
 // ==============================
 
 // --- Create a new branch (branch_name + location) ---
-public boolean createBranch(String branchName, String location) {
-    String query = "INSERT INTO branch_list (branch_name, location) VALUES (?, ?)";
+public boolean createBranch(String branchName, String location, String branch_phone, int bank_id) {
+    String query = "INSERT INTO branch_list (branch_name, location, branch_phone, bank_id) VALUES (?, ?, ?, ?)";
 
     try (Connection conn = getConnection();
          PreparedStatement stmt = conn.prepareStatement(query)) {
 
         stmt.setString(1, branchName);
         stmt.setString(2, location);
+        stmt.setString(3, branch_phone);
+        stmt.setInt(4, bank_id);
 
         int rows = stmt.executeUpdate();
         if (rows > 0) {

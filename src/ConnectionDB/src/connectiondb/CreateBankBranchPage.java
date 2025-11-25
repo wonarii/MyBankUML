@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 public class CreateBankBranchPage {
     private JTextField branchNameInput;
     private JTextField branchLocationInput;
-    private JTextField branchNumberInput;
     private JTextField phoneNumberInput;
 
     private JButton createButton;
@@ -15,7 +14,7 @@ public class CreateBankBranchPage {
     private JComboBox bankList;
 
     public CreateBankBranchPage() {
-
+        updateBankOptions();
 
         createButton.addActionListener(new ActionListener() {
             @Override
@@ -24,26 +23,28 @@ public class CreateBankBranchPage {
 
                 if(confirmation == JOptionPane.YES_OPTION){
 
-                    String newBankName = bankList.getSelectedItem().toString();
+                    Bank chosenBank = (Bank) bankList.getSelectedItem();
+                    int newBankID = 1;
+                    if(chosenBank != null){
+                        newBankID = chosenBank.getBankID();
+                    }
                     String newBankBranchName = branchNameInput.getText();
                     String newBankLocation = branchLocationInput.getText();
-                    String newBranchNumber = branchNumberInput.getText();
                     String newBankPhoneNumber = phoneNumberInput.getText();
 
 
-//
-//                    double amount = Double.parseDouble(amountInput.getText());
-//                    int status = Transaction.createTransaction(amount, "deposit");
-//
-//                    if(status == 0){
-//                        JOptionPane.showMessageDialog(depositPanel, "Deposit was successful!");
-//
-//                        Container parent = depositPanel.getParent();
-//                        CardLayout layout = (CardLayout) parent.getLayout();
-//                        layout.show(parent, "userDashboard");
-//                    } else {
-//                        JOptionPane.showMessageDialog(depositPanel, "Deposit was unsuccessful, please try again.");
-//                    }
+
+                    int status = BankBranch.createBankBranch(newBankBranchName, newBankLocation, newBankPhoneNumber, newBankID);
+
+                    if(status == 0){
+                        JOptionPane.showMessageDialog(createBankBranchPanel, "Bank branch creation was successful!");
+
+                        Container parent = createBankBranchPanel.getParent();
+                        CardLayout layout = (CardLayout) parent.getLayout();
+                        layout.show(parent, "userDashboard");
+                    } else {
+                        JOptionPane.showMessageDialog(createBankBranchPanel, "Bank branch creation was unsuccessful, please try again.");
+                    }
 
 
 
@@ -54,9 +55,21 @@ public class CreateBankBranchPage {
 
     private void createUIComponents() {
         createBankBranchPanel = new JPanel();
+        bankList = new JComboBox();
+        updateBankOptions();
         // TODO: Use the actual banks
-        String[] banks = {"Desjardins", "RBC", "BMO", "CIBC"};
-        bankList = new JComboBox(banks);
+
+    }
+
+    public void updateBankOptions(){
+        if(bankList.getItemCount() != 0){
+            bankList.removeAllItems();
+        }
+        Bank[] banks = Bank.getAllBanks();
+
+        for (Bank bank : banks) {
+            bankList.addItem(bank);
+        }
     }
 
 

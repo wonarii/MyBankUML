@@ -65,9 +65,10 @@ public class DriverScreen {
         activeScene.add(createBankBranchPanel, "createBankBranch");
 
 
+
         // Choose the starting scene
         layout = (CardLayout) activeScene.getLayout();
-        layout.show(activeScene, "createBankBranch");
+        layout.show(activeScene, "login");
 
     }
     public CardLayout getCardLayout(){

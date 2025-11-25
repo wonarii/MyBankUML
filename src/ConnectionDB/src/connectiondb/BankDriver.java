@@ -36,7 +36,7 @@ public class BankDriver
             frame.setVisible(true);
 
         } catch (Exception e){
-
+            System.err.println(e);
         }
 //        new LoginPage();
     }

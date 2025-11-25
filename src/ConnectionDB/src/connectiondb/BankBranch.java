@@ -1,29 +1,47 @@
 import java.sql.SQLException;
 
 public class BankBranch {
-    private String bankName;
+    private int bankId;
     private String branchName;
     private String address;
     private int branchId;
     private String branchPhone;
 
 
-    public BankBranch(String bankName, String branchName, String address, int branchId, String branchPhone) {
-        this.bankName = bankName;
+    public BankBranch(int bankId, String branchName, String address, int branchId, String branchPhone) {
+        this.bankId = bankId;
         this.branchName = branchName;
         this.address = address;
         this.branchId = branchId;
         this.branchPhone = branchPhone;
     }
 
+    public static int createBankBranch(String branchName, String address, String branchPhone, int bankID) {
+        try {
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            boolean success = db.createBranch(branchName, address,branchPhone ,bankID);
 
+            if (!success) {
+                System.err.println("Error creating branch.");
+                return -1;
+            }
+            System.out.println("Successfully created branch.");
+            return 0;
 
-    public String getBankName() {
-        return bankName;
+        } catch (Exception e) {
+            System.err.println("Error creating branch.");
+            return -1;
+        }
     }
 
-    public void setBankName(String bankName) {
-        this.bankName = bankName;
+
+
+    public int getBankId() {
+        return bankId;
+    }
+
+    public void setBankName(int bankId) {
+        this.bankId = bankId;
     }
 
     public String getAddress() {
