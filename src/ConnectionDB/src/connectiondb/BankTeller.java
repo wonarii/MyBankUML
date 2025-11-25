@@ -1,3 +1,4 @@
+package ConnectionDB.src.connectiondb;
 public class BankTeller extends User {
 
     public BankTeller(String firstName, String lastName, String email, int branch) {

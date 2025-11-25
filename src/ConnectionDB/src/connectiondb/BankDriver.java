@@ -13,7 +13,7 @@ public class BankDriver
 
     public static void main(String[] args) {
 
-        /*try {
+        //try {
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
             currentUserID = 9;
 
@@ -21,23 +21,23 @@ public class BankDriver
 //
 //
 //
-            JFrame frame = new JFrame("Main Screen");
-            DriverScreen mainScreen = new DriverScreen();
+//           JFrame frame = new JFrame("Main Screen");
+//            DriverScreen mainScreen = new DriverScreen();
 
 
 //            ViewTransactionHistoryPage tempPage = new ViewTransactionHistoryPage();
 //
 //            tempPage.displayTransactions(transactions);
 //
-            frame.setContentPane(mainScreen.getPanel());
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+//            frame.setContentPane(mainScreen.getPanel());
+//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//            frame.pack();
+//           frame.setLocationRelativeTo(null);
+//            frame.setVisible(true);
 
-        } catch (Exception e){
+//        } catch (Exception e){
 
-        }*/
-        new LoginPage();
+//        }*/
+//        new LoginPage();
     }
 }
