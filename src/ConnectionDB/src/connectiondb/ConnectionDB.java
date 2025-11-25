@@ -189,17 +189,21 @@ public class ConnectionDB {
     }
 
     public void createCustomer(Customer customer) {
-        String query = "INSERT INTO customers (first_name, last_name, email, branch, phone, dob, balance, password) values (?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO account_list (user_first_name, user_last_name, user_birthday, user_email, user_password, user_role, user_balance, user_bank, user_branch) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            String hashedPassword = hashPassword(customer.getPassword());
+
             stmt.setString(1, customer.getFirstName());
             stmt.setString(2, customer.getLastName());
-            stmt.setString(3, customer.getEmail());
-            stmt.setInt(4, customer.getBranch());
-            stmt.setString(5, customer.getPhone());
-            stmt.setString(6, customer.getBirthday());
+            stmt.setString(3, customer.getBirthday());
+            stmt.setString(4, customer.getEmail());
+            stmt.setString(5, hashedPassword);
+            stmt.setString(6, customer.ROLE);
             stmt.setDouble(7, customer.getBalance());
-            stmt.setString(8, customer.getPassword());
+            stmt.setString(8, customer.getBank());
+            stmt.setInt(9, customer.getBranch());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -304,7 +308,6 @@ public class ConnectionDB {
                 userData.put("user_last_name", rs.getString("user_last_name"));
                 userData.put("user_email", rs.getString("user_email"));
                 userData.put("user_birthday", rs.getString("user_birthday"));
-                userData.put("user_address", rs.getString("user_address"));
 
                 Double balanceObj = (Double) rs.getObject("user_balance");
                 userData.put("user_balance", balanceObj);
@@ -315,6 +318,7 @@ public class ConnectionDB {
                 userData.put("user_branch", rs.getString("user_branch"));
                 userData.put("user_branch_id", rs.getInt("user_branch_id"));
 
+                User currentUser = new User(rs.getString("user_first_name"), rs.getString("user_last_name"), rs.getString("user_email"), rs.getInt("user_branch_id"), rs.getString("user_bank"), rs.getString("user_password"));
                 System.out.println("User verified and session created!");
                 return true;
             } else {
@@ -855,6 +859,8 @@ public class ConnectionDB {
 
     // --- Session accessor & logout ---
     public Object getUserData(String key) { return userData.get(key); }
+
+    public Map<String, Object> getUserMap() { return userData; }
 
     public void clearUserData() {
         userData.clear();
