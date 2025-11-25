@@ -34,6 +34,22 @@ public class BankBranch {
         }
     }
 
+    public static int deleteBankBranch(int branchId) {
+        try {
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            boolean success = db.deleteBranch(branchId);
+            if (!success) {
+                System.err.println("Error deleting branch.");
+                return -1;
+            }
+            System.out.println("Successfully deleted branch.");
+            return 0;
+        } catch (Exception e) {
+            System.err.println("Error deleting branch.");
+            return -1;
+        }
+    }
+
 
 
     public int getBankId() {
