@@ -48,9 +48,9 @@ public class CreateTellerAccountPage extends JFrame {
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                BankTeller bankTeller = new BankTeller(firstNameField.getText(), lastNameField.getText(), emailField.getText(), Integer.parseInt(bankBranchField.getText()));
-                Authenticator auth = Authenticator.getAuthenticatorInstance();
-                auth.createBankTeller(bankTeller);
+                //BankTeller bankTeller = new BankTeller(firstNameField.getText(), lastNameField.getText(), emailField.getText(), Integer.parseInt(bankBranchField.getText()));
+                //Authenticator auth = Authenticator.getAuthenticatorInstance();
+                //auth.createBankTeller(bankTeller);
             }
         });
     }
