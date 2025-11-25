@@ -22,7 +22,7 @@ public class SignUpPage extends JFrame {
     private JTextField phoneField;
     private JFormattedTextField dobField;
     private JComboBox bankDropDown;
-    private JTextField branchField;
+    private JComboBox branchField;
 
     public SignUpPage() {
 //        setContentPane(contentPane);
@@ -32,6 +32,8 @@ public class SignUpPage extends JFrame {
 //        setLocationRelativeTo(null);
 //        setVisible(true);
 //        signUpButton.setEnabled(false);
+        updateBankOptions();
+        updateBranchOptions();
 
         // Return to login page when the back button is pressed
         backButton.addActionListener(new ActionListener() {
@@ -54,10 +56,10 @@ public class SignUpPage extends JFrame {
                 boolean emailValid = isFieldValid(emailField, "^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
                 boolean phoneValid = isFieldValid(phoneField, "^[0-9]{10}$");
                 boolean dobValid = isDateValid(dobField);
-                boolean branchValid = isFieldValid(branchField, "^[0-9]{2}$");
+//                boolean branchValid = isFieldValid(branchField, "^[0-9]{2}$");
                 boolean doPasswordsMatch = doPasswordsMatch(passwordField, passwordField2);
 
-                boolean valid = firstNameValid && lastNameValid && emailValid && dobValid && phoneValid && branchValid && doPasswordsMatch;
+                boolean valid = firstNameValid && lastNameValid && emailValid && dobValid && phoneValid && doPasswordsMatch;
                 signUpButton.setEnabled(valid);
             }
             @Override public void insertUpdate(DocumentEvent e) { validateForm(); }
@@ -70,7 +72,7 @@ public class SignUpPage extends JFrame {
         emailField.getDocument().addDocumentListener(documentListener);
         dobField.getDocument().addDocumentListener(documentListener);
         phoneField.getDocument().addDocumentListener(documentListener);
-        branchField.getDocument().addDocumentListener(documentListener);
+//        branchField.getDocument().addDocumentListener(documentListener);
         passwordField.getDocument().addDocumentListener(documentListener);
         passwordField2.getDocument().addDocumentListener(documentListener);
 
@@ -80,7 +82,7 @@ public class SignUpPage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Call Authenticator class to write to db
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
-                auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), bankDropDown.getSelectedItem().toString(), phoneField.getText(), dobField.getText(), passwordField.getText(), Integer.parseInt(branchField.getText()));
+                auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (Bank) bankDropDown.getSelectedItem(), phoneField.getText(), dobField.getText(), passwordField.getText(), (BankBranch)  branchField.getSelectedItem());
 
                 // Redirect to login page
                 Container parent = contentPane.getParent();
@@ -89,6 +91,12 @@ public class SignUpPage extends JFrame {
                 resetFields();
 //                new LoginPage();
 //                dispose();
+            }
+        });
+        bankDropDown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateBranchOptions();
             }
         });
     }
@@ -142,10 +150,35 @@ public class SignUpPage extends JFrame {
         lastNameField.setText("");
         emailField.setText("");
         phoneField.setText("");
-        branchField.setText("");
+//        branchField.setText("");
         dobField.setText("");
         passwordField.setText("");
         passwordField2.setText("");
+    }
+
+
+    public void updateBankOptions(){
+        if(bankDropDown.getItemCount() != 0){
+            bankDropDown.removeAllItems();
+        }
+        Bank[] banks = Bank.getAllBanks();
+
+        for (Bank bank : banks) {
+            bankDropDown.addItem(bank);
+        }
+        updateBranchOptions();
+    }
+
+    public void updateBranchOptions(){
+        if(branchField.getItemCount() != 0){
+            branchField.removeAllItems();
+        }
+        Bank selectedBank = (Bank) bankDropDown.getSelectedItem();
+        BankBranch[] branches = BankBranch.getAllBankBranchForBankId(selectedBank.getBankID());
+
+        for (BankBranch branch : branches) {
+            branchField.addItem(branch);
+        }
     }
 
 //    public static void main(String[] args) {

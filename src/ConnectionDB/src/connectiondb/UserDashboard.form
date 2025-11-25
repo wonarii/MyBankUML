@@ -62,13 +62,12 @@
               </grid>
             </constraints>
           </vspacer>
-          <component id="2f3bc" class="javax.swing.JLabel">
+          <component id="2f3bc" class="javax.swing.JLabel" binding="userNameField">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <font size="24"/>
-              <text value="User XXX"/>
             </properties>
           </component>
           <grid id="5ccee" layout-manager="GridLayoutManager" row-count="3" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -197,7 +196,7 @@
               <text value="LogOut"/>
             </properties>
           </component>
-          <component id="20b69" class="javax.swing.JLabel">
+          <component id="20b69" class="javax.swing.JLabel" binding="headerUserNameField">
             <constraints>
               <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -297,13 +296,12 @@
                   <text value="Bank Account"/>
                 </properties>
               </component>
-              <component id="1255e" class="javax.swing.JLabel">
+              <component id="1255e" class="javax.swing.JLabel" binding="balanceField">
                 <constraints>
                   <grid row="3" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <font size="16"/>
-                  <text value="$xxxx.xx"/>
                 </properties>
               </component>
               <vspacer id="911c2">

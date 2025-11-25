@@ -3,12 +3,12 @@ public class User {
     private String lastName;
     private String email;
     private int accountId;
-    private int branch;
-    private String bank;
+    private BankBranch branch;
+    private Bank bank;
     private String password;
 
     // Constructor
-    public User(String firstName, String lastName, String email, int branch, String bank, String password) {
+    public User(String firstName, String lastName, String email, BankBranch branch, Bank bank, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -18,7 +18,7 @@ public class User {
     }
 
     // Constructor without password field
-    public User(String firstName, String lastName, String email, int accountId, int branch, String bank) {
+    public User(String firstName, String lastName, String email, int accountId, BankBranch branch, Bank bank) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -40,7 +40,7 @@ public class User {
         return this.email;
     }
 
-    public int getBranch() {
+    public BankBranch getBranch() {
         return this.branch;
     }
 
@@ -48,7 +48,7 @@ public class User {
         return this.password;
     }
 
-    public String getBank() {
+    public Bank getBank() {
         return this.bank;
     }
 
@@ -65,7 +65,7 @@ public class User {
         this.email = email;
     }
 
-    public void setBranch(int branch) {
+    public void setBranch(BankBranch branch) {
         this.branch = branch;
     }
 
@@ -73,7 +73,7 @@ public class User {
         this.password = password;
     }
 
-    public void setBank(String bank) {
+    public void setBank(Bank bank) {
         this.bank = bank;
     }
 }

@@ -80,7 +80,6 @@ public class ConnectionDB {
                 System.out.println("Last Name: " + connectionDB.getUserData("user_last_name"));
                 System.out.println("Email: " + connectionDB.getUserData("user_email"));
                 System.out.println("Birthday: " + connectionDB.getUserData("user_birthday"));
-                System.out.println("Address: " + connectionDB.getUserData("user_address"));
                 System.out.println("Balance: " + connectionDB.getUserData("user_balance")); // may be Double or null
                 System.out.println("Role: " + connectionDB.getUserData("user_role"));
                 System.out.println("Bank: " + connectionDB.getUserData("user_bank"));
@@ -189,7 +188,7 @@ public class ConnectionDB {
     }
 
     public void createCustomer(Customer customer) {
-        String query = "INSERT INTO account_list (user_first_name, user_last_name, user_birthday, user_email, user_password, user_role, user_balance, user_bank, user_branch) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO account_list (user_first_name, user_last_name, user_birthday, user_email, user_password, user_role, user_balance, user_bank_id, user_bank, user_branch_id, user_branch) values (?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -202,8 +201,10 @@ public class ConnectionDB {
             stmt.setString(5, hashedPassword);
             stmt.setString(6, customer.ROLE);
             stmt.setDouble(7, customer.getBalance());
-            stmt.setString(8, customer.getBank());
-            stmt.setInt(9, customer.getBranch());
+            stmt.setInt(8, customer.getBank().getBankID());
+            stmt.setString(9, customer.getBank().getBankName());
+            stmt.setInt(10, customer.getBranch().getBranchId());
+            stmt.setString(11, customer.getBranch().getBranchName());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -218,7 +219,7 @@ public class ConnectionDB {
             stmt.setString(1, bankTeller.getFirstName());
             stmt.setString(2, bankTeller.getLastName());
             stmt.setString(3, bankTeller.getEmail());
-            stmt.setInt(4, bankTeller.getBranch());
+            stmt.setInt(4, bankTeller.getBranch().getBranchId());
 
             int rs = stmt.executeUpdate();
         } catch (SQLException e) {
@@ -233,7 +234,7 @@ public class ConnectionDB {
             stmt.setString(1, administrator.getFirstName());
             stmt.setString(2, administrator.getLastName());
             stmt.setString(3, administrator.getEmail());
-            stmt.setInt(4, administrator.getBranch());
+            stmt.setInt(4, administrator.getBranch().getBranchId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -280,6 +281,75 @@ public class ConnectionDB {
         } catch (SQLException e) { e.printStackTrace(); }
         return null;
     }
+
+    // -- Find a whole branch with id --
+    public List<Map<String, Object>> getBranchById(int branchId) {
+        List<Map<String, Object>>  branch = new ArrayList<>();
+
+        String query = "SELECT branch_id, branch_name, location, branch_phone, bank_id FROM branch_list WHERE branch_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, branchId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> txn = new HashMap<>();
+                txn.put("branch_id", rs.getInt("branch_id"));
+                txn.put("branch_name", rs.getString("branch_name"));
+                txn.put("location", rs.getString("location"));
+                txn.put("branch_phone", rs.getString("branch_phone"));
+                txn.put("bank_id", rs.getInt("bank_id"));
+
+                branch.add(txn);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return branch;
+    }
+
+    // -- Find all branches--
+    public List<Map<String, Object>> getAllBranch() {
+        List<Map<String, Object>>  branch = new ArrayList<>();
+
+        String query = "SELECT branch_id, branch_name, location, branch_phone, bank_id FROM branch_list";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> txn = new HashMap<>();
+                txn.put("branch_id", rs.getInt("branch_id"));
+                txn.put("branch_name", rs.getString("branch_name"));
+                txn.put("location", rs.getString("location"));
+                txn.put("branch_phone", rs.getString("branch_phone"));
+                txn.put("bank_id", rs.getInt("bank_id"));
+
+                branch.add(txn);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return branch;
+    }
+
+    public List<Map<String, Object>> getAllBranchForBank(int bankId) {
+        List<Map<String, Object>>  branch = new ArrayList<>();
+
+        String query = "SELECT branch_id, branch_name, location, branch_phone, bank_id FROM branch_list WHERE bank_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, bankId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> txn = new HashMap<>();
+                txn.put("branch_id", rs.getInt("branch_id"));
+                txn.put("branch_name", rs.getString("branch_name"));
+                txn.put("location", rs.getString("location"));
+                txn.put("branch_phone", rs.getString("branch_phone"));
+                txn.put("bank_id", rs.getInt("bank_id"));
+
+                branch.add(txn);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return branch;
+    }
+
+
 
     // --- Role & age validation ---
     private boolean isValidRole(String role) {
@@ -337,7 +407,23 @@ public class ConnectionDB {
                 userData.put("user_branch", rs.getString("user_branch"));
                 userData.put("user_branch_id", rs.getInt("user_branch_id"));
 
-                User currentUser = new User(rs.getString("user_first_name"), rs.getString("user_last_name"), rs.getString("user_email"), rs.getInt("user_branch_id"), rs.getString("user_bank"), rs.getString("user_password"));
+                Bank newBank = new Bank(rs.getString("user_bank"), rs.getInt("user_bank_id"));
+                List<Map<String, Object>> storedBranch = getBranchById(rs.getInt("user_branch_id"));
+                Map<String, Object> t = storedBranch.getFirst();
+
+
+                int branchId = (int) t.get("branch_id");
+                String branchName = (String) t.get("branch_name");
+                String  location = (String) t.get("location");
+                String  branchPhone = (String) t.get("branch_phone");
+                int bankId = (int) t.get("bank_id");
+
+                BankBranch newBranch = new BankBranch(bankId, branchName, location, branchId, branchPhone);
+
+
+
+
+                User currentUser = new User(rs.getString("user_first_name"), rs.getString("user_last_name"), rs.getString("user_email"), newBranch, newBank, rs.getString("user_password"));
                 System.out.println("User verified and session created!");
                 return true;
             } else {
@@ -377,8 +463,8 @@ public class ConnectionDB {
 
         String query = "INSERT INTO account_list " +
                 "(user_first_name, user_last_name, user_email, user_password, user_balance, user_role, " +
-                "user_bank, user_bank_id, user_branch, user_branch_id, user_birthday, user_address) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "user_bank, user_bank_id, user_branch, user_branch_id, user_birthday) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -405,7 +491,6 @@ public class ConnectionDB {
             stmt.setString(9, branchName);
             stmt.setInt(10, branchId);
             stmt.setString(11, birthday);
-            stmt.setString(12, address);
 
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -771,7 +856,6 @@ public class ConnectionDB {
                 userMap.put("bank", rs.getString("user_bank"));
                 userMap.put("branch", rs.getString("user_branch"));
                 userMap.put("birthday", rs.getString("user_birthday"));
-                userMap.put("address", rs.getString("user_address"));
                 userList.add(userMap);
             }
         } catch (SQLException e) { e.printStackTrace(); }

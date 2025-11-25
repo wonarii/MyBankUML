@@ -14,9 +14,15 @@ class UserTest {
 	String firstName = "Yelena";
 	String lastName = "Abc";
 	String email = "email@email.com";
-	int branchID = 123;
+    String password = "password123";
+
+    // Stubs for Bank and Bank Branches
+    int branchID = 123;
+    BankBranch branch = new BankBranch(1, "Dejardins_Sesame", "123 Sesame Street", branchID, "5141234567" );
+    Bank bank = new Bank("Dejardins", 1);
+
 	
-	User testUser = new User(firstName, lastName, email, branchID);
+	User testUser = new User(firstName, lastName, email, branch, bank, password);
 
 	@Test
 	void testGetFirstName() {
@@ -39,7 +45,7 @@ class UserTest {
 	@Test
 	void testGetBranch() {
 		//using the test user
-		Assert.assertTrue(testUser.getBranch() == branchID);
+		Assert.assertTrue(testUser.getBranch().getBranchId() == branchID);
 	}
 
 	@Test
@@ -71,7 +77,9 @@ class UserTest {
 
 	@Test
 	void testSetBranch() {
-		int newBranch = 456;
+
+		int newBranchID = 456;
+        BankBranch newBranch = new BankBranch(1, "Desjardin_Ohio", "Ohio", newBranchID, "5141234567");
 		//setting the new branch
 		testUser.setBranch(newBranch);
 		//it should now be changed

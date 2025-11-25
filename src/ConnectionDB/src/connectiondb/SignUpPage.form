@@ -211,12 +211,6 @@
             </constraints>
             <properties>
               <background color="-1710101"/>
-              <model>
-                <item value="Desjardins"/>
-                <item value="RBC"/>
-                <item value="CIBC"/>
-                <item value="BMO"/>
-              </model>
             </properties>
           </component>
           <component id="93dc8" class="javax.swing.JLabel">
@@ -229,19 +223,24 @@
               <text value="Bank"/>
             </properties>
           </component>
-          <component id="5d944" class="javax.swing.JTextField" binding="branchField">
-            <constraints>
-              <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties/>
-          </component>
           <component id="cdb17" class="javax.swing.JLabel">
             <constraints>
-              <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <font size="14"/>
               <foreground color="-16777216"/>
-              <text value="Branch Number"/>
+              <text value="Branch"/>
+            </properties>
+          </component>
+          <component id="d4646" class="javax.swing.JComboBox" binding="branchField">
+            <constraints>
+              <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <background color="-1710101"/>
             </properties>
           </component>
         </children>

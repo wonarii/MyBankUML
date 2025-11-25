@@ -38,10 +38,10 @@ public class CreateBankBranchPage {
 
                     if(status == 0){
                         JOptionPane.showMessageDialog(createBankBranchPanel, "Bank branch creation was successful!");
-
+                        resetFields();
                         Container parent = createBankBranchPanel.getParent();
                         CardLayout layout = (CardLayout) parent.getLayout();
-                        layout.show(parent, "userDashboard");
+                        layout.show(parent, "adminDashboard");
                     } else {
                         JOptionPane.showMessageDialog(createBankBranchPanel, "Bank branch creation was unsuccessful, please try again.");
                     }
@@ -49,6 +49,15 @@ public class CreateBankBranchPage {
 
 
                 }
+            }
+        });
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resetFields();
+                Container parent = createBankBranchPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "adminDashboard");
             }
         });
     }
@@ -75,6 +84,12 @@ public class CreateBankBranchPage {
 
     public JPanel getPanel(){
         return createBankBranchPanel;
+    }
+
+    public void resetFields(){
+        branchNameInput.setText("");
+        branchLocationInput.setText("");
+        phoneNumberInput.setText("");
     }
 
 

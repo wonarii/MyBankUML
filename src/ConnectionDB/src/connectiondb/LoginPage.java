@@ -14,13 +14,10 @@ public class LoginPage extends JFrame {
     private JPanel loginPane;
     private JButton createAccButton;
 
-    public LoginPage() {
-        setContentPane(loginPane);
-        setTitle("Login");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setBounds(200, 200, 550, 400);
-        setVisible(true);
+    private DriverScreen driverScreen;
+    public LoginPage(DriverScreen driverScreen) {
+        this.driverScreen = driverScreen;
+
         loginButton.setEnabled(false);
 
         // When login button is clicked
@@ -30,8 +27,22 @@ public class LoginPage extends JFrame {
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
                 boolean validCredentials = auth.validateCredentials(enterYourEmailTextField.getText(), enterPasswordPasswordField.getText());
                 if (validCredentials) {
-                    System.out.println(auth.getCurrentUser().get("user_role"));
+                    String userRole = (String) auth.getCurrentUser().get("user_role");
+                    System.out.println(userRole);
+
                     // Check what type of role in BankDriver?
+                    Container parent = loginPane.getParent();
+                    CardLayout layout = (CardLayout) parent.getLayout();
+
+                    if(userRole.equals("admin")){
+                        layout.show(parent, "adminDashboard");
+                    } else if(userRole.equals("user")){
+                        driverScreen.updateUserDashboard();
+                        layout.show(parent, "userDashboard");
+                    } else if(userRole.equals("teller")){
+                        layout.show(parent, "tellerDashboard");
+                    }
+
                 }
             }
         });
@@ -86,9 +97,9 @@ public class LoginPage extends JFrame {
         return loginPane;
     }
 
-    public JPanel getPanel() {
-        return contentPane;
-    }
+//    public JPanel getPanel() {
+//        return contentPane;
+//    }
     public void resetFields() {
         enterYourEmailTextField.setText("");
         enterPasswordPasswordField.setText("");

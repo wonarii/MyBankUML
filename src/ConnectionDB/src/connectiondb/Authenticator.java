@@ -34,7 +34,7 @@ public class Authenticator {
         return 0;
     }
 
-    public void signUp(String firstName, String lastName, String email, String bank, String phone, String birthday, String password, int branch) {
+    public void signUp(String firstName, String lastName, String email, Bank bank, String phone, String birthday, String password, BankBranch branch) {
         try {
             // Get db connection
             ConnectionDB db = ConnectionDB.getDatabaseInstance();

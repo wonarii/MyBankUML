@@ -39,7 +39,6 @@ CREATE TABLE `account_list` (
   `user_first_name` varchar(100) NOT NULL,
   `user_last_name` varchar(100) NOT NULL,
   `user_birthday` date NOT NULL,
-  `user_address` varchar(100) NOT NULL,
   `user_email` varchar(255) NOT NULL,
   `user_password` varchar(100) NOT NULL,
   `user_role` varchar(100) NOT NULL,
@@ -54,14 +53,14 @@ CREATE TABLE `account_list` (
 -- Dumping data for table `account_list`
 --
 
-INSERT INTO `account_list` (`id`, `user_first_name`, `user_last_name`, `user_birthday`, `user_address`, `user_email`, `user_password`, `user_role`, `user_balance`, `user_bank_id`, `user_bank`, `user_branch_id`, `user_branch`) VALUES
-(1, 'Joe', 'White', '1999-11-10', '5463, Saint Michelle, Montreal, QC, H1Y 8U5', 'joe123@gmail.com', '$2y$10$zVa2xcOOnUOQAqezOhdVBezM/3/toBzgE5/o57X6FzgUMyZvM6xzC', 'user', 1000, 2, 'RBC', 4, 'RBC_Montreal'),
-(2, 'Sara', 'Williams', '2001-06-13', '5465, Saint Michelle, Montreal, QC, H1Y 8U5', 'sara123@gmail.com', '$2y$10$7TCpnQ4GvwReW7nVi1rodOE6EA1Rak9AA0wrJraBsmHvNc2W5B.hG', 'user', 2000, 1, 'Dejardins', 1, 'Desjardins_Montreal'),
-(3, 'John', 'Doe', '1995-05-16', '6373, PIX, Montreal, QC, H7Y 8U6 ', 'doe65@gmail.com', '$2y$10$5M.bT0g7bP3IjI5qqD8QEeeYwzg2RgHfWHh446zPrxVxGuPq7hDB2', 'teller', NULL, 4, 'CIBC', 10, 'CIBC_Montreal'),
-(4, 'Lizy', 'May', '1997-03-12', '6373, King Street, Toronto, ON, U8Y 7W3 ', 'liz123@gmail.com', '$2y$10$bLSm/oYkQDcNyY4PX90sJePSd84tVjSknmKwWhCgbx8yZ08AIO2cy', 'admin', NULL, 3, 'BMO', 8, 'BMO_Toronto'),
-(7, 'Alice', 'Johnson', '1990-05-15', '123 Main Street, Toronto', 'alice123@gmail.com', '$2a$10$3/OFA4rKCN/NYTvTS5Eblu1oGYzn8zm/QHvnLnxb9gWebNZFPZHcW', 'user', 1300, 1, 'Desjardins', 3, 'Desjardins_Sherbrook'),
-(9, 'Charlie', 'Brown', '1995-07-20', '100 Elm Street, Toronto', 'charlie.brown@gmail.com', '$2a$10$TwzGNKA2T9L3fL2NogHM0uTO5C/v8AEO1wuxLgF5Cd.9epBEstwFS', 'user', 1500, 1, 'Desjardins', 2, 'Desjardins_Quebec'),
-(11, 'Ethan', 'Hunt', '1980-11-12', '300 King Street, Toronto', 'ethan.hunt@gmail.com', '$2a$10$rr3G.8uSl53fpRVD4OvIWuvD9FKfE/Lu31np3Mlc87IS/BdVWxVqe', 'admin', 3000, 3, 'BMO', 1, 'Desjardins_Montreal');
+INSERT INTO `account_list` (`id`, `user_first_name`, `user_last_name`, `user_birthday`, `user_email`, `user_password`, `user_role`, `user_balance`, `user_bank_id`, `user_bank`, `user_branch_id`, `user_branch`) VALUES
+(1, 'Joe', 'White', '1999-11-10', 'joe123@gmail.com', '$2y$10$zVa2xcOOnUOQAqezOhdVBezM/3/toBzgE5/o57X6FzgUMyZvM6xzC', 'user', 1000, 2, 'RBC', 4, 'RBC_Montreal'),
+(2, 'Sara', 'Williams', '2001-06-13','sara123@gmail.com', '$2y$10$7TCpnQ4GvwReW7nVi1rodOE6EA1Rak9AA0wrJraBsmHvNc2W5B.hG', 'user', 2000, 1, 'Dejardins', 1, 'Desjardins_Montreal'),
+(3, 'John', 'Doe', '1995-05-16', 'doe65@gmail.com', '$2y$10$5M.bT0g7bP3IjI5qqD8QEeeYwzg2RgHfWHh446zPrxVxGuPq7hDB2', 'teller', NULL, 4, 'CIBC', 10, 'CIBC_Montreal'),
+(4, 'Lizy', 'May', '1997-03-12', 'liz123@gmail.com', '$2y$10$bLSm/oYkQDcNyY4PX90sJePSd84tVjSknmKwWhCgbx8yZ08AIO2cy', 'admin', NULL, 3, 'BMO', 8, 'BMO_Toronto'),
+(7, 'Alice', 'Johnson', '1990-05-15', 'alice123@gmail.com', '$2a$10$3/OFA4rKCN/NYTvTS5Eblu1oGYzn8zm/QHvnLnxb9gWebNZFPZHcW', 'user', 1300, 1, 'Desjardins', 3, 'Desjardins_Sherbrook'),
+(9, 'Charlie', 'Brown', '1995-07-20', 'charlie.brown@gmail.com', '$2a$10$TwzGNKA2T9L3fL2NogHM0uTO5C/v8AEO1wuxLgF5Cd.9epBEstwFS', 'user', 1500, 1, 'Desjardins', 2, 'Desjardins_Quebec'),
+(11, 'Ethan', 'Hunt', '1980-11-12','ethan.hunt@gmail.com', '$2a$10$rr3G.8uSl53fpRVD4OvIWuvD9FKfE/Lu31np3Mlc87IS/BdVWxVqe', 'admin', 3000, 3, 'BMO', 1, 'Desjardins_Montreal');
 
 -- --------------------------------------------------------
 
