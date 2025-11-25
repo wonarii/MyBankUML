@@ -20,7 +20,7 @@ public class DepositPage {
                     int confirmation = JOptionPane.showConfirmDialog(depositPanel, "Are you sure you want to continue?", "Confirm", JOptionPane.YES_NO_OPTION);
 
                     if(confirmation == JOptionPane.YES_OPTION){
-                        amountInput.getText();
+//                        amountInput.getText();
                         double amount = Double.parseDouble(amountInput.getText());
                         int status = Transaction.createTransaction(amount, "deposit");
 

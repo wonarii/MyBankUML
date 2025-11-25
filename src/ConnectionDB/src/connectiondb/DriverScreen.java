@@ -9,6 +9,10 @@ public class DriverScreen {
     private JPanel withdrawPanel;
     private JPanel depositPanel;
     private JPanel userDashboardPanel;
+    private JPanel loginPanel;
+    private JPanel signupPanel;
+    private JPanel createBankBranchPanel;
+
     private CardLayout layout;
 
     // Scenes
@@ -16,6 +20,9 @@ public class DriverScreen {
     private WithdrawPage withdrawPage;
     private DepositPage depositPage;
     private UserDashboard userDashboard;
+    private LoginPage loginPage;
+    private SignUpPage signUpPage;
+    private CreateBankBranchPage createBankBranchPage;
 
 
     private void createUIComponents() {
@@ -42,9 +49,26 @@ public class DriverScreen {
         userDashboardPanel = userDashboard.getPanel();
         activeScene.add(userDashboardPanel, "userDashboard");
 
+        //Set Up Login IN Page
+        loginPage = new LoginPage();
+        loginPanel = loginPage.getPanel();
+        activeScene.add(loginPanel, "login");
+
+        //Set Up Sign Up Page
+        signUpPage = new SignUpPage();
+        signupPanel = signUpPage.getPanel();
+        activeScene.add(signupPanel, "signup");
+
+        //SetUp createBankBranchPage
+        createBankBranchPage = new CreateBankBranchPage();
+        createBankBranchPanel = createBankBranchPage.getPanel();
+        activeScene.add(createBankBranchPanel, "createBankBranch");
+
+
+
         // Choose the starting scene
         layout = (CardLayout) activeScene.getLayout();
-        layout.show(activeScene, "userDashboard");
+        layout.show(activeScene, "login");
 
     }
     public CardLayout getCardLayout(){
