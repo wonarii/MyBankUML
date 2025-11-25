@@ -8,7 +8,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignUpPage extends JFrame {
@@ -22,6 +21,7 @@ public class SignUpPage extends JFrame {
     private JButton backButton;
     private JTextField phoneField;
     private JFormattedTextField dobField;
+    private JComboBox bankDropDown;
     private JTextField branchField;
 
     public SignUpPage() {
@@ -53,8 +53,8 @@ public class SignUpPage extends JFrame {
                 boolean lastNameValid = isFieldValid(lastNameField, "^[a-zA-Z]*$");
                 boolean emailValid = isFieldValid(emailField, "^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
                 boolean phoneValid = isFieldValid(phoneField, "^[0-9]{10}$");
-                boolean branchValid = isFieldValid(branchField, "^[0-9]{3}$");
                 boolean dobValid = isDateValid(dobField);
+                boolean branchValid = isFieldValid(branchField, "^[0-9]{2}$");
                 boolean doPasswordsMatch = doPasswordsMatch(passwordField, passwordField2);
 
                 boolean valid = firstNameValid && lastNameValid && emailValid && dobValid && phoneValid && branchValid && doPasswordsMatch;
@@ -80,7 +80,8 @@ public class SignUpPage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Call Authenticator class to write to db
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
-                auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), Integer.parseInt(branchField.getText()), phoneField.getText(), dobField.getText(), 0.0, passwordField.getText());
+                auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), bankDropDown.getSelectedItem().toString(), phoneField.getText(), dobField.getText(), passwordField.getText(), Integer.parseInt(branchField.getText()));
+
                 // Redirect to login page
                 Container parent = contentPane.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();

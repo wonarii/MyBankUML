@@ -6,12 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Pattern;
 
 public class CreateUserAccountPage extends JFrame {
     private JPanel contentPane;
-    // TODO: Add email field
     JTextField firstNameField;
     JTextField lastNameField;
     JTextField dobField;
@@ -19,6 +19,10 @@ public class CreateUserAccountPage extends JFrame {
     JTextField branchField;
     JButton createButton;
     JButton cancelButton;
+    private JTextField emailField;
+    private JComboBox bankField;
+    private JPasswordField passwordField;
+    private JPasswordField confirmPasswordField;
 
     public CreateUserAccountPage() {
         setContentPane(contentPane);
@@ -38,11 +42,12 @@ public class CreateUserAccountPage extends JFrame {
                 boolean firstNameValid = isFieldValid(firstNameField, "^[a-zA-Z]*$");
                 boolean lastNameValid = isFieldValid(lastNameField, "^[a-zA-Z]+$");
                 boolean bankBranchValid = isFieldValid(branchField, "^[0-9]{3}$");
-                // TODO: Add boolean for future email field
+                boolean emailFieldValid = isFieldValid(emailField, "^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
                 boolean phoneNumberValid = isFieldValid(phoneField, "^[0-9]{10}$");
                 boolean dobValid = isDateValid(dobField);
+                boolean doPasswordsMatch = doPasswordsMatch(passwordField, confirmPasswordField);
 
-                boolean valid = firstNameValid && lastNameValid && bankBranchValid && phoneNumberValid && dobValid;
+                boolean valid = firstNameValid && lastNameValid && bankBranchValid && phoneNumberValid && dobValid && emailFieldValid && doPasswordsMatch;
                 createButton.setEnabled(valid);
             }
         };
@@ -52,16 +57,18 @@ public class CreateUserAccountPage extends JFrame {
         dobField.getDocument().addDocumentListener(documentListener);
         phoneField.getDocument().addDocumentListener(documentListener);
         branchField.getDocument().addDocumentListener(documentListener);
-        // TODO: add document listener for email
+        emailField.getDocument().addDocumentListener(documentListener);
+        passwordField.getDocument().addDocumentListener(documentListener);
+        confirmPasswordField.getDocument().addDocumentListener(documentListener);
 
         // When the create button is pressed create a new Customer
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO: Complete when email field is added
-                //Customer newCustomer = new Customer(firstNameField.getText(), lastNameField.getText(), )
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
-                //auth.signUp(newCustomer);
+                 auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), bankField.getSelectedItem().toString(), phoneField.getText(), dobField.getText(), passwordField.getText(), Integer.parseInt(branchField.getText()));
+
+                 // Return to bank teller dashboard
             }
         });
     }
@@ -95,5 +102,18 @@ public class CreateUserAccountPage extends JFrame {
             return false;
         }
         return true;
+    }
+
+    private static boolean doPasswordsMatch(JPasswordField passwordField, JPasswordField passwordField2) {
+        char[] password = passwordField.getPassword();
+        char[] password2 = passwordField2.getPassword();
+
+        if (Arrays.equals(password, password2) && password.length > 0 && password2.length > 0) {
+            return true;
+        } return false;
+    }
+
+    public JPanel getContentPane() {
+        return contentPane;
     }
 }
