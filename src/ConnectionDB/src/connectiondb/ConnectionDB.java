@@ -1,4 +1,4 @@
-// package connectiondb;
+package ConnectionDB.src.connectiondb;
 
 import java.sql.*;
 import java.util.*;
@@ -183,7 +183,7 @@ public class ConnectionDB {
     public Connection getConnection() throws SQLException {
         String url = "jdbc:mysql://127.0.0.1:3306/bankapp_db";
         String user = "root";
-        String dbPassword = "";
+        String dbPassword = "nis2005";
         return DriverManager.getConnection(url, user, dbPassword);
     }
 

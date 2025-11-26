@@ -1,3 +1,5 @@
+package ConnectionDB.src.connectiondb;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.swing.*;
