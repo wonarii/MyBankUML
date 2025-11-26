@@ -1,5 +1,6 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 class AuthenticatorTest {
@@ -12,7 +13,7 @@ class AuthenticatorTest {
 	Bank bank = new Bank("RBC", 2);
 	String phone = "450-111-1234";
 	String birthday = "1998-04-28";
-	String password = "abc123";
+	String password = "Mission123!";
 	BankBranch branch = new BankBranch(2, "RBC_Montreal", "2946, PIX, Montreal, QC, H7T 4R5", 4, "8484028340");
 
 	@Test
@@ -46,7 +47,13 @@ class AuthenticatorTest {
 
 	@Test
 	void testValidateCredentials() {
-		fail("Not yet implemented");
+        try{
+            Assert.assertTrue(Authenticator.getAuthenticatorInstance().validateCredentials(email, password));
+        }
+        catch(Exception e){
+            fail("invalid credentials");
+        }
+
 	}
 
 }
