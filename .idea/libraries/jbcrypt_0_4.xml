@@ -2,8 +2,10 @@
   <library name="jbcrypt-0.4">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/src/ConnectionDB/lib/jbcrypt-0.4.jar!/" />
+      <root url="file://$PROJECT_DIR$/src/ConnectionDB/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/src/ConnectionDB/lib" recursive="false" />
   </library>
 </component>

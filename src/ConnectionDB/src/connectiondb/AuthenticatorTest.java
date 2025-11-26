@@ -9,11 +9,11 @@ class AuthenticatorTest {
 	String firstName = "Ahmed";
 	String lastName = "Khan";
 	String email = "ahmed@gmail.com";
-	Bank bank = new Bank("RBC", 123);
+	Bank bank = new Bank("RBC", 2);
 	String phone = "450-111-1234";
 	String birthday = "1998-04-28";
-	String password = "Secure@123";
-	BankBranch branch = new BankBranch(123, "Dorion", "345 rue des Champignons", 456, "455-332-1342");
+	String password = "abc123";
+	BankBranch branch = new BankBranch(2, "RBC_Montreal", "2946, PIX, Montreal, QC, H7T 4R5", 4, "8484028340");
 
 	@Test
 	void testGetAuthenticatorInstance() {
