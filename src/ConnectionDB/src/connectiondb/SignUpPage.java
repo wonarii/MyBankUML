@@ -8,7 +8,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignUpPage extends JFrame {
@@ -22,23 +21,30 @@ public class SignUpPage extends JFrame {
     private JButton backButton;
     private JTextField phoneField;
     private JFormattedTextField dobField;
-    private JTextField branchField;
+    private JComboBox bankDropDown;
+    private JComboBox branchField;
 
     public SignUpPage() {
-        setContentPane(contentPane);
-        setTitle("Sign Up");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 550, 500);
-        setLocationRelativeTo(null);
-        setVisible(true);
-        signUpButton.setEnabled(false);
+//        setContentPane(contentPane);
+//        setTitle("Sign Up");
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setBounds(100, 100, 550, 500);
+//        setLocationRelativeTo(null);
+//        setVisible(true);
+//        signUpButton.setEnabled(false);
+        updateBankOptions();
+        updateBranchOptions();
 
         // Return to login page when the back button is pressed
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new LoginPage();
-                dispose();
+                resetFields();
+                Container parent = contentPane.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "login");
+//                new LoginPage();
+//                dispose();
             }
         });
 
@@ -49,11 +55,11 @@ public class SignUpPage extends JFrame {
                 boolean lastNameValid = isFieldValid(lastNameField, "^[a-zA-Z]*$");
                 boolean emailValid = isFieldValid(emailField, "^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
                 boolean phoneValid = isFieldValid(phoneField, "^[0-9]{10}$");
-                boolean branchValid = isFieldValid(branchField, "^[0-9]{3}$");
                 boolean dobValid = isDateValid(dobField);
+//                boolean branchValid = isFieldValid(branchField, "^[0-9]{2}$");
                 boolean doPasswordsMatch = doPasswordsMatch(passwordField, passwordField2);
 
-                boolean valid = firstNameValid && lastNameValid && emailValid && dobValid && phoneValid && branchValid && doPasswordsMatch;
+                boolean valid = firstNameValid && lastNameValid && emailValid && dobValid && phoneValid && doPasswordsMatch;
                 signUpButton.setEnabled(valid);
             }
             @Override public void insertUpdate(DocumentEvent e) { validateForm(); }
@@ -66,7 +72,7 @@ public class SignUpPage extends JFrame {
         emailField.getDocument().addDocumentListener(documentListener);
         dobField.getDocument().addDocumentListener(documentListener);
         phoneField.getDocument().addDocumentListener(documentListener);
-        branchField.getDocument().addDocumentListener(documentListener);
+//        branchField.getDocument().addDocumentListener(documentListener);
         passwordField.getDocument().addDocumentListener(documentListener);
         passwordField2.getDocument().addDocumentListener(documentListener);
 
@@ -76,10 +82,21 @@ public class SignUpPage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Call Authenticator class to write to db
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
-                auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), Integer.parseInt(branchField.getText()), phoneField.getText(), dobField.getText(), 0.0, passwordField.getText());
+                auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (Bank) bankDropDown.getSelectedItem(), phoneField.getText(), dobField.getText(), passwordField.getText(), (BankBranch)  branchField.getSelectedItem());
+
                 // Redirect to login page
-                new LoginPage();
-                dispose();
+                Container parent = contentPane.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "login");
+                resetFields();
+//                new LoginPage();
+//                dispose();
+            }
+        });
+        bankDropDown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateBranchOptions();
             }
         });
     }
@@ -124,8 +141,48 @@ public class SignUpPage extends JFrame {
         } return false;
     }
 
-    public static void main(String[] args) {
-        new SignUpPage();
+    public JPanel getPanel() {
+        return contentPane;
     }
+
+    public void resetFields(){
+        firstNameField.setText("");
+        lastNameField.setText("");
+        emailField.setText("");
+        phoneField.setText("");
+//        branchField.setText("");
+        dobField.setText("");
+        passwordField.setText("");
+        passwordField2.setText("");
+    }
+
+
+    public void updateBankOptions(){
+        if(bankDropDown.getItemCount() != 0){
+            bankDropDown.removeAllItems();
+        }
+        Bank[] banks = Bank.getAllBanks();
+
+        for (Bank bank : banks) {
+            bankDropDown.addItem(bank);
+        }
+        updateBranchOptions();
+    }
+
+    public void updateBranchOptions(){
+        if(branchField.getItemCount() != 0){
+            branchField.removeAllItems();
+        }
+        Bank selectedBank = (Bank) bankDropDown.getSelectedItem();
+        BankBranch[] branches = BankBranch.getAllBankBranchForBankId(selectedBank.getBankID());
+
+        for (BankBranch branch : branches) {
+            branchField.addItem(branch);
+        }
+    }
+
+//    public static void main(String[] args) {
+//        new SignUpPage();
+//    }
 }
 

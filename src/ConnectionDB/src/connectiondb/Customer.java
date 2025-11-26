@@ -1,18 +1,19 @@
+package ConnectionDB.src.connectiondb;
+
 import java.util.Date;
 
 public class Customer extends User {
     private String phone;
     private String birthday;
     private double balance;
-    private String password;
+    final String ROLE = "user";
 
     // Constructor
-    public Customer(String firstName, String lastName, String email, int branch, String phone, String birthday, double balance, String password) {
-        super(firstName, lastName, email, branch);
+    public Customer(String firstName, String lastName, String email, BankBranch branch, Bank bank, String password, String phone, String birthday, double balance) {
+        super(firstName, lastName, email, branch, bank, password);
         this.phone = phone;
         this.birthday = birthday;
         this.balance = balance;
-        this.password = password;
     }
 
     // Getters
@@ -26,10 +27,6 @@ public class Customer extends User {
 
     public double getBalance() {
         return this.balance;
-    }
-
-    public String getPassword() {
-        return this.password;
     }
 
     // Setters
@@ -48,6 +45,7 @@ public class Customer extends User {
     // When the deposit button is pressed, this function is called
     public void deposit (double amount) {
         this.balance = this.balance + amount;
+        
         // Update in database?
     }
 
@@ -55,5 +53,26 @@ public class Customer extends User {
     public void withdraw (double amount) {
         this.balance = this.balance - amount;
         // Update in database?
+    }
+
+    /***
+     * This function will get the balance from the database
+     * IMPORTANT: This function does not modify/update the User object
+     * @return
+     */
+    public static Double getBalanceFromDatabase(){
+        try{
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            Authenticator auth = Authenticator.getAuthenticatorInstance();
+            double balance;
+            if (auth.getCurrentUser() != null) {
+                balance = (double) db.getBalance((String) auth.getCurrentUser().get("user_email"));
+            } else {
+                balance = 0;
+            }
+            return balance;
+        } catch (Exception e) {
+            return 0.0;
+        }
     }
 }

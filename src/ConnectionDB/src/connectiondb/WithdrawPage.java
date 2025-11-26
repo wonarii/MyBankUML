@@ -2,8 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.EventListener;
-import java.sql.Date;
 
 public class WithdrawPage {
     private JTextField amountInput;
@@ -12,9 +10,11 @@ public class WithdrawPage {
     private JPanel withdrawPanel;
     private JLabel currentDateLabel;
 
+    private DriverScreen driverScreen;
 
-    public WithdrawPage() {
+    public WithdrawPage(DriverScreen driverScreen) {
 
+        this.driverScreen = driverScreen;
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -28,7 +28,8 @@ public class WithdrawPage {
 
                         if(status == 0){
                             JOptionPane.showMessageDialog(withdrawPanel, "Withdrawal was successful!");
-
+                            resetFields();
+                            driverScreen.updateUserDashboard();
                             Container parent = withdrawPanel.getParent();
                             CardLayout layout = (CardLayout) parent.getLayout();
                             layout.show(parent, "userDashboard");
@@ -50,6 +51,7 @@ public class WithdrawPage {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                resetFields();
                 Container parent = withdrawPanel.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "userDashboard");
@@ -69,7 +71,9 @@ public class WithdrawPage {
         return withdrawPanel;
     }
 
-
+    public void resetFields() {
+        amountInput.setText("0.00");
+    }
 
 
 }

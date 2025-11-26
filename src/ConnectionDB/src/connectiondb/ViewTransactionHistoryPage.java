@@ -58,8 +58,12 @@ public class ViewTransactionHistoryPage{
     }
 
     public void updateTransactionsView() {
-        int tempUserID = 1;
-        displayTransactions(Transaction.convertTransactionsFromDatabase(tempUserID));
+        Authenticator auth = Authenticator.getAuthenticatorInstance();
+        if(auth.getCurrentUser() != null){
+            int tempUserID = (int) Authenticator.getAuthenticatorInstance().getCurrentUser().get("id");
+            displayTransactions(Transaction.convertTransactionsFromDatabase(tempUserID));
+        }
+
     }
 
 
