@@ -274,7 +274,7 @@ public class ConnectionDB {
         return banks;
     }
 
-    public Customer[] searchById(String input) {
+    public Customer[] searchCustomerId(String input) {
         try (Connection conn = getConnection();) {
             String query = "SELECT * FROM account_list WHERE id = ? AND user_role = 'user'";
             PreparedStatement stmt = conn.prepareStatement(query);
@@ -304,7 +304,7 @@ public class ConnectionDB {
         return null;
     }
 
-    public Customer[] searchByBranchId(String input) {
+    public Customer[] searchCustomerBranchId(String input) {
         try (Connection conn = getConnection();) {
             String query = "SELECT * FROM account_list WHERE user_branch_id = ? AND user_role = 'user'";
             PreparedStatement stmt = conn.prepareStatement(query);
@@ -334,7 +334,7 @@ public class ConnectionDB {
         return null;
     }
 
-    public Customer[] searchByName(String input) {
+    public Customer[] searchCustomerName(String input) {
         try (Connection conn = getConnection();) {
             String query = "SELECT * FROM account_list WHERE user_first_name = ? OR user_last_name = ? AND user_role = 'user'";
             PreparedStatement stmt = conn.prepareStatement(query);
@@ -364,6 +364,98 @@ public class ConnectionDB {
         }
         return null;
     }
+
+    public BankTeller[] searchTellerId(String input) {
+        try (Connection conn = getConnection();) {
+            String query = "SELECT * FROM account_list WHERE id = ? AND user_role = 'teller'";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, input);
+            ResultSet rs = stmt.executeQuery();
+
+            ArrayList<BankTeller> users = new ArrayList<>();
+
+            while (rs.next()) {
+                int userId = rs.getInt("id");
+                String firstName = rs.getString("user_first_name");
+                String lastName = rs.getString("user_last_name");
+                String email = rs.getString("user_email");
+                int balance = rs.getInt("user_balance");
+                int bankId = rs.getInt("user_bank_id");
+                String bankName = rs.getString("user_bank");
+                int branchId = rs.getInt("user_branch_id");
+                String branch = rs.getString("user_branch");
+
+                BankTeller user = new BankTeller(firstName, lastName, email, userId, new BankBranch(bankId, branch, "", branchId, ""), new Bank(bankName, bankId));
+                users.add(user);
+            }
+            return users.toArray(new BankTeller[users.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public BankTeller[] searchTellerBranchId(String input) {
+        try (Connection conn = getConnection()) {
+            String query = "SELECT * FROM account_list WHERE user_branch_id = ? AND user_role = 'teller'";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, input);
+            ResultSet rs = stmt.executeQuery();
+
+            ArrayList<User> users = new ArrayList<>();
+
+            while (rs.next()) {
+                int userId = rs.getInt("id");
+                String firstName = rs.getString("user_first_name");
+                String lastName = rs.getString("user_last_name");
+                String email = rs.getString("user_email");
+                int balance = rs.getInt("user_balance");
+                int bankId = rs.getInt("user_bank_id");
+                String bankName = rs.getString("user_bank");
+                int branchId = rs.getInt("user_branch_id");
+                String branch = rs.getString("user_branch");
+
+                BankTeller user = new BankTeller(firstName, lastName, email, userId, new BankBranch(bankId, branch, "", branchId, ""), new Bank(bankName, bankId));
+                users.add(user);
+            }
+            return users.toArray(new BankTeller[users.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public BankTeller[] searchTellerName(String input) {
+        try (Connection conn = getConnection();) {
+            String query = "SELECT * FROM account_list WHERE user_first_name = ? OR user_last_name = ? AND user_role = 'teller'";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, input);
+            stmt.setString(2, input);
+            ResultSet rs = stmt.executeQuery();
+
+            ArrayList<User> users = new ArrayList<>();
+
+            while (rs.next()) {
+                int userId = rs.getInt("id");
+                String firstName = rs.getString("user_first_name");
+                String lastName = rs.getString("user_last_name");
+                String email = rs.getString("user_email");
+                int balance = rs.getInt("user_balance");
+                int bankId = rs.getInt("user_bank_id");
+                String bankName = rs.getString("user_bank");
+                int branchId = rs.getInt("user_branch_id");
+                String branch = rs.getString("user_branch");
+
+                BankTeller user = new BankTeller(firstName, lastName, email, userId, new BankBranch(bankId, branch, "", branchId, ""), new Bank(bankName, bankId));
+                users.add(user);
+            }
+            return users.toArray(new BankTeller[users.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public String getBranchNameById(int branchId) {
         String query = "SELECT branch_name FROM branch_list WHERE branch_id = ?";
