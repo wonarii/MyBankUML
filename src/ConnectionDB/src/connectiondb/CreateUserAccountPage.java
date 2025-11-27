@@ -24,8 +24,12 @@ public class CreateUserAccountPage extends JFrame {
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
     private JPanel createUserAccountPanel;
+    private JLabel headerNameField;
 
-    public CreateUserAccountPage() {
+    private DriverScreen driverScreen;
+
+    public CreateUserAccountPage(DriverScreen driverScreen) {
+        this.driverScreen = driverScreen;
 //        setContentPane(contentPane);
 //        setTitle("Create User Account");
 //        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -33,8 +37,8 @@ public class CreateUserAccountPage extends JFrame {
 //        setVisible(true);
 //        createButton.setEnabled(false);
 
-        updateBankOptions();
-        updateBranchOptions();
+
+        updateCreateUserAccountPage();
 
         // Document listener that validates all fields in real time
         DocumentListener documentListener = new DocumentListener() {
@@ -70,8 +74,30 @@ public class CreateUserAccountPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
-                 auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (Bank) bankField.getSelectedItem(), phoneField.getText(), dobField.getText(), passwordField.getText(),(BankBranch) branchField.getSelectedItem());
+                int status = auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (Bank) bankField.getSelectedItem(), phoneField.getText(), dobField.getText(), passwordField.getText(),(BankBranch) branchField.getSelectedItem());
 
+                if(status == 0){
+                    JOptionPane.showMessageDialog(createUserAccountPanel, "Account creation was successful!");
+                    resetFields();
+
+                    String dashboard;
+                    if(auth.getCurrentUser().get("user_role").toString().equals("admin")){
+                        driverScreen.updateAdminDashboardPage();
+                        dashboard = "adminDashboard";
+                    } else if (auth.getCurrentUser().get("user_role").toString().equals("teller")){
+                        driverScreen.updateTellerDashboardPage();
+                        dashboard = "tellerDashboard";
+                    } else {
+                        // This shouldnt ever happen since creating User Account is an admin / teller thing
+                        dashboard = "userDashboard";
+                    }
+
+                    Container parent = createUserAccountPanel.getParent();
+                    CardLayout layout = (CardLayout) parent.getLayout();
+                    layout.show(parent, dashboard);
+                } else {
+                    JOptionPane.showMessageDialog(createUserAccountPanel, "Account creation was unsuccessful, please try again.");
+                }
                  // Return to bank teller dashboard
             }
         });
@@ -79,6 +105,27 @@ public class CreateUserAccountPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 updateBranchOptions();
+            }
+        });
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Authenticator auth = Authenticator.getAuthenticatorInstance();
+                resetFields();
+
+                String dashboard;
+                if(auth.getCurrentUser().get("user_role").toString().equals("admin")){
+                    dashboard = "adminDashboard";
+                } else if (auth.getCurrentUser().get("user_role").toString().equals("teller")){
+                    dashboard = "tellerDashboard";
+                } else {
+                    // This shouldnt ever happen since creating User Account is an admin / teller thing
+                    dashboard = "userDashboard";
+                }
+
+                Container parent = createUserAccountPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, dashboard);
             }
         });
     }
@@ -122,6 +169,26 @@ public class CreateUserAccountPage extends JFrame {
             return true;
         } return false;
     }
+
+    /**
+     * This function will call all the updating helper functions to refresh everything
+     */
+    public void updateCreateUserAccountPage(){
+        updateBankOptions();
+        updateHeaderName();
+    }
+
+    public void updateHeaderName(){
+        Authenticator auth = Authenticator.getAuthenticatorInstance();
+        if(auth.getCurrentUser() != null) {
+            String currentUserName = ((String) auth.getCurrentUser().get("user_first_name")) + " " + ((String) auth.getCurrentUser().get("user_last_name"));
+            headerNameField.setText(currentUserName);
+        } else {
+            headerNameField.setText("");
+        }
+    }
+
+
     public void updateBankOptions(){
         if(bankField.getItemCount() != 0){
             bankField.removeAllItems();
@@ -139,11 +206,24 @@ public class CreateUserAccountPage extends JFrame {
             branchField.removeAllItems();
         }
         Bank selectedBank = (Bank) bankField.getSelectedItem();
-        BankBranch[] branches = BankBranch.getAllBankBranchForBankId(selectedBank.getBankID());
+        if(selectedBank != null){
+            BankBranch[] branches = BankBranch.getAllBankBranchForBankId(selectedBank.getBankID());
 
-        for (BankBranch branch : branches) {
-            branchField.addItem(branch);
+            for (BankBranch branch : branches) {
+                branchField.addItem(branch);
+            }
         }
+
+    }
+
+    public void resetFields(){
+        firstNameField.setText("");
+        lastNameField.setText("");
+        emailField.setText("");
+        passwordField.setText("");
+        confirmPasswordField.setText("");
+        phoneField.setText("");
+        dobField.setText("");
     }
 
     public JPanel getPanel()

@@ -82,15 +82,23 @@ public class SignUpPage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Call Authenticator class to write to db
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
-                auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (Bank) bankDropDown.getSelectedItem(), phoneField.getText(), dobField.getText(), passwordField.getText(), (BankBranch)  branchField.getSelectedItem());
+                int status = auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (Bank) bankDropDown.getSelectedItem(), phoneField.getText(), dobField.getText(), passwordField.getText(), (BankBranch)  branchField.getSelectedItem());
 
+
+
+
+                if(status == 0){
+                    JOptionPane.showMessageDialog(contentPane, "Sign up was successful!");
+                    resetFields();
+
+                    Container parent = contentPane.getParent();
+                    CardLayout layout = (CardLayout) parent.getLayout();
+                    layout.show(parent, "login");
+                } else {
+                    JOptionPane.showMessageDialog(contentPane, "Sign up was unsuccessful, please try again.");
+                }
                 // Redirect to login page
-                Container parent = contentPane.getParent();
-                CardLayout layout = (CardLayout) parent.getLayout();
-                layout.show(parent, "login");
-                resetFields();
-//                new LoginPage();
-//                dispose();
+
             }
         });
         bankDropDown.addActionListener(new ActionListener() {

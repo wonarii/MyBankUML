@@ -36,7 +36,7 @@ public class Authenticator {
         return 0;
     }
 
-    public void signUp(String firstName, String lastName, String email, Bank bank, String phone, String birthday, String password, BankBranch branch) {
+    public int signUp(String firstName, String lastName, String email, Bank bank, String phone, String birthday, String password, BankBranch branch) {
         try {
             // Get db connection
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
@@ -45,20 +45,35 @@ public class Authenticator {
             Customer customer = new Customer(firstName, lastName, email, branch, bank, password, phone, birthday, 0.0);
 
             // Add customer object to database
-            db.createCustomer(customer);
-            System.out.println("Customer signed up successfully");
+            int status = db.createCustomer(customer);
+            if (status == 0) {
+                System.out.println("Customer signed up successfully");
+            } else {
+                System.out.println("Customer signed up failed");
+            }
+
+            return status;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.err.println(e.getMessage());
+            return -1;
         }
     }
 
-    public void createBankTeller(BankTeller bankTeller) {
+    public int createBankTeller(BankTeller bankTeller) {
         try {
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
-            db.createBankTeller(bankTeller);
-            System.out.println("Bank teller created successfully");
+            int status = db.createBankTeller(bankTeller);
+
+            if (status == 0) {
+                System.out.println("BankTeller account creation successfully");
+            } else {
+                System.out.println("BankTeller account creation failed");
+            }
+            return status;
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.err.println(e.getMessage());
+            return -1;
         }
     }
 

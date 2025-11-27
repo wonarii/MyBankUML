@@ -77,4 +77,9 @@ public class User {
     public void setBank(Bank bank) {
         this.bank = bank;
     }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
 }

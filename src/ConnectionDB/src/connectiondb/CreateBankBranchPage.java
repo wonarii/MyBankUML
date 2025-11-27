@@ -12,8 +12,12 @@ public class CreateBankBranchPage {
     private JButton cancelButton;
     private JPanel createBankBranchPanel;
     private JComboBox bankList;
+    private JLabel headerNameField;
 
-    public CreateBankBranchPage() {
+    private DriverScreen driverScreen;
+
+    public CreateBankBranchPage(DriverScreen driverScreen) {
+        this.driverScreen = driverScreen;
         updateBankOptions();
 
         createButton.addActionListener(new ActionListener() {
@@ -39,6 +43,9 @@ public class CreateBankBranchPage {
                     if(status == 0){
                         JOptionPane.showMessageDialog(createBankBranchPanel, "Bank branch creation was successful!");
                         resetFields();
+
+                        driverScreen.updateAdminDashboardPage();
+
                         Container parent = createBankBranchPanel.getParent();
                         CardLayout layout = (CardLayout) parent.getLayout();
                         layout.show(parent, "adminDashboard");
@@ -70,6 +77,11 @@ public class CreateBankBranchPage {
 
     }
 
+    public void updateCreateBankBranchPage(){
+        updateBankOptions();
+        updateHeaderName();
+    }
+
     public void updateBankOptions(){
         if(bankList.getItemCount() != 0){
             bankList.removeAllItems();
@@ -92,7 +104,15 @@ public class CreateBankBranchPage {
         phoneNumberInput.setText("");
     }
 
-
+    public void updateHeaderName(){
+        Authenticator auth = Authenticator.getAuthenticatorInstance();
+        if(auth.getCurrentUser() != null) {
+            String currentUserName = ((String) auth.getCurrentUser().get("user_first_name")) + " " + ((String) auth.getCurrentUser().get("user_last_name"));
+            headerNameField.setText(currentUserName);
+        } else {
+            headerNameField.setText("");
+        }
+    }
 
 
 }

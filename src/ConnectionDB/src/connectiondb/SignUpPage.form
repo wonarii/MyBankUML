@@ -318,6 +318,7 @@
             <properties>
               <background color="-14796150"/>
               <font size="16"/>
+              <foreground color="-1"/>
               <hideActionText value="false"/>
               <text value="Back"/>
             </properties>
@@ -333,6 +334,7 @@
             <properties>
               <background color="-10565530"/>
               <font size="16"/>
+              <foreground color="-1"/>
               <hideActionText value="false"/>
               <inheritsPopupMenu value="false"/>
               <text value="Sign Up"/>

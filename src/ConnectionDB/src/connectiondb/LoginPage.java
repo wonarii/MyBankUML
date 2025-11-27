@@ -35,6 +35,7 @@ public class LoginPage extends JFrame {
                     CardLayout layout = (CardLayout) parent.getLayout();
 
                     if(userRole.equals("admin")){
+                        driverScreen.updateAdminDashboardPage();
                         layout.show(parent, "adminDashboard");
                     } else if(userRole.equals("user")){
                         driverScreen.updateUserDashboard();
