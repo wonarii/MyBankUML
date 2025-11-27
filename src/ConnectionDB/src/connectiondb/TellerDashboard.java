@@ -10,13 +10,13 @@ public class TellerDashboard {
     private JPanel tellerDashboardPanel;
     private JLabel headerNameField;
     private JButton logOutButton;
-    private JComboBox comboBox1;
-    private JTextField eGUS343110453TextField;
+    private JComboBox customerComboBox;
     private JButton enterButton;
     private JLabel tellerNameField;
     private JButton createUserAccountButton;
     private JScrollPane userAccountsScrollPane;
     private JTable userAccountTable;
+    private JTextField customerTextField;
 
     private final int AMOUNTOFTABLEROWS = 4;
     private DefaultTableModel userAccountModel;
@@ -113,20 +113,37 @@ public class TellerDashboard {
      * This function will update the table for the users
      */
     public void updateUserTable(){
+        try {
 
-        userAccountModel.setRowCount(0);
-        // Create a temporary customer
-        // TODO: Remove Later
-        Customer tempCust = new Customer("John", "Doe", "joe@gmail.com", new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234"), new Bank("Desjardins", 1), "password", "1234567890", "2002-01-01", 5000.0);
-        Customer tempCust2 = new Customer("Jane", "Doe", "jane@gmail.com", new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234"), new Bank("Desjardins", 1), "password", "1234567890", "2002-01-01", 5000.0);
 
-        // TODO: Replace this line with the function
-        Customer[] tempCustomers = new Customer[]{tempCust, tempCust2};
+            JComboBox comboBox = customerComboBox;
+            JTextField input = customerTextField;
 
-        for(Customer tempCustomer : tempCustomers) {
-            userAccountModel.addRow(tempCustomer.display());
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            Customer[] users = new Customer[]{};
+
+            if (input == null || input.getText().equals("")) {
+                users = db.getAllCustomer();
+
+            } else {
+                if (comboBox.getSelectedItem().equals("AccountID")) {
+                    users = db.searchCustomerId(input.getText());
+                } else if (comboBox.getSelectedItem().equals("BranchID")) {
+                    users = db.searchCustomerBranchId(input.getText());
+                } else if (comboBox.getSelectedItem().equals("Name")) {
+                    users = db.searchCustomerName(input.getText());
+                } else {
+                    db.getAllCustomer();
+                }
+            }
+            userAccountModel.setRowCount(0);
+            for (Customer tempCustomer : users) {
+                userAccountModel.addRow(tempCustomer.display());
+            }
+            generateEmptyFillerRows(userAccountModel);
+        } catch (Exception e) {
+
         }
-        generateEmptyFillerRows(userAccountModel);
     }
 
     public void generateEmptyFillerRows(DefaultTableModel model) {
