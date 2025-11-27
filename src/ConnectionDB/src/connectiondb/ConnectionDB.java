@@ -274,7 +274,96 @@ public class ConnectionDB {
         return banks;
     }
 
+    public Customer[] searchById(String input) {
+        try (Connection conn = getConnection();) {
+            String query = "SELECT * FROM account_list WHERE id = ? AND user_role = 'user'";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, input);
+            ResultSet rs = stmt.executeQuery();
 
+            ArrayList<Customer> users = new ArrayList<>();
+
+            while (rs.next()) {
+                int userId = rs.getInt("id");
+                String firstName = rs.getString("user_first_name");
+                String lastName = rs.getString("user_last_name");
+                String email = rs.getString("user_email");
+                int balance = rs.getInt("user_balance");
+                int bankId = rs.getInt("user_bank_id");
+                String bankName = rs.getString("user_bank");
+                int branchId = rs.getInt("user_branch_id");
+                String branch = rs.getString("user_branch");
+
+                Customer user = new Customer(firstName, lastName, email, userId, new BankBranch(bankId, branch, "", branchId, ""), new Bank(bankName, bankId), balance);
+                users.add(user);
+            }
+            return users.toArray(new Customer[users.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Customer[] searchByBranchId(String input) {
+        try (Connection conn = getConnection();) {
+            String query = "SELECT * FROM account_list WHERE user_branch_id = ? AND user_role = 'user'";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, input);
+            ResultSet rs = stmt.executeQuery();
+
+            ArrayList<User> users = new ArrayList<>();
+
+            while (rs.next()) {
+                int userId = rs.getInt("id");
+                String firstName = rs.getString("user_first_name");
+                String lastName = rs.getString("user_last_name");
+                String email = rs.getString("user_email");
+                int balance = rs.getInt("user_balance");
+                int bankId = rs.getInt("user_bank_id");
+                String bankName = rs.getString("user_bank");
+                int branchId = rs.getInt("user_branch_id");
+                String branch = rs.getString("user_branch");
+
+                Customer user = new Customer(firstName, lastName, email, userId, new BankBranch(bankId, branch, "", branchId, ""), new Bank(bankName, bankId), balance);
+                users.add(user);
+            }
+            return users.toArray(new Customer[users.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Customer[] searchByName(String input) {
+        try (Connection conn = getConnection();) {
+            String query = "SELECT * FROM account_list WHERE user_first_name = ? OR user_last_name = ? AND user_role = 'user'";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, input);
+            stmt.setString(2, input);
+            ResultSet rs = stmt.executeQuery();
+
+            ArrayList<User> users = new ArrayList<>();
+
+            while (rs.next()) {
+                int userId = rs.getInt("id");
+                String firstName = rs.getString("user_first_name");
+                String lastName = rs.getString("user_last_name");
+                String email = rs.getString("user_email");
+                int balance = rs.getInt("user_balance");
+                int bankId = rs.getInt("user_bank_id");
+                String bankName = rs.getString("user_bank");
+                int branchId = rs.getInt("user_branch_id");
+                String branch = rs.getString("user_branch");
+
+                Customer user = new Customer(firstName, lastName, email, userId, new BankBranch(bankId, branch, "", branchId, ""), new Bank(bankName, bankId), balance);
+                users.add(user);
+            }
+            return users.toArray(new Customer[users.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public String getBranchNameById(int branchId) {
         String query = "SELECT branch_name FROM branch_list WHERE branch_id = ?";
@@ -414,7 +503,7 @@ public class ConnectionDB {
 
                 Bank newBank = new Bank(rs.getString("user_bank"), rs.getInt("user_bank_id"));
                 List<Map<String, Object>> storedBranch = getBranchById(rs.getInt("user_branch_id"));
-                Map<String, Object> t = storedBranch.getFirst();
+                Map<String, Object> t = storedBranch.get(0);
 
 
                 int branchId = (int) t.get("branch_id");

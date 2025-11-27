@@ -5,11 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 
 public class AdminDashboard {
-    private JComboBox comboBox1;
-    private JTextField eGUS343110453TextField;
-    private JButton enterButton;
+    private JComboBox customerComboBox;
+    private JButton enterUserButton;
     private JButton createTellerAccountButton;
     private JButton createBankBranchButton;
     private JButton createUserAccountButton;
@@ -23,6 +23,13 @@ public class AdminDashboard {
     private JLabel headerNameField;
     private JScrollPane branchScrollPane;
     private JTable branchTable;
+    private JButton enterTellerButton;
+    private JButton enterBranchButton;
+    private JComboBox tellerComboBox;
+    private JComboBox branchComboBox;
+    private JTextField tellerTextField;
+    private JTextField branchTextField;
+    private JTextField customerTextField;
 
     private DefaultTableModel userAccountModel;
     private DefaultTableModel tellerAccountModel;
@@ -174,6 +181,14 @@ public class AdminDashboard {
                 layout.show(parent, "createUserAccount");
             }
         });
+
+
+        enterUserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateSearchResults(customerComboBox, customerTextField);
+            }
+        });
     }
 
 
@@ -275,6 +290,28 @@ public class AdminDashboard {
         generateEmptyFillerRows(userAccountModel);
     }
 
+    // This method is called when the admin presses the 'Enter' button
+    public void updateSearchResults(JComboBox comboBox, JTextField input) {
+        try {
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            Customer[] customers = new Customer[]{};
+            if (comboBox.getSelectedItem().equals("AccountID")) {
+                customers = (Customer[]) db.searchById(input.getText());
+            } else if (comboBox.getSelectedItem().equals("BranchID")) {
+                customers = db.searchByBranchId(input.getText());
+            } else if (comboBox.getSelectedItem().equals("Name")) {
+                customers = db.searchByName(input.getText());
+            }
+
+            userAccountModel.setRowCount(0);
+            for(Customer customer : customers) {
+                userAccountModel.addRow(customer.display());
+            }
+            generateEmptyFillerRows(userAccountModel);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * This function will update the table for the Tellers
      */
