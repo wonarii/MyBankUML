@@ -10,7 +10,6 @@ public class BankBranch {
     private int branchId;
     private String branchPhone;
 
-
     public BankBranch(int bankId, String branchName, String address, int branchId, String branchPhone) {
         this.bankId = bankId;
         this.branchName = branchName;
