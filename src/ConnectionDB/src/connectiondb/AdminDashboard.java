@@ -209,7 +209,7 @@ public class AdminDashboard {
         adminDashboardPanel = new JPanel();
 
         // ---------------------- User/Customer Account ---------------------------------
-        String[] userColumns = {"Account ID","Email", "First Name","Last Name", "Bank" , "Branch", "Balance"};      // Table Column Names
+        String[] userColumns = {"Account ID", "Branch ID","Email", "First Name","Last Name", "Bank" , "Branch", "Balance"};      // Table Column Names
 
         // Make a model for userAccounts and lock the fields so they can't be edited in the UI
         userAccountModel = new DefaultTableModel(userColumns, 0){
@@ -221,11 +221,12 @@ public class AdminDashboard {
         // Set up Table stuff
         userAccountTable = new JTable(userAccountModel);                                                // Initialize the User Account Table
         userAccountTable.getColumnModel().getColumn(0).setPreferredWidth(25);                // lower the column width of the Account ID
+        userAccountTable.getColumnModel().getColumn(1).setPreferredWidth(25);                // lower the column width of the Account ID
         userAccountTable.setRowHeight(25);                                                              // Increase the height of a row
 
 
         // ============================================ Tellers ================================================
-        String[] adminColumns = {"Account ID","Email","First Name","Last Name","Bank","Branch"};
+        String[] adminColumns = {"Account ID", "Branch ID","Email","First Name","Last Name","Bank","Branch"};
         tellerAccountModel = new DefaultTableModel(adminColumns, 0){
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -234,6 +235,7 @@ public class AdminDashboard {
         };
         tellerAccountTable = new JTable(tellerAccountModel);
         tellerAccountTable.getColumnModel().getColumn(0).setPreferredWidth(25);
+        tellerAccountTable.getColumnModel().getColumn(1).setPreferredWidth(25);
         tellerAccountTable.setRowHeight(25);
 
         // ================================== Branches Stuff ====================================
@@ -274,6 +276,7 @@ public class AdminDashboard {
         String adminName = auth.getCurrentUser().get("user_first_name").toString() + " " + auth.getCurrentUser().get("user_last_name");
         adminNameField.setText(adminName);
         headerNameField.setText(adminName);
+        resetField();
 
         updateCustomerSearch();
         updateTellerSearch();
@@ -376,6 +379,11 @@ public class AdminDashboard {
         }
     }
 
+    public void resetField() {
+        customerTextField.setText("");
+        tellerTextField.setText("");
+        branchTextField.setText("");
+    }
 
 
 }

@@ -223,9 +223,7 @@
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties>
-              <text value="E.g.US343110453"/>
-            </properties>
+            <properties/>
           </component>
           <component id="213e0" class="javax.swing.JButton" binding="enterButton" default-binding="true">
             <constraints>
