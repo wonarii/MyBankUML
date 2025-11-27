@@ -17,17 +17,25 @@ public class AdminDashboard {
     private JPanel adminDashboardPanel;
     private JTable userAccountTable;
     private JScrollPane userAccountsScrollPane;
+    private JTable tellerAccountTable;
+    private JScrollPane tellerAccountsScrollPane;
+    private JLabel adminNameField;
+    private JLabel headerNameField;
 
     private DefaultTableModel userAccountModel;
+    private DefaultTableModel tellerAccountModel;
 
     private final int AMOUNTOFTABLEROWS = 4;
     private DriverScreen driverScreen;
 
     final int[] lastSelectedRow = {-1};
+    final int[] lastSelectedRowTeller = {-1};
+
 
     public AdminDashboard(DriverScreen driverScreen) {
         this.driverScreen = driverScreen;
         userAccountsScrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        tellerAccountsScrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
 
         createBankBranchButton.addActionListener(new ActionListener() {
@@ -39,6 +47,7 @@ public class AdminDashboard {
             }
         });
 
+        // ================================ User Table ============================================
         // Store the selected row to allow it to get clicked afterwards
         userAccountTable.getSelectionModel().addListSelectionListener( e -> {
             if(!e.getValueIsAdjusting()) {
@@ -67,6 +76,41 @@ public class AdminDashboard {
 
                     // Send this to the Buttons
                     AdminUserButtons.showUserButtons(rowData, driverScreen, adminDashboardPanel);
+
+                }
+            }
+
+        });
+
+        // ======================================== Teller Table ==========================================
+        // Store the selected row to allow it to get clicked afterwards
+        tellerAccountTable.getSelectionModel().addListSelectionListener(e -> {
+            if(!e.getValueIsAdjusting()) {
+                lastSelectedRowTeller[0] = tellerAccountTable.getSelectedRow();
+            }
+        });
+
+        // Check if the selected row has been clicked
+        tellerAccountTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e){
+                int clickedRow = tellerAccountTable.rowAtPoint(e.getPoint());
+
+                // Check to make sure nothing will happen if we click an empty row
+                Object testData = tellerAccountTable.getValueAt(clickedRow, 0);
+
+                if(clickedRow == lastSelectedRowTeller[0] && clickedRow >= 0 && testData != null) {
+                    //Get The Selected Row's Information and Send it to the ShowButtonsFunction
+
+                    // Convert the information from the table into an Object[]
+                    int columnCount = tellerAccountModel.getColumnCount();
+                    Object[] rowData = new Object[columnCount];
+                    for (int i = 0; i < columnCount; i++) {
+                        rowData[i] = tellerAccountModel.getValueAt(clickedRow, i);
+                    }
+
+                    // Send this to the Buttons
+                    AdminTellerButtons.showTellerButtons(rowData, driverScreen, adminDashboardPanel);
 
                 }
             }
@@ -101,8 +145,28 @@ public class AdminDashboard {
         userAccountModel.addRow(tempCust.display());
         userAccountModel.addRow(tempCust2.display());
 
+        // ============================================ Tellers ================================================
+        String[] adminColumns = {"Account ID","Email","First Name","Last Name","Bank","Branch"};
+        tellerAccountModel = new DefaultTableModel(adminColumns, 0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+
+        tellerAccountTable = new JTable(tellerAccountModel);
+        tellerAccountTable.getColumnModel().getColumn(0).setPreferredWidth(25);
+        tellerAccountTable.setRowHeight(25);
+
+        // Create a temporary Teller
+        // TODO: get actual bank tellers
+        BankTeller tempTeller = new BankTeller("Alice", "Rabbit", "a@gmail.com", new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234"),new Bank("Desjardins", 1), "abc123" );
+        tellerAccountModel.addRow(tempTeller.display());
+
         // Generate Empty Rows so the table takes up more space
         generateEmptyFillerRows(userAccountModel);
+        generateEmptyFillerRows(tellerAccountModel);
     }
 
     public JPanel getPanel() {
@@ -117,6 +181,13 @@ public class AdminDashboard {
             Object[] emptyRow = new Object[model.getColumnCount()];
             model.addRow(emptyRow);
         }
+    }
+
+    public void updateAdminDashboardPage(){
+        Authenticator auth = Authenticator.getAuthenticatorInstance();
+        String adminName = auth.getCurrentUser().get("user_first_name").toString() + " " + auth.getCurrentUser().get("user_last_name");
+        adminNameField.setText(adminName);
+        headerNameField.setText(adminName);
     }
 
 }

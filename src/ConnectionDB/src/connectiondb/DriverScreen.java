@@ -125,4 +125,8 @@ public class DriverScreen {
     public void updateAccountInformationPage(int userID) {
         accountInformationPage.updateAccountInformationPage(userID);
     }
+
+    public void updateAdminDashboardPage(){
+        adminDashboard.updateAdminDashboardPage();
+    }
 }
