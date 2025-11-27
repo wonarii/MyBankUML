@@ -22,13 +22,14 @@ public class BankTeller extends User {
     }
 
     public Object[] display(){
-        Object[] obj = new Object[6];
+        Object[] obj = new Object[7];
         obj[0] = this.getAccountId();
-        obj[1] = this.getEmail();
-        obj[2] = this.getFirstName();
-        obj[3] = this.getLastName();
-        obj[4] = this.getBank().getBankName();
-        obj[5] = this.getBranch().getBranchName();
+        obj[1] = this.getBranch().getBranchId();
+        obj[2] = this.getEmail();
+        obj[3] = this.getFirstName();
+        obj[4] = this.getLastName();
+        obj[5] = this.getBank().getBankName();
+        obj[6] = this.getBranch().getBranchName();
         return obj;
     }
 }
