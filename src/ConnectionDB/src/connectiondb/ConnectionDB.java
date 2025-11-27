@@ -456,6 +456,57 @@ public class ConnectionDB {
         return null;
     }
 
+    public BankBranch[] searchBranchId(String input) {
+        String query = "SELECT * FROM branch_list WHERE branch_id = ?";
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, input);
+            ResultSet rs = stmt.executeQuery();
+
+            ArrayList<BankBranch> branches = new ArrayList<>();
+            while (rs.next()) {
+                int branchId = rs.getInt("branch_id");
+                String branchName = rs.getString("branch_name");
+                String address = rs.getString("location");
+                String phone = rs.getString("branch_phone");
+                int bankId = rs.getInt("bank_id");
+
+                BankBranch branch = new BankBranch(bankId, branchName, address, branchId, phone);
+                branches.add(branch);
+            }
+            return branches.toArray(new BankBranch[branches.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public BankBranch[] searchBranchName(String input) {
+        String query = "SELECT * FROM branch_list WHERE branch_name LIKE ?";
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, "%"+input+"%");
+            ResultSet rs = stmt.executeQuery();
+
+            ArrayList<BankBranch> branches = new ArrayList<>();
+            while (rs.next()) {
+                int branchId = rs.getInt("branch_id");
+                String branchName = rs.getString("branch_name");
+                String address = rs.getString("location");
+                String phone = rs.getString("branch_phone");
+                int bankId = rs.getInt("bank_id");
+
+                BankBranch branch = new BankBranch(bankId, branchName, address, branchId, phone);
+                branches.add(branch);
+            }
+            return branches.toArray(new BankBranch[branches.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public String getBranchNameById(int branchId) {
         String query = "SELECT branch_name FROM branch_list WHERE branch_id = ?";
