@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="AdminUserButtons">
-  <grid id="27dc6" binding="adminUserButtonsPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="AdminTellerButtons">
+  <grid id="27dc6" binding="adminTellerButtonsPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="1130" height="400"/>
+      <xy x="20" y="20" width="705" height="400"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="e7dde" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="fa82b" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="5" left="5" bottom="5" right="5"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="4" fill="2" indent="0" use-parent-layout="false">
@@ -22,7 +22,7 @@
           <color color="-16777216"/>
         </border>
         <children>
-          <grid id="e0adf" layout-manager="GridLayoutManager" row-count="1" column-count="14" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="7772a" layout-manager="GridLayoutManager" row-count="1" column-count="12" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="5" bottom="0" right="5"/>
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
@@ -36,7 +36,7 @@
               <color color="-13947600"/>
             </border>
             <children>
-              <component id="779c2" class="javax.swing.JLabel">
+              <component id="dbb25" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -45,7 +45,7 @@
                   <text value="User ID:"/>
                 </properties>
               </component>
-              <component id="cb2d" class="javax.swing.JLabel" binding="userIDField">
+              <component id="7fc4e" class="javax.swing.JLabel" binding="userIDField">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -54,7 +54,7 @@
                   <foreground color="-5131595"/>
                 </properties>
               </component>
-              <component id="c5912" class="javax.swing.JLabel">
+              <component id="8ce62" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -63,7 +63,7 @@
                   <text value="FirstName:"/>
                 </properties>
               </component>
-              <component id="47481" class="javax.swing.JLabel" binding="firstNameField">
+              <component id="e94a9" class="javax.swing.JLabel" binding="firstNameField">
                 <constraints>
                   <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -72,7 +72,7 @@
                   <foreground color="-5131595"/>
                 </properties>
               </component>
-              <component id="3c7a7" class="javax.swing.JLabel">
+              <component id="6cdce" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -81,7 +81,7 @@
                   <text value="Last Name:"/>
                 </properties>
               </component>
-              <component id="1ab9c" class="javax.swing.JLabel" binding="lastNameField">
+              <component id="4810" class="javax.swing.JLabel" binding="lastNameField">
                 <constraints>
                   <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -90,7 +90,7 @@
                   <foreground color="-5131595"/>
                 </properties>
               </component>
-              <component id="2d962" class="javax.swing.JLabel">
+              <component id="9f596" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -99,7 +99,7 @@
                   <text value="Bank:"/>
                 </properties>
               </component>
-              <component id="9e8fb" class="javax.swing.JLabel" binding="bankField">
+              <component id="f8ba0" class="javax.swing.JLabel" binding="bankField">
                 <constraints>
                   <grid row="0" column="9" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -108,25 +108,7 @@
                   <foreground color="-5131595"/>
                 </properties>
               </component>
-              <component id="ed69b" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="0" column="12" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <font size="14"/>
-                  <text value="Balance: "/>
-                </properties>
-              </component>
-              <component id="9a532" class="javax.swing.JLabel" binding="balanceField">
-                <constraints>
-                  <grid row="0" column="13" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <font size="14"/>
-                  <foreground color="-5131595"/>
-                </properties>
-              </component>
-              <component id="66186" class="javax.swing.JLabel">
+              <component id="9ed99" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="0" column="10" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -135,7 +117,7 @@
                   <text value="Branch:"/>
                 </properties>
               </component>
-              <component id="43718" class="javax.swing.JLabel" binding="branchField">
+              <component id="11b27" class="javax.swing.JLabel" binding="branchField">
                 <constraints>
                   <grid row="0" column="11" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -144,7 +126,7 @@
                   <foreground color="-5131595"/>
                 </properties>
               </component>
-              <component id="da23c" class="javax.swing.JLabel">
+              <component id="5cba2" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -153,7 +135,7 @@
                   <text value="Email:"/>
                 </properties>
               </component>
-              <component id="c1f39" class="javax.swing.JLabel" binding="emailField">
+              <component id="3568b" class="javax.swing.JLabel" binding="emailField">
                 <constraints>
                   <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -164,7 +146,7 @@
               </component>
             </children>
           </grid>
-          <grid id="418cb" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="a86ae" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
@@ -174,29 +156,9 @@
             </properties>
             <border type="none"/>
             <children>
-              <component id="8ecba" class="javax.swing.JButton" binding="viewTransactionHistoryButton" default-binding="true">
+              <component id="3e6d2" class="javax.swing.JButton" binding="deleteUserAccountButton" default-binding="true">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <background color="-11359507"/>
-                  <foreground color="-1"/>
-                  <text value="View Transaction History"/>
-                </properties>
-              </component>
-              <component id="ba17a" class="javax.swing.JButton" binding="viewAccountInformationButton" default-binding="true">
-                <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <background color="-11359507"/>
-                  <foreground color="-1"/>
-                  <text value="View Account Information"/>
-                </properties>
-              </component>
-              <component id="db223" class="javax.swing.JButton" binding="deleteUserAccountButton" default-binding="true">
-                <constraints>
-                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <background color="-1281165"/>

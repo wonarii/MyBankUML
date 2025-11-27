@@ -49,6 +49,17 @@ public class UserDashboard {
                 layout.show(parent, "transactions");
             }
         });
+        viewAccountInformationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int userID = (int) Authenticator.getAuthenticatorInstance().getCurrentUser().get("id");
+                driverScreen.updateAccountInformationPage(userID);
+
+                Container parent = userDashboardPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "accountInformation");
+            }
+        });
     }
 
     private void createUIComponents() {

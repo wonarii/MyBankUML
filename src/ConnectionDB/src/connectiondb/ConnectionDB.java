@@ -421,9 +421,6 @@ public class ConnectionDB {
 
                 BankBranch newBranch = new BankBranch(bankId, branchName, location, branchId, branchPhone);
 
-
-
-
                 User currentUser = new User(rs.getString("user_first_name"), rs.getString("user_last_name"), rs.getString("user_email"), newBranch, newBank, rs.getString("user_password"));
                 System.out.println("User verified and session created!");
                 return true;
@@ -435,6 +432,44 @@ public class ConnectionDB {
             System.out.println("Error loading user data!");
             e.printStackTrace();
             return false;
+        }
+    }
+
+    // --- Load user by ID ---
+    public Map<String, Object> getUserByID(int userID) {
+        String query = "SELECT * FROM account_list WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Map<String, Object> txn = new HashMap<>();
+                txn.put("id", rs.getInt("id"));
+                txn.put("user_first_name", rs.getString("user_first_name"));
+                txn.put("user_last_name", rs.getString("user_last_name"));
+                txn.put("user_email", rs.getString("user_email"));
+                txn.put("user_birthday", rs.getString("user_birthday"));
+
+                Double balanceObj = (Double) rs.getObject("user_balance");
+                txn.put("user_balance", balanceObj);
+
+                txn.put("user_role", rs.getString("user_role"));
+                txn.put("user_bank", rs.getString("user_bank"));
+                txn.put("user_bank_id", rs.getInt("user_bank_id"));
+                txn.put("user_branch", rs.getString("user_branch"));
+                txn.put("user_branch_id", rs.getInt("user_branch_id"));
+
+
+
+                return txn;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error loading user data!");
+            e.printStackTrace();
+            return null;
         }
     }
 
