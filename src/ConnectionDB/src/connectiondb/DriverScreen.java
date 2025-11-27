@@ -16,6 +16,7 @@ public class DriverScreen {
     private JPanel createUserAccountPanel;
     private JPanel tellerDashboardPanel;
     private JPanel accountInformationPanel;
+    private JPanel createTellerAccountPanel;
 
     private CardLayout layout;
 
@@ -31,6 +32,7 @@ public class DriverScreen {
     private CreateUserAccountPage createUserAccountPage;
     private TellerDashboard tellerDashboard;
     private ViewAccountInformationPage accountInformationPage;
+    private CreateTellerAccountPage createTellerAccountPage;
 
 
     private void createUIComponents() {
@@ -78,12 +80,12 @@ public class DriverScreen {
         activeScene.add(adminDashboardPanel, "adminDashboard");
 
         //Setup CreateUserAccount Page
-        createUserAccountPage = new CreateUserAccountPage();
+        createUserAccountPage = new CreateUserAccountPage(this);
         createUserAccountPanel = createUserAccountPage.getPanel();
         activeScene.add(createUserAccountPanel, "createUserAccount");
 
         //Set up Teller Dashboard Page
-        tellerDashboard = new TellerDashboard();
+        tellerDashboard = new TellerDashboard(this);
         tellerDashboardPanel = tellerDashboard.getPanel();
         activeScene.add(tellerDashboardPanel, "tellerDashboard");
 
@@ -91,6 +93,11 @@ public class DriverScreen {
         accountInformationPage = new ViewAccountInformationPage(this);
         accountInformationPanel = accountInformationPage.getPanel();
         activeScene.add(accountInformationPanel, "accountInformation");
+
+        //Set up Create Teller Account Page
+        createTellerAccountPage = new CreateTellerAccountPage(this);
+        createTellerAccountPanel = createTellerAccountPage.getPanel();
+        activeScene.add(createTellerAccountPanel, "createTellerAccount");
 
         // Choose the starting scene
         layout = (CardLayout) activeScene.getLayout();
@@ -128,5 +135,21 @@ public class DriverScreen {
 
     public void updateAdminDashboardPage(){
         adminDashboard.updateAdminDashboardPage();
+    }
+
+    public void updateCreateUserAccountPage(){
+        createUserAccountPage.updateCreateUserAccountPage();
+    }
+
+    public void updateCreateBankBranchPage(){
+        createBankBranchPage.updateCreateBankBranchPage();
+    }
+
+    public void updateCreateTellerAccountPage(){
+        createTellerAccountPage.updateCreateTellerAccountPage();
+    }
+
+    public void updateTellerDashboardPage(){
+        tellerDashboard.updateTellerDashboardPage();
     }
 }

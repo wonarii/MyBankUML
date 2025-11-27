@@ -12,7 +12,7 @@ public class AdminDashboard {
     private JButton enterButton;
     private JButton createTellerAccountButton;
     private JButton createBankBranchButton;
-    private JButton createUserAccountButton1;
+    private JButton createUserAccountButton;
     private JButton logOutButton;
     private JPanel adminDashboardPanel;
     private JTable userAccountTable;
@@ -46,6 +46,7 @@ public class AdminDashboard {
         createBankBranchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                driverScreen.updateCreateBankBranchPage();
                 Container parent = adminDashboardPanel.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "createBankBranch");
@@ -154,6 +155,24 @@ public class AdminDashboard {
                 }
             }
 
+        });
+        createTellerAccountButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                driverScreen.updateCreateTellerAccountPage();
+                Container parent = adminDashboardPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "createTellerAccount");
+            }
+        });
+        createUserAccountButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                driverScreen.updateCreateUserAccountPage();
+                Container parent = adminDashboardPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "createUserAccount");
+            }
         });
     }
 

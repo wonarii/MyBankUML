@@ -12,6 +12,7 @@ public class CreateBankBranchPage {
     private JButton cancelButton;
     private JPanel createBankBranchPanel;
     private JComboBox bankList;
+    private JLabel headerNameField;
 
     private DriverScreen driverScreen;
 
@@ -76,6 +77,11 @@ public class CreateBankBranchPage {
 
     }
 
+    public void updateCreateBankBranchPage(){
+        updateBankOptions();
+        updateHeaderName();
+    }
+
     public void updateBankOptions(){
         if(bankList.getItemCount() != 0){
             bankList.removeAllItems();
@@ -98,7 +104,15 @@ public class CreateBankBranchPage {
         phoneNumberInput.setText("");
     }
 
-
+    public void updateHeaderName(){
+        Authenticator auth = Authenticator.getAuthenticatorInstance();
+        if(auth.getCurrentUser() != null) {
+            String currentUserName = ((String) auth.getCurrentUser().get("user_first_name")) + " " + ((String) auth.getCurrentUser().get("user_last_name"));
+            headerNameField.setText(currentUserName);
+        } else {
+            headerNameField.setText("");
+        }
+    }
 
 
 }

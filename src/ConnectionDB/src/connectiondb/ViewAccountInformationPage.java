@@ -33,7 +33,6 @@ public class ViewAccountInformationPage {
                 System.out.println(currentRole);
                 if(Objects.equals(currentRole, "admin")){
                     dashboard = "adminDashboard";
-                    System.out.println("Should Be Admin");
                 } else if(Objects.equals(currentRole, "teller")){
                     dashboard = "tellerDashboard";
                 } else{
