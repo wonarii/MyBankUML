@@ -1,7 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class AdminTellerButtons extends JDialog {
     private JLabel userIDField;
@@ -10,7 +7,7 @@ public class AdminTellerButtons extends JDialog {
     private JLabel bankField;
     private JLabel branchField;
     private JLabel emailField;
-    private JButton deleteUserAccountButton;
+    private JButton deleteTellerAccountButton;
     private JPanel adminTellerButtonsPanel;
 
     private DriverScreen driverScreen;

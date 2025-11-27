@@ -109,6 +109,20 @@ public class BankBranch {
         }
     }
 
+    public Object[] display(){
+        Object[] obj = new Object[5];
+        obj[0] = this.getBranchId();
+        obj[1] = this.getBranchName();
+        obj[2] = this.getAddress();
+        obj[3] = this.getBranchPhone();
+        obj[4] = this.getBankId();
+
+        return obj;
+
+    }
+
+
+
     @Override
     public String toString() {
         return branchName;

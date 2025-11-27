@@ -68,7 +68,7 @@ public class DriverScreen {
         activeScene.add(signupPanel, "signup");
 
         //SetUp createBankBranchPage
-        createBankBranchPage = new CreateBankBranchPage();
+        createBankBranchPage = new CreateBankBranchPage(this);
         createBankBranchPanel = createBankBranchPage.getPanel();
         activeScene.add(createBankBranchPanel, "createBankBranch");
 
