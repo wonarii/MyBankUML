@@ -9,6 +9,7 @@ public class ViewTransactionHistoryPage{
     private JTable table1;
     private JButton backButton;
     private JPanel transactionsPanel;
+    private JLabel headerNameField;
     private DefaultTableModel model;
 
     // Step 1: Get A list of Transactions from the Users (viewTransactions() should return a list of transactions)
@@ -76,6 +77,8 @@ public class ViewTransactionHistoryPage{
             displayTransactions(Transaction.convertTransactionsFromDatabase(userID));
         }
 
+        updateHeaderName();
+
     }
 
 
@@ -87,5 +90,14 @@ public class ViewTransactionHistoryPage{
             model.addRow(item.display());
         }
         return 0;
+    }
+    public void updateHeaderName(){
+        Authenticator auth = Authenticator.getAuthenticatorInstance();
+        if(auth.getCurrentUser() != null) {
+            String currentUserName = ((String) auth.getCurrentUser().get("user_first_name")) + " " + ((String) auth.getCurrentUser().get("user_last_name"));
+            headerNameField.setText(currentUserName);
+        } else {
+            headerNameField.setText("");
+        }
     }
 }

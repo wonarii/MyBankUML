@@ -188,7 +188,7 @@ public class ConnectionDB {
         return DriverManager.getConnection(url, user, dbPassword);
     }
 
-    public void createCustomer(Customer customer) {
+    public int createCustomer(Customer customer) {
         String query = "INSERT INTO account_list (user_first_name, user_last_name, user_birthday, user_email, user_password, user_role, user_balance, user_bank_id, user_bank, user_branch_id, user_branch) values (?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -208,12 +208,14 @@ public class ConnectionDB {
             stmt.setString(11, customer.getBranch().getBranchName());
 
             stmt.executeUpdate();
+            return 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
+            return -1;
         }
     }
 
-    public void createBankTeller(BankTeller bankTeller) {
+    public int createBankTeller(BankTeller bankTeller) {
         String query = "INSERT INTO banktellers (first_name, last_name, email, branch) values (?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -223,8 +225,10 @@ public class ConnectionDB {
             stmt.setInt(4, bankTeller.getBranch().getBranchId());
 
             int rs = stmt.executeUpdate();
+            return 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
+            return -1;
         }
     }
 
