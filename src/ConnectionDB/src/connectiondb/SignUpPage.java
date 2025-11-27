@@ -43,8 +43,6 @@ public class SignUpPage extends JFrame {
                 Container parent = contentPane.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "login");
-//                new LoginPage();
-//                dispose();
             }
         });
 
@@ -83,10 +81,6 @@ public class SignUpPage extends JFrame {
                 // Call Authenticator class to write to db
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
                 int status = auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (Bank) bankDropDown.getSelectedItem(), phoneField.getText(), dobField.getText(), passwordField.getText(), (BankBranch)  branchField.getSelectedItem());
-
-
-
-
                 if(status == 0){
                     JOptionPane.showMessageDialog(contentPane, "Sign up was successful!");
                     resetFields();
@@ -158,7 +152,6 @@ public class SignUpPage extends JFrame {
         lastNameField.setText("");
         emailField.setText("");
         phoneField.setText("");
-//        branchField.setText("");
         dobField.setText("");
         passwordField.setText("");
         passwordField2.setText("");

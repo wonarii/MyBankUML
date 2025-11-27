@@ -34,7 +34,6 @@ public class DriverScreen {
     private ViewAccountInformationPage accountInformationPage;
     private CreateTellerAccountPage createTellerAccountPage;
 
-
     private void createUIComponents() {
         // TODO: place custom component creation code here
         activeScene = new JPanel(new CardLayout());
@@ -111,9 +110,6 @@ public class DriverScreen {
     public JPanel getPanel() {
         return activeScene;
     }
-
-
-
 
     // ----------------- Update Functions to update the data displayed when you want to ----------------
     // Example opening TransactionTable page should have the latest data, so call this function

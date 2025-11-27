@@ -201,6 +201,15 @@ public class AdminDashboard {
                 updateBranchSearch(branchComboBox, branchTextField);
             }
         });
+        logOutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Redirect to login scene
+                Container parent = adminDashboardPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "login");
+            }
+        });
     }
 
 
