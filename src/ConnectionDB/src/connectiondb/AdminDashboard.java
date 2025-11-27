@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class AdminDashboard {
@@ -194,6 +195,12 @@ public class AdminDashboard {
                 updateTellerSearch(tellerComboBox, tellerTextField);
             }
         });
+        enterBranchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateBranchSearch(branchComboBox, branchTextField);
+            }
+        });
     }
 
 
@@ -335,6 +342,24 @@ public class AdminDashboard {
                 tellerAccountModel.addRow(teller.display());
             }
             generateEmptyFillerRows(tellerAccountModel);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateBranchSearch(JComboBox comboBox, JTextField input) {
+        try {
+            BankBranch[] branches = new BankBranch[]{};
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            if (comboBox.getSelectedItem().equals("BranchID")) {
+                branches = db.searchBranchId(input.getText());
+            } else if (comboBox.getSelectedItem().equals("Name")) {
+                branches = db.searchBranchName(input.getText());
+            }
+            branchModel.setRowCount(0);
+            for(BankBranch branch : branches) {
+                branchModel.addRow(branch.display());
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
