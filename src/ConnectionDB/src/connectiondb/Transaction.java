@@ -1,4 +1,4 @@
-package ConnectionDB.src.connectiondb;
+//package ConnectionDB.src.connectiondb;
 
 import java.sql.Connection;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package ConnectionDB.src.connectiondb;
+//package ConnectionDB.src.connectiondb;
 public class User {
     private String firstName;
     private String lastName;
@@ -77,4 +77,9 @@ public class User {
     public void setBank(Bank bank) {
         this.bank = bank;
     }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
 }

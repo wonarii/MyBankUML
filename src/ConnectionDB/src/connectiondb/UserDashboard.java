@@ -42,7 +42,8 @@ public class UserDashboard {
         viewTransactionHistoryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                driverScreen.updateTransactionsTable();
+                int userID = (int) Authenticator.getAuthenticatorInstance().getCurrentUser().get("id");
+                driverScreen.updateTransactionsTable(userID);
                 Container parent = userDashboardPanel.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "transactions");
