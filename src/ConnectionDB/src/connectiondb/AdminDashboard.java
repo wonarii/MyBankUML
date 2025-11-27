@@ -5,11 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 
 public class AdminDashboard {
-    private JComboBox comboBox1;
-    private JTextField eGUS343110453TextField;
-    private JButton enterButton;
+    private JComboBox customerComboBox;
+    private JButton enterUserButton;
     private JButton createTellerAccountButton;
     private JButton createBankBranchButton;
     private JButton createUserAccountButton;
@@ -23,6 +23,13 @@ public class AdminDashboard {
     private JLabel headerNameField;
     private JScrollPane branchScrollPane;
     private JTable branchTable;
+    private JButton enterTellerButton;
+    private JButton enterBranchButton;
+    private JComboBox tellerComboBox;
+    private JComboBox branchComboBox;
+    private JTextField tellerTextField;
+    private JTextField branchTextField;
+    private JTextField customerTextField;
 
     private DefaultTableModel userAccountModel;
     private DefaultTableModel tellerAccountModel;
@@ -174,6 +181,19 @@ public class AdminDashboard {
                 layout.show(parent, "createUserAccount");
             }
         });
+        enterUserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateCustomerSearch(customerComboBox, customerTextField);
+            }
+        });
+
+        enterTellerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTellerSearch(tellerComboBox, tellerTextField);
+            }
+        });
     }
 
 
@@ -273,6 +293,51 @@ public class AdminDashboard {
             userAccountModel.addRow(tempCustomer.display());
         }
         generateEmptyFillerRows(userAccountModel);
+    }
+
+    // This method is called when the admin presses the 'Enter' button
+    public void updateCustomerSearch(JComboBox comboBox, JTextField input) {
+        try {
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            Customer[] users = new Customer[]{};
+            if (comboBox.getSelectedItem().equals("AccountID")) {
+                users = db.searchCustomerId(input.getText());
+            } else if (comboBox.getSelectedItem().equals("BranchID")) {
+                users = db.searchCustomerBranchId(input.getText());
+            } else if (comboBox.getSelectedItem().equals("Name")) {
+                users = db.searchCustomerName(input.getText());
+            }
+
+            userAccountModel.setRowCount(0);
+            for(Customer customer : users) {
+                userAccountModel.addRow(customer.display());
+            }
+            generateEmptyFillerRows(userAccountModel);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateTellerSearch(JComboBox comboBox, JTextField input) {
+        try {
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            BankTeller[] users = new BankTeller[]{};
+            if (comboBox.getSelectedItem().equals("AccountID")) {
+                users = db.searchTellerId(input.getText());
+            } else if (comboBox.getSelectedItem().equals("BranchID")) {
+                users = db.searchTellerBranchId(input.getText());
+            } else if (comboBox.getSelectedItem().equals("Name")) {
+                users = db.searchTellerName(input.getText());
+            }
+
+            tellerAccountModel.setRowCount(0);
+            for(BankTeller teller : users) {
+                tellerAccountModel.addRow(teller.display());
+            }
+            generateEmptyFillerRows(tellerAccountModel);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

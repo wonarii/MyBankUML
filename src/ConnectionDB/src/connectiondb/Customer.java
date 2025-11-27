@@ -16,6 +16,12 @@ public class Customer extends User {
         this.balance = balance;
     }
 
+    // Constructor without password
+    public Customer(String firstName, String lastName, String email, int accountId, BankBranch branch, Bank bank, double balance) {
+        super(firstName, lastName, email, accountId, branch, bank);
+        this.balance = balance;
+    }
+
     // Getters
     public String getPhone() {
         return this.phone;
