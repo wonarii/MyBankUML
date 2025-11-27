@@ -188,7 +188,7 @@ public class ConnectionDB {
     }
 
     public int createCustomer(Customer customer) {
-        String query = "INSERT INTO account_list (user_first_name, user_last_name, user_birthday, user_email, user_password, user_role, user_balance, user_bank_id, user_bank, user_branch_id, user_branch) values (?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO account_list (user_first_name, user_last_name, user_birthday, user_email, user_password, user_role, user_balance, user_bank_id, user_bank, user_branch_id, user_branch, user_phone) values (?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -205,6 +205,7 @@ public class ConnectionDB {
             stmt.setString(9, customer.getBank().getBankName());
             stmt.setInt(10, customer.getBranch().getBranchId());
             stmt.setString(11, customer.getBranch().getBranchName());
+            stmt.setString(12, customer.getPhone());
 
             stmt.executeUpdate();
             return 0;
@@ -364,6 +365,35 @@ public class ConnectionDB {
         return null;
     }
 
+    public Customer[] getAllCustomer() {
+        try (Connection conn = getConnection();) {
+            String query = "SELECT * FROM account_list WHERE user_role = 'user'";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            ArrayList<User> users = new ArrayList<>();
+
+            while (rs.next()) {
+                int userId = rs.getInt("id");
+                String firstName = rs.getString("user_first_name");
+                String lastName = rs.getString("user_last_name");
+                String email = rs.getString("user_email");
+                int balance = rs.getInt("user_balance");
+                int bankId = rs.getInt("user_bank_id");
+                String bankName = rs.getString("user_bank");
+                int branchId = rs.getInt("user_branch_id");
+                String branch = rs.getString("user_branch");
+
+                Customer user = new Customer(firstName, lastName, email, userId, new BankBranch(bankId, branch, "", branchId, ""), new Bank(bankName, bankId), balance);
+                users.add(user);
+            }
+            return users.toArray(new Customer[users.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public BankTeller[] searchTellerId(String input) {
         try (Connection conn = getConnection();) {
             String query = "SELECT * FROM account_list WHERE id = ? AND user_role = 'teller'";
@@ -454,6 +484,37 @@ public class ConnectionDB {
         }
         return null;
     }
+
+    public BankTeller[] getAllTeller() {
+        try (Connection conn = getConnection();) {
+            String query = "SELECT * FROM account_list WHERE user_role = 'teller'";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            ArrayList<User> users = new ArrayList<>();
+
+            while (rs.next()) {
+                int userId = rs.getInt("id");
+                String firstName = rs.getString("user_first_name");
+                String lastName = rs.getString("user_last_name");
+                String email = rs.getString("user_email");
+                int balance = rs.getInt("user_balance");
+                int bankId = rs.getInt("user_bank_id");
+                String bankName = rs.getString("user_bank");
+                int branchId = rs.getInt("user_branch_id");
+                String branch = rs.getString("user_branch");
+
+                BankTeller user = new BankTeller(firstName, lastName, email, userId, new BankBranch(bankId, branch, "", branchId, ""), new Bank(bankName, bankId));
+                users.add(user);
+            }
+            return users.toArray(new BankTeller[users.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
     public BankBranch[] searchBranchId(String input) {
         String query = "SELECT * FROM branch_list WHERE branch_id = ?";
@@ -642,21 +703,8 @@ public class ConnectionDB {
                 userData.put("user_bank_id", rs.getInt("user_bank_id"));
                 userData.put("user_branch", rs.getString("user_branch"));
                 userData.put("user_branch_id", rs.getInt("user_branch_id"));
-
-                Bank newBank = new Bank(rs.getString("user_bank"), rs.getInt("user_bank_id"));
-                List<Map<String, Object>> storedBranch = getBranchById(rs.getInt("user_branch_id"));
-                Map<String, Object> t = storedBranch.get(0);
-
-
-                int branchId = (int) t.get("branch_id");
-                String branchName = (String) t.get("branch_name");
-                String  location = (String) t.get("location");
-                String  branchPhone = (String) t.get("branch_phone");
-                int bankId = (int) t.get("bank_id");
-
-                BankBranch newBranch = new BankBranch(bankId, branchName, location, branchId, branchPhone);
-
-                User currentUser = new User(rs.getString("user_first_name"), rs.getString("user_last_name"), rs.getString("user_email"), newBranch, newBank, rs.getString("user_password"));
+                userData.put("user_phone",rs.getString("user_phone"));
+                
                 System.out.println("User verified and session created!");
                 return true;
             } else {
@@ -694,8 +742,7 @@ public class ConnectionDB {
                 txn.put("user_bank_id", rs.getInt("user_bank_id"));
                 txn.put("user_branch", rs.getString("user_branch"));
                 txn.put("user_branch_id", rs.getInt("user_branch_id"));
-
-
+                txn.put("user_phone",rs.getString("user_phone"));
 
                 return txn;
             } else {
@@ -714,7 +761,7 @@ public class ConnectionDB {
     //  - For role 'admin'/'teller': always inserted as NULL.
     public boolean createUser(String firstName, String lastName, String email, String plainPassword,
                               Double balanceParam, String role, int bankId, int branchId,
-                              String birthday, String address) {
+                              String birthday, String phone) {
 
         if (!isValidRole(role)) {
             System.out.println("Invalid role! Must be 'user', 'teller', or 'admin'.");
@@ -734,8 +781,8 @@ public class ConnectionDB {
 
         String query = "INSERT INTO account_list " +
                 "(user_first_name, user_last_name, user_email, user_password, user_balance, user_role, " +
-                "user_bank, user_bank_id, user_branch, user_branch_id, user_birthday) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "user_bank, user_bank_id, user_branch, user_branch_id, user_birthday, user_phone) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -762,6 +809,7 @@ public class ConnectionDB {
             stmt.setString(9, branchName);
             stmt.setInt(10, branchId);
             stmt.setString(11, birthday);
+            stmt.setString(12, phone);
 
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -1066,6 +1114,10 @@ public class ConnectionDB {
         return updateField(email, "user_address", newAddress);
     }
 
+    public boolean updatePhone(String email, String newPhone) {
+        return updateField(email, "user_phone", newPhone);
+    }
+
     // --- Delete user ---
     public boolean deleteUser(String email) {
         return updateField(email, "DELETE", null);
@@ -1127,6 +1179,7 @@ public class ConnectionDB {
                 userMap.put("bank", rs.getString("user_bank"));
                 userMap.put("branch", rs.getString("user_branch"));
                 userMap.put("birthday", rs.getString("user_birthday"));
+                userMap.put("phone", rs.getString("user_phone"));
                 userList.add(userMap);
             }
         } catch (SQLException e) { e.printStackTrace(); }
