@@ -13,7 +13,10 @@ public class CreateBankBranchPage {
     private JPanel createBankBranchPanel;
     private JComboBox bankList;
 
-    public CreateBankBranchPage() {
+    private DriverScreen driverScreen;
+
+    public CreateBankBranchPage(DriverScreen driverScreen) {
+        this.driverScreen = driverScreen;
         updateBankOptions();
 
         createButton.addActionListener(new ActionListener() {
@@ -39,6 +42,9 @@ public class CreateBankBranchPage {
                     if(status == 0){
                         JOptionPane.showMessageDialog(createBankBranchPanel, "Bank branch creation was successful!");
                         resetFields();
+
+                        driverScreen.updateAdminDashboardPage();
+
                         Container parent = createBankBranchPanel.getParent();
                         CardLayout layout = (CardLayout) parent.getLayout();
                         layout.show(parent, "adminDashboard");

@@ -21,21 +21,26 @@ public class AdminDashboard {
     private JScrollPane tellerAccountsScrollPane;
     private JLabel adminNameField;
     private JLabel headerNameField;
+    private JScrollPane branchScrollPane;
+    private JTable branchTable;
 
     private DefaultTableModel userAccountModel;
     private DefaultTableModel tellerAccountModel;
+    private DefaultTableModel branchModel;
 
     private final int AMOUNTOFTABLEROWS = 4;
     private DriverScreen driverScreen;
 
     final int[] lastSelectedRow = {-1};
     final int[] lastSelectedRowTeller = {-1};
+    final int[] lastSelectedRowBranch = {-1};
 
 
     public AdminDashboard(DriverScreen driverScreen) {
         this.driverScreen = driverScreen;
         userAccountsScrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         tellerAccountsScrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        branchScrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
 
         createBankBranchButton.addActionListener(new ActionListener() {
@@ -116,6 +121,40 @@ public class AdminDashboard {
             }
 
         });
+
+        // =============================== Branch Table =========================================
+        branchTable.getSelectionModel().addListSelectionListener(e -> {
+            if(!e.getValueIsAdjusting()) {
+                lastSelectedRowBranch[0] = branchTable.getSelectedRow();
+            }
+        });
+
+        // Check if the selected row has been clicked
+        branchTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e){
+                int clickedRow = branchTable.rowAtPoint(e.getPoint());
+
+                // Check to make sure nothing will happen if we click an empty row
+                Object testData = branchTable.getValueAt(clickedRow, 0);
+
+                if(clickedRow == lastSelectedRowBranch[0] && clickedRow >= 0 && testData != null) {
+                    //Get The Selected Row's Information and Send it to the ShowButtonsFunction
+
+                    // Convert the information from the table into an Object[]
+                    int columnCount = branchModel.getColumnCount();
+                    Object[] rowData = new Object[columnCount];
+                    for (int i = 0; i < columnCount; i++) {
+                        rowData[i] = branchModel.getValueAt(clickedRow, i);
+                    }
+
+                    // Send this to the Buttons
+                    AdminBranchButtons.showBranchButtons(rowData, driverScreen, adminDashboardPanel);
+
+                }
+            }
+
+        });
     }
 
 
@@ -138,12 +177,6 @@ public class AdminDashboard {
         userAccountTable.getColumnModel().getColumn(0).setPreferredWidth(25);                // lower the column width of the Account ID
         userAccountTable.setRowHeight(25);                                                              // Increase the height of a row
 
-        // Create a temporary customer
-        // TODO: Remove Later
-        Customer tempCust = new Customer("John", "Doe", "joe@gmail.com", new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234"), new Bank("Desjardins", 1), "password", "1234567890", "2002-01-01", 5000.0);
-        Customer tempCust2 = new Customer("Jane", "Doe", "jane@gmail.com", new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234"), new Bank("Desjardins", 1), "password", "1234567890", "2002-01-01", 5000.0);
-        userAccountModel.addRow(tempCust.display());
-        userAccountModel.addRow(tempCust2.display());
 
         // ============================================ Tellers ================================================
         String[] adminColumns = {"Account ID","Email","First Name","Last Name","Bank","Branch"};
@@ -153,20 +186,27 @@ public class AdminDashboard {
                 return false;
             }
         };
-
-
         tellerAccountTable = new JTable(tellerAccountModel);
         tellerAccountTable.getColumnModel().getColumn(0).setPreferredWidth(25);
         tellerAccountTable.setRowHeight(25);
 
-        // Create a temporary Teller
-        // TODO: get actual bank tellers
-        BankTeller tempTeller = new BankTeller("Alice", "Rabbit", "a@gmail.com", new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234"),new Bank("Desjardins", 1), "abc123" );
-        tellerAccountModel.addRow(tempTeller.display());
+        // ================================== Branches Stuff ====================================
+        String[] branchColumns = {"Branch ID", "Branch","Location","Branch Phone", "Bank ID"};
 
-        // Generate Empty Rows so the table takes up more space
-        generateEmptyFillerRows(userAccountModel);
-        generateEmptyFillerRows(tellerAccountModel);
+        branchModel = new DefaultTableModel(branchColumns, 0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        branchTable = new JTable(branchModel);
+        branchTable.getColumnModel().getColumn(0).setPreferredWidth(25);
+        branchTable.setRowHeight(25);
+
+        updateUserTable();
+        updateTellerTable();
+        updateBranchTable();
     }
 
     public JPanel getPanel() {
@@ -188,6 +228,72 @@ public class AdminDashboard {
         String adminName = auth.getCurrentUser().get("user_first_name").toString() + " " + auth.getCurrentUser().get("user_last_name");
         adminNameField.setText(adminName);
         headerNameField.setText(adminName);
+
+        updateUserTable();
+        updateTellerTable();
+        updateBranchTable();
+
+
+    }
+
+    /**
+     * This function will update the table for the users
+     */
+    public void updateUserTable(){
+
+        userAccountModel.setRowCount(0);
+        // Create a temporary customer
+        // TODO: Remove Later
+        Customer tempCust = new Customer("John", "Doe", "joe@gmail.com", new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234"), new Bank("Desjardins", 1), "password", "1234567890", "2002-01-01", 5000.0);
+        Customer tempCust2 = new Customer("Jane", "Doe", "jane@gmail.com", new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234"), new Bank("Desjardins", 1), "password", "1234567890", "2002-01-01", 5000.0);
+
+        // TODO: Replace this line with the function
+        Customer[] tempCustomers = new Customer[]{tempCust, tempCust2};
+
+        for(Customer tempCustomer : tempCustomers) {
+            userAccountModel.addRow(tempCustomer.display());
+        }
+        generateEmptyFillerRows(userAccountModel);
+    }
+
+    /**
+     * This function will update the table for the Tellers
+     */
+    public void updateTellerTable(){
+
+        tellerAccountModel.setRowCount(0);
+        // Create a temporary Teller
+        // TODO: Remove Later
+        BankTeller tempTeller = new BankTeller("Alice", "Rabbit", "a@gmail.com", new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234"),new Bank("Desjardins", 1), "abc123" );
+
+
+        // TODO: Replace this line with the function
+        BankTeller[] tempTellerList = new BankTeller[]{tempTeller};
+
+        for(BankTeller teller : tempTellerList) {
+            tellerAccountModel.addRow(teller.display());
+        }
+        generateEmptyFillerRows(tellerAccountModel);
+    }
+
+    /**
+     * This function will update the table for the Branches
+     */
+    public void updateBranchTable(){
+        branchModel.setRowCount(0);
+        // Create a temporary BankBranch
+        // TODO: ADD THE SEARCH RESULTS
+        BankBranch tempBankBranch = new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234");
+
+
+        // TODO: Replace this line with the function
+        BankBranch[] tempBranchList = new BankBranch[]{tempBankBranch};
+
+        for(BankBranch branch : tempBranchList) {
+            branchModel.addRow(branch.display());
+        }
+
+        generateEmptyFillerRows(branchModel);
     }
 
 }

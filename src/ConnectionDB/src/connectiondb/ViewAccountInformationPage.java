@@ -74,16 +74,16 @@ public class ViewAccountInformationPage {
         try{
             // Ideally this is a function implemented in the Authenticator or something
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
-            Map<String, Object> currentUser = db.getUserByID(shownUserID);
+            Map<String, Object> currentUserShown = db.getUserByID(shownUserID);
 
-            institutionField.setText(String.format("%03d",(int) currentUser.get("user_bank_id")));
-            transitNumberField.setText(String.format("%05d",(int) currentUser.get("user_branch_id")));
-            accountNumberField.setText(String.format("%07d", (int) currentUser.get("id")));
+            institutionField.setText(String.format("%03d",(int) currentUserShown.get("user_bank_id")));
+            transitNumberField.setText(String.format("%05d",(int) currentUserShown.get("user_branch_id")));
+            accountNumberField.setText(String.format("%07d", (int) currentUserShown.get("id")));
 
 
-            firstNameField.setText(currentUser.get("user_first_name").toString());
-            lastNameField.setText(currentUser.get("user_last_name").toString());
-            birthdayField.setText(currentUser.get("user_birthday").toString());
+            firstNameField.setText(currentUserShown.get("user_first_name").toString());
+            lastNameField.setText(currentUserShown.get("user_last_name").toString());
+            birthdayField.setText(currentUserShown.get("user_birthday").toString());
 
 
         } catch (Exception e) {
