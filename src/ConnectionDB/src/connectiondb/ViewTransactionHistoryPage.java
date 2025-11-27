@@ -23,9 +23,21 @@ public class ViewTransactionHistoryPage{
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                String dashboard;
+                String currentRole =(String) Authenticator.getAuthenticatorInstance().getCurrentUser().get("user_role");
+
+                if(currentRole.equals("admin")){
+                    dashboard = "adminDashboard";
+                } else if(currentRole.equals("teller")){
+                    dashboard = "tellerDashboard";
+                } else {
+                    dashboard = "userDashboard";
+                }
+
                 Container parent = transactionsPanel.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
-                layout.show(parent, "userDashboard");
+                layout.show(parent, dashboard);
             }
         });
     }
@@ -48,7 +60,7 @@ public class ViewTransactionHistoryPage{
         table1.getColumnModel().getColumn(1).setPreferredWidth(25);
 
         //TODO: Change this
-        updateTransactionsView();
+//        updateTransactionsView();
 
     }
 
@@ -57,11 +69,11 @@ public class ViewTransactionHistoryPage{
         return transactionsPanel;
     }
 
-    public void updateTransactionsView() {
+    public void updateTransactionsView(int userID) {
         Authenticator auth = Authenticator.getAuthenticatorInstance();
+
         if(auth.getCurrentUser() != null){
-            int tempUserID = (int) Authenticator.getAuthenticatorInstance().getCurrentUser().get("id");
-            displayTransactions(Transaction.convertTransactionsFromDatabase(tempUserID));
+            displayTransactions(Transaction.convertTransactionsFromDatabase(userID));
         }
 
     }
