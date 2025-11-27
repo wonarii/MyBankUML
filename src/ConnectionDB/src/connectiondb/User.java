@@ -1,4 +1,4 @@
-package ConnectionDB.src.connectiondb;
+//package ConnectionDB.src.connectiondb;
 public class User {
     private String firstName;
     private String lastName;
