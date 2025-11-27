@@ -1,8 +1,14 @@
 //package ConnectionDB.src.connectiondb;
 public class BankTeller extends User {
     final String ROLE = "teller";
+
     public BankTeller(String firstName, String lastName, String email, BankBranch branch, Bank bank, String password) {
         super(firstName, lastName, email, branch, bank, password);
+    }
+
+    // Constructor without password
+    public BankTeller(String firstName, String lastName, String email, int accountId, BankBranch branch, Bank bank) {
+        super(firstName, lastName, email, accountId, branch, bank);
     }
 
     // Issue: need a way to search by ID in the database.
