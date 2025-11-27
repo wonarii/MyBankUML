@@ -8,24 +8,22 @@
 -- PHP Version: 8.2.12
 
 
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+
 
 --
 -- Database: `bankapp_db`
 --
 
 -- WIPE THE DATABASE CLEAN BEFORE RUNNING
-
-DROP DATABASE IF EXISTS `bankapp_db`;
-CREATE DATABASE `bankapp_db`;
+-- the only change made here was not clearing hte databse instead using the following Query 
+CREATE DATABASE IF NOT EXISTS `bankapp_db`;
+USE `bankapp_db`;
 
 
 -- --------------------------------------------------------
@@ -217,6 +215,4 @@ ALTER TABLE `transaction_list`
   ADD CONSTRAINT `transaction_list_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `account_list` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+

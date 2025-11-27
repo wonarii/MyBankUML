@@ -1,3 +1,5 @@
+package ConnectionDB.src.connectiondb;
+
 import java.util.Date;
 
 public class Customer extends User {
@@ -43,6 +45,7 @@ public class Customer extends User {
     // When the deposit button is pressed, this function is called
     public void deposit (double amount) {
         this.balance = this.balance + amount;
+        
         // Update in database?
     }
 
