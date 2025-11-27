@@ -1,4 +1,7 @@
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AdminTellerButtons extends JDialog {
     private JLabel userIDField;
@@ -9,6 +12,7 @@ public class AdminTellerButtons extends JDialog {
     private JLabel emailField;
     private JButton deleteTellerAccountButton;
     private JPanel adminTellerButtonsPanel;
+    private JButton viewAccountInformationButton;
 
     private DriverScreen driverScreen;
     private JPanel originalScene;
@@ -28,6 +32,17 @@ public class AdminTellerButtons extends JDialog {
         lastNameField.setText(data[3].toString());
         bankField.setText(data[4].toString());
         branchField.setText(data[5].toString());
+
+        viewAccountInformationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                driverScreen.updateAccountInformationPage((int) data[0]);
+                dispose();
+                Container parent = originalScene.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "accountInformation");
+            }
+        });
 
 
         add(adminTellerButtonsPanel);

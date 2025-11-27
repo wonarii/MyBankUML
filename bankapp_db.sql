@@ -21,9 +21,9 @@ SET time_zone = "+00:00";
 --
 
 -- WIPE THE DATABASE CLEAN BEFORE RUNNING
--- the only change made here was not clearing hte databse instead using the following Query 
-CREATE DATABASE IF NOT EXISTS `bankapp_db`;
-USE `bankapp_db`;
+-- the only change made here was not clearing hte databse instead using the following Query
+DROP DATABASE IF EXISTS `bankapp_db`;
+CREATE DATABASE`bankapp_db`;
 
 
 -- --------------------------------------------------------
@@ -44,7 +44,8 @@ CREATE TABLE `account_list` (
   `user_bank_id` int(11) NOT NULL,
   `user_bank` varchar(100) NOT NULL,
   `user_branch_id` int(11) NOT NULL,
-  `user_branch` varchar(100) NOT NULL
+  `user_branch` varchar(100) NOT NULL,
+  `user_phone` varchar(10) Default NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

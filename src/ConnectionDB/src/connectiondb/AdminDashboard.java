@@ -5,11 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class AdminDashboard {
-    private JComboBox comboBox1;
-    private JTextField eGUS343110453TextField;
-    private JButton enterButton;
+    private JComboBox customerComboBox;
+    private JButton enterUserButton;
     private JButton createTellerAccountButton;
     private JButton createBankBranchButton;
     private JButton createUserAccountButton;
@@ -23,6 +24,13 @@ public class AdminDashboard {
     private JLabel headerNameField;
     private JScrollPane branchScrollPane;
     private JTable branchTable;
+    private JButton enterTellerButton;
+    private JButton enterBranchButton;
+    private JComboBox tellerComboBox;
+    private JComboBox branchComboBox;
+    private JTextField tellerTextField;
+    private JTextField branchTextField;
+    private JTextField customerTextField;
 
     private DefaultTableModel userAccountModel;
     private DefaultTableModel tellerAccountModel;
@@ -174,6 +182,25 @@ public class AdminDashboard {
                 layout.show(parent, "createUserAccount");
             }
         });
+        enterUserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateCustomerSearch();
+            }
+        });
+
+        enterTellerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTellerSearch();
+            }
+        });
+        enterBranchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateBranchSearch();
+            }
+        });
     }
 
 
@@ -223,9 +250,9 @@ public class AdminDashboard {
         branchTable.getColumnModel().getColumn(0).setPreferredWidth(25);
         branchTable.setRowHeight(25);
 
-        updateUserTable();
-        updateTellerTable();
-        updateBranchTable();
+        updateCustomerSearch();
+        updateTellerSearch();
+        updateBranchSearch();
     }
 
     public JPanel getPanel() {
@@ -248,71 +275,107 @@ public class AdminDashboard {
         adminNameField.setText(adminName);
         headerNameField.setText(adminName);
 
-        updateUserTable();
-        updateTellerTable();
-        updateBranchTable();
-
-
+        updateCustomerSearch();
+        updateTellerSearch();
+        updateBranchSearch();
     }
 
-    /**
-     * This function will update the table for the users
-     */
-    public void updateUserTable(){
 
-        userAccountModel.setRowCount(0);
-        // Create a temporary customer
-        // TODO: Remove Later
-        Customer tempCust = new Customer("John", "Doe", "joe@gmail.com", new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234"), new Bank("Desjardins", 1), "password", "1234567890", "2002-01-01", 5000.0);
-        Customer tempCust2 = new Customer("Jane", "Doe", "jane@gmail.com", new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234"), new Bank("Desjardins", 1), "password", "1234567890", "2002-01-01", 5000.0);
+    // This method is called when the admin presses the 'Enter' button
+    public void updateCustomerSearch() {
+        try {
+            JComboBox comboBox = customerComboBox;
+            JTextField input = customerTextField;
 
-        // TODO: Replace this line with the function
-        Customer[] tempCustomers = new Customer[]{tempCust, tempCust2};
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            Customer[] users = new Customer[]{};
 
-        for(Customer tempCustomer : tempCustomers) {
-            userAccountModel.addRow(tempCustomer.display());
+            if(input == null || input.getText().equals("")){
+                users = db.getAllCustomer();
+
+            } else {
+                if (comboBox.getSelectedItem().equals("AccountID")) {
+                    users = db.searchCustomerId(input.getText());
+                } else if (comboBox.getSelectedItem().equals("BranchID")) {
+                    users = db.searchCustomerBranchId(input.getText());
+                } else if (comboBox.getSelectedItem().equals("Name")) {
+                    users = db.searchCustomerName(input.getText());
+                } else {
+                    db.getAllCustomer();
+                }
+            }
+
+            userAccountModel.setRowCount(0);
+            for(Customer customer : users) {
+                userAccountModel.addRow(customer.display());
+            }
+            generateEmptyFillerRows(userAccountModel);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        generateEmptyFillerRows(userAccountModel);
     }
 
-    /**
-     * This function will update the table for the Tellers
-     */
-    public void updateTellerTable(){
+    public void updateTellerSearch() {
 
-        tellerAccountModel.setRowCount(0);
-        // Create a temporary Teller
-        // TODO: Remove Later
-        BankTeller tempTeller = new BankTeller("Alice", "Rabbit", "a@gmail.com", new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234"),new Bank("Desjardins", 1), "abc123" );
+        JComboBox comboBox = tellerComboBox;
+        JTextField input = tellerTextField;
 
+        try {
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            BankTeller[] users = new BankTeller[]{};
 
-        // TODO: Replace this line with the function
-        BankTeller[] tempTellerList = new BankTeller[]{tempTeller};
+            if(input == null || input.getText().equals("")) {
+                users = db.getAllTeller();
 
-        for(BankTeller teller : tempTellerList) {
-            tellerAccountModel.addRow(teller.display());
+            } else {
+                if (comboBox.getSelectedItem().equals("AccountID")) {
+                    users = db.searchTellerId(input.getText());
+                } else if (comboBox.getSelectedItem().equals("BranchID")) {
+                    users = db.searchTellerBranchId(input.getText());
+                } else if (comboBox.getSelectedItem().equals("Name")) {
+                    users = db.searchTellerName(input.getText());
+                } else {
+                    users = db.getAllTeller();
+                }
+            }
+
+            tellerAccountModel.setRowCount(0);
+            for(BankTeller teller : users) {
+                tellerAccountModel.addRow(teller.display());
+            }
+            generateEmptyFillerRows(tellerAccountModel);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        generateEmptyFillerRows(tellerAccountModel);
     }
 
-    /**
-     * This function will update the table for the Branches
-     */
-    public void updateBranchTable(){
-        branchModel.setRowCount(0);
-        // Create a temporary BankBranch
-        // TODO: ADD THE SEARCH RESULTS
-        BankBranch tempBankBranch = new BankBranch(1, "Desjardin Branch", "abc", 11, "1231231234");
+    public void updateBranchSearch() {
 
+        JComboBox comboBox = branchComboBox;
+        JTextField input = branchTextField;
 
-        // TODO: Replace this line with the function
-        BankBranch[] tempBranchList = new BankBranch[]{tempBankBranch};
+        try {
+            BankBranch[] branches = new BankBranch[]{};
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
 
-        for(BankBranch branch : tempBranchList) {
-            branchModel.addRow(branch.display());
+            if(input == null || input.getText().equals("")) {
+                branches = BankBranch.getAllBankBranch();
+            } else {
+                if (comboBox.getSelectedItem().equals("BranchID")) {
+                    branches = db.searchBranchId(input.getText());
+                } else if (comboBox.getSelectedItem().equals("Name")) {
+                    branches = db.searchBranchName(input.getText());
+                }
+            }
+            branchModel.setRowCount(0);
+            for(BankBranch branch : branches) {
+                branchModel.addRow(branch.display());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        generateEmptyFillerRows(branchModel);
     }
+
+
 
 }
