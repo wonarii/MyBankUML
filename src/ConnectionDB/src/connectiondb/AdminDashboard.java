@@ -261,7 +261,7 @@ public class AdminDashboard {
         tellerAccountTable.setRowHeight(25);
 
         // ================================== Branches Stuff ====================================
-        String[] branchColumns = {"Branch ID", "Branch","Location","Branch Phone", "Bank ID"};
+        String[] branchColumns = {"Branch ID", "Branch","Location","Branch Phone", "Bank", "Bank ID"};
 
         branchModel = new DefaultTableModel(branchColumns, 0){
             @Override
