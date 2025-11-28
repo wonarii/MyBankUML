@@ -728,6 +728,37 @@ public class ConnectionDB {
         }
     }
 
+    // --- Load user and verify password (for login) ---
+    public boolean verifyPassword(String email, String password) {
+        String query = "SELECT * FROM account_list WHERE user_email = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String storedHash = rs.getString("user_password");
+                if (storedHash != null && storedHash.startsWith("$2y$")) {
+                    storedHash = "$2a$" + storedHash.substring(4);
+                }
+
+                if (storedHash == null || !BCrypt.checkpw(password, storedHash)) {
+                    System.out.println("Invalid credentials!");
+                    return false;
+                }
+
+                return true;
+            } else {
+                System.out.println("Invalid credentials!");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error loading user data!");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // --- Load user by ID ---
     public Map<String, Object> getUserByID(int userID) {
         String query = "SELECT * FROM account_list WHERE id = ?";
