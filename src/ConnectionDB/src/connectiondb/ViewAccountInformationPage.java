@@ -18,6 +18,7 @@ public class ViewAccountInformationPage {
     private JLabel birthdayField;
     private JPanel phonePanel;
     private JLabel phoneField;
+    private JPanel birthdayPanel;
 
     private int shownUserID;
 
@@ -84,10 +85,11 @@ public class ViewAccountInformationPage {
 
             firstNameField.setText(currentUserShown.get("user_first_name").toString());
             lastNameField.setText(currentUserShown.get("user_last_name").toString());
-            birthdayField.setText(currentUserShown.get("user_birthday").toString());
+
 
             if(!(currentUserShown.get("user_role").equals("user"))){
                 phonePanel.setVisible(false);
+                birthdayPanel.setVisible(false);
             } else{
 
                 if(currentUserShown.get("user_phone") == null){
@@ -95,6 +97,14 @@ public class ViewAccountInformationPage {
                 } else {
                     phoneField.setText(currentUserShown.get("user_phone").toString());
                 }
+
+                if(currentUserShown.get("user_birthday") == null){
+                    birthdayField.setText("");
+                } else {
+                    birthdayField.setText(currentUserShown.get("user_birthday").toString());
+                }
+
+
                 phonePanel.setVisible(true);
             }
 

@@ -134,6 +134,7 @@ public class DriverScreen {
     }
 
     public void updateAdminDashboardPage(){
+
         adminDashboard.updateAdminDashboardPage();
     }
 
