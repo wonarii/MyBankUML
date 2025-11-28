@@ -31,6 +31,7 @@ public class AdminDashboard {
     private JTextField tellerTextField;
     private JTextField branchTextField;
     private JTextField customerTextField;
+    private JButton profileButton;
 
     private DefaultTableModel userAccountModel;
     private DefaultTableModel tellerAccountModel;
@@ -180,6 +181,17 @@ public class AdminDashboard {
                 Container parent = adminDashboardPanel.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "createUserAccount");
+            }
+        });
+
+        profileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int userID = (int) Authenticator.getAuthenticatorInstance().getCurrentUser().get("id");
+                driverScreen.updateAccountInformationPage(userID);
+                Container parent = adminDashboardPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "accountInformation");
             }
         });
         enterUserButton.addActionListener(new ActionListener() {

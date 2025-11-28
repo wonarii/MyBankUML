@@ -17,6 +17,7 @@ public class TellerDashboard {
     private JScrollPane userAccountsScrollPane;
     private JTable userAccountTable;
     private JTextField customerTextField;
+    private JButton profileButton;
 
     private final int AMOUNTOFTABLEROWS = 4;
     private DefaultTableModel userAccountModel;
@@ -73,6 +74,18 @@ public class TellerDashboard {
                 Container parent = tellerDashboardPanel.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "createUserAccount");
+            }
+        });
+
+        profileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int userID = (int) Authenticator.getAuthenticatorInstance().getCurrentUser().get("id");
+                driverScreen.updateAccountInformationPage(userID);
+
+                Container parent = tellerDashboardPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "accountInformation");
             }
         });
 
