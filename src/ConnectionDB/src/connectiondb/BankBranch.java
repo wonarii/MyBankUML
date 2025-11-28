@@ -68,7 +68,7 @@ public class BankBranch {
                 String branchPhone = (String) map.get("branch_phone");
                 int bankId = (int) map.get("bank_id");
 
-                BankBranch bankBranch = new BankBranch(branchId, branchName, address, branchId, branchPhone);
+                BankBranch bankBranch = new BankBranch(bankId, branchName, address, branchId, branchPhone);
                 branchArray[index] = bankBranch;
                 index++;
             }
@@ -109,14 +109,21 @@ public class BankBranch {
     }
 
     public Object[] display(){
-        Object[] obj = new Object[5];
-        obj[0] = this.getBranchId();
-        obj[1] = this.getBranchName();
-        obj[2] = this.getAddress();
-        obj[3] = this.getBranchPhone();
-        obj[4] = this.getBankId();
+        Object[] obj = new Object[6];
+        try{
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            String bankName = db.getBankNameById(this.getBankId());
 
-        return obj;
+            obj[0] = this.getBranchId();
+            obj[1] = this.getBranchName();
+            obj[2] = this.getAddress();
+            obj[3] = this.getBranchPhone();
+            obj[4] = bankName;
+            obj[5] = this.getBankId();
+            return obj;
+        } catch (Exception e) {
+            return obj;
+        }
 
     }
 
