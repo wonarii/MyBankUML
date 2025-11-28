@@ -204,9 +204,6 @@ public class ViewAccountInformationPage {
                 driverScreen.updateUserDashboard();
             }
 
-
-
-
             // Ideally this is a function implemented in the Authenticator or something
 
             Map<String, Object> currentUserShown = db.getUserByID(shownUserID);
@@ -241,7 +238,7 @@ public class ViewAccountInformationPage {
                     birthdayField.setText(currentUserShown.get("user_birthday").toString());
                 }
 
-                editBirthday.setVisible(true);
+                editBirthday.setVisible(false);
                 editPhone.setVisible(true);
                 birthdayPanel.setVisible(true);
                 phonePanel.setVisible(true);

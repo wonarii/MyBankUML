@@ -102,6 +102,8 @@ public class SignUpPage extends JFrame {
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
                 if(doesEmailExist()) {
                     JOptionPane.showMessageDialog(contentPane, "Account creation was unsuccessful. That email is already associated to an account, please try again.");
+                } else if (!verifyAge()) {
+                    JOptionPane.showMessageDialog(contentPane, "You must be over 18 years of age to sign up. Please ask for help from a parent.");
                 } else {
                     int status = auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (Bank) bankDropDown.getSelectedItem(), phoneField.getText(), dobField.getText(), passwordField.getText(), (BankBranch) branchField.getSelectedItem());
                     if (status == 0 && verifyAge()) {
@@ -111,8 +113,6 @@ public class SignUpPage extends JFrame {
                         Container parent = contentPane.getParent();
                         CardLayout layout = (CardLayout) parent.getLayout();
                         layout.show(parent, "login");
-                    } else if (!verifyAge()) {
-                        JOptionPane.showMessageDialog(contentPane, "You must be over 18 years of age to sign up. Please ask for help from a parent.");
                     } else {
                         JOptionPane.showMessageDialog(contentPane, "Sign up was unsuccessful, please try again.");
                     }
