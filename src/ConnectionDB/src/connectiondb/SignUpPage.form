@@ -181,6 +181,7 @@
             </constraints>
             <properties>
               <background color="-1710101"/>
+              <text value="YYYY-MM-DD"/>
             </properties>
           </component>
           <component id="80ca8" class="javax.swing.JLabel">
