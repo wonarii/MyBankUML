@@ -200,6 +200,8 @@ public class ViewAccountInformationPage {
                 driverScreen.updateAdminDashboardPage();
             } else if(auth.getCurrentUser().get("user_role").toString().equals("teller")){
                 driverScreen.updateTellerDashboardPage();
+            } else if (auth.getCurrentUser().get("user_role").toString().equals("user")){
+                driverScreen.updateUserDashboard();
             }
 
 
