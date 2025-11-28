@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,6 +19,10 @@ public class ViewAccountInformationPage {
     private JLabel birthdayField;
     private JPanel phonePanel;
     private JLabel phoneField;
+    private JButton editFirstName;
+    private JButton editLastName;
+    private JButton editBirthday;
+    private JButton editPhone;
 
     private int shownUserID;
 
@@ -46,6 +51,47 @@ public class ViewAccountInformationPage {
                 layout.show(parent, dashboard);
             }
         });
+
+        //When these buttons are clicked a JDialog is opened to edit the field
+        editFirstName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userInput = JOptionPane.showInputDialog("Enter new first name");
+                if (userInput != null) {
+                    updateCustomerFields(userInput, "user_first_name");
+                    updateAccountInformationPage(shownUserID);
+                }
+            }
+        });
+        editLastName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userInput = JOptionPane.showInputDialog("Enter new last name");
+                if (userInput != null) {
+                    updateCustomerFields(userInput, "user_last_name");
+                    updateAccountInformationPage(shownUserID);
+                }
+            }
+        });
+        editBirthday.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userInput = JOptionPane.showInputDialog("Enter new date of birth");
+                if (userInput != null) {
+                    updateCustomerFields(userInput, "user_birthday");
+                    updateAccountInformationPage(shownUserID);
+                }
+            }
+        });
+        editPhone.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userInput = JOptionPane.showInputDialog("Enter new phone number");
+                if (userInput != null) {
+                    updateCustomerFields(userInput, "user_phone_number");
+                }
+            }
+        });
     }
 
     private void  createUIComponents() {
@@ -56,6 +102,16 @@ public class ViewAccountInformationPage {
 
     public JPanel getPanel() {
         return accountInformationPanel;
+    }
+    // Update information in the database
+    public void updateCustomerFields(String userInput, String fieldName) {
+        try {
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+
+            db.updateWithUserId(userInput, fieldName, shownUserID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -101,10 +157,5 @@ public class ViewAccountInformationPage {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-
-        //Do all the set texts here or something
-
-
     }
 }
