@@ -60,10 +60,10 @@ public class AdminTellerButtons extends JDialog {
                             driverScreen.updateAdminDashboardPage();
                             dispose();
                         } else {
-                            JOptionPane.showMessageDialog(adminTellerButtonsPanel, "Account failed to be deleted!");
+                            JOptionPane.showMessageDialog(adminTellerButtonsPanel, "Account failed to be deleted. Please try again later.");
                         }
                     } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(adminTellerButtonsPanel, "An error occurred while deleting the account.");
+                        JOptionPane.showMessageDialog(adminTellerButtonsPanel, "An error occurred while deleting the account. Please try again later.");
                     }
                 }
 

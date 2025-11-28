@@ -84,10 +84,10 @@ public class AdminUserButtons extends JDialog {
                             }
                             dispose();
                         } else {
-                            JOptionPane.showMessageDialog(adminUserButtonsPanel, "Account failed to be deleted!");
+                            JOptionPane.showMessageDialog(adminUserButtonsPanel, "Account failed to be deleted. Please try again later.");
                         }
                     } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(adminUserButtonsPanel, "An error occurred while deleting the account.");
+                        JOptionPane.showMessageDialog(adminUserButtonsPanel, "An error occurred while deleting the account, please try again!");
                     }
                 }
 

@@ -95,6 +95,16 @@ public class TellerDashboard {
                 updateUserTable();
             }
         });
+
+        logOutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Redirect to login scene
+                Container parent = tellerDashboardPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "login");
+            }
+        });
 //        updateUserTable();
     }
 

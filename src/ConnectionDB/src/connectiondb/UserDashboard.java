@@ -62,6 +62,15 @@ public class UserDashboard {
                 layout.show(parent, "accountInformation");
             }
         });
+        logOutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Redirect to login scene
+                Container parent = userDashboardPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "login");
+            }
+        });
     }
 
     private void createUIComponents() {
