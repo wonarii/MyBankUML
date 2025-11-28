@@ -14,6 +14,17 @@ public class LoginPage extends JFrame {
     private JPanel loginPane;
     private JButton createAccButton;
 
+    private int authenticationLimit = 3;
+    private int authenticationAttempts = 3;
+
+
+    private Timer lockoutTimer;
+    private boolean locked = false;
+    private boolean lockActive = false;
+
+    private long waitTime = 10000; // 1 minute
+    private long timeLeft;
+
     private DriverScreen driverScreen;
     public LoginPage(DriverScreen driverScreen) {
         //Setup
@@ -25,27 +36,45 @@ public class LoginPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
-                boolean validCredentials = auth.validateCredentials(enterYourEmailTextField.getText(), enterPasswordPasswordField.getText());
-                if (validCredentials) {
-                    String userRole = (String) auth.getCurrentUser().get("user_role");
-                    System.out.println(userRole);
 
-                    // Check what type of role in BankDriver?
-                    Container parent = loginPane.getParent();
-                    CardLayout layout = (CardLayout) parent.getLayout();
 
-                    if(userRole.equals("admin")){
-                        driverScreen.updateAdminDashboardPage();
-                        layout.show(parent, "adminDashboard");
-                    } else if(userRole.equals("user")){
-                        driverScreen.updateUserDashboard();
-                        layout.show(parent, "userDashboard");
-                    } else if(userRole.equals("teller")){
-                        driverScreen.updateTellerDashboardPage();
-                        layout.show(parent, "tellerDashboard");
+                if(!locked) {
+                    boolean validCredentials = auth.validateCredentials(enterYourEmailTextField.getText(), enterPasswordPasswordField.getText());
+                    if (validCredentials) {
+                        authenticationAttempts = authenticationLimit;
+                        String userRole = (String) auth.getCurrentUser().get("user_role");
+                        System.out.println(userRole);
+
+                        // Check what type of role in BankDriver?
+                        Container parent = loginPane.getParent();
+                        CardLayout layout = (CardLayout) parent.getLayout();
+
+
+                        if(userRole.equals("admin")){
+                            driverScreen.updateAdminDashboardPage();
+                            layout.show(parent, "adminDashboard");
+                        } else if(userRole.equals("user")){
+                            driverScreen.updateUserDashboard();
+                            layout.show(parent, "userDashboard");
+                        } else if(userRole.equals("teller")){
+                            driverScreen.updateTellerDashboardPage();
+                            layout.show(parent, "tellerDashboard");
+                        }
+                        resetFields();
+                    } else {
+                        authenticationAttempts--;
+                        if(authenticationAttempts == 0) {
+                            startLockout();
+                        }
+                        JOptionPane.showMessageDialog(loginPane, "Login failed, please try again!");
                     }
+                } else {
+
+                    JOptionPane.showMessageDialog(loginPane, "Please wait " + timeLeft + " seconds before trying again!");
+//                    System.out.println(authenticationTimes);
                 }
-                resetFields();
+
+//                resetFields();
             }
         });
 
@@ -105,6 +134,28 @@ public class LoginPage extends JFrame {
         enterPasswordPasswordField.setText("");
     }
 
+    private void startLockout() {
+        if(lockActive) {
+            return ;
+        }
+        lockActive = true;
+        long endTime = System.currentTimeMillis() + waitTime;  // 2 minutes from now
+        timeLeft = (endTime - System.currentTimeMillis()) / 1000;
+        locked = true;
+        lockoutTimer = new Timer(1000, e -> {  // Tick every second
+            timeLeft = (endTime - System.currentTimeMillis()) / 1000;
+            if (timeLeft > 0) {
+
+            } else {
+                lockoutTimer.stop();
+                locked = false;
+                authenticationAttempts = 1;  // reset to 1 attempt
+                lockActive = false;
+            }
+        });
+        lockoutTimer.setRepeats(true);
+        lockoutTimer.start();
+    }
 
 //    public static void main(String[] args) {
 //        new LoginPage();
