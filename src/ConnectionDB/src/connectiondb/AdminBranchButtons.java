@@ -1,4 +1,7 @@
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class AdminBranchButtons extends JDialog{
     private JLabel branchIDField;
@@ -28,6 +31,31 @@ public class AdminBranchButtons extends JDialog{
         branchPhoneField.setText(data[3].toString());
         bankIDField.setText(data[4].toString());
 
+
+
+        deleteBankBranchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int confirmation = JOptionPane.showConfirmDialog(adminBranchButtonsPanel, "Are you sure you want to delete this branch?", "Confirm", JOptionPane.YES_NO_OPTION);
+                if (confirmation == JOptionPane.YES_OPTION) {
+                    try{
+                        ConnectionDB db = ConnectionDB.getDatabaseInstance();
+
+                        boolean status = db.deleteBranch((int) data[0]);
+
+                        if(status == true){
+                            JOptionPane.showMessageDialog(adminBranchButtonsPanel, "The branch was successfully deleted!");
+                            driverScreen.updateAdminDashboardPage();
+                            dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(adminBranchButtonsPanel, "The branch failed to be deleted. Ensure that no user are still with the branch first!");
+                        }
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(adminBranchButtonsPanel, "An error occurred while deleting the branch.");
+                    }
+                }
+            }
+        });
 
         add(adminBranchButtonsPanel);
         pack();
