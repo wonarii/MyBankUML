@@ -32,6 +32,7 @@ public class AdminDashboard {
     private JTextField branchTextField;
     private JTextField customerTextField;
     private JButton profileButton;
+    private JScrollPane adminDashboardScrollPane;
 
     private DefaultTableModel userAccountModel;
     private DefaultTableModel tellerAccountModel;
