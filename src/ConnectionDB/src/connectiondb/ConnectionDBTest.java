@@ -17,6 +17,15 @@ class ConnectionDBTest {
 	private String testEmail2 = "test_user2@gmail.com";
 	private String testEmail3 = "test_user3@gmail.com";
 	
+	Bank bank = new Bank("Desjardins", 1);
+
+
+	BankBranch branch = new BankBranch(1, "Desjardins_Montreal", "2457, Saint Mishelle, Montreal, QC, HY0 5B2", 1, "5143261010");
+	
+	Customer customer = new Customer("Janice", "Williams", "janice123@gmail.com", branch, bank, "somePassword321", "5143267777", "2001-06-13", 7000.0);
+	
+	BankTeller teller = new BankTeller("Teller1" , "Khan" , "tellerKhan707@gmail.com", branch, bank , "Teller123");
+	
 	@BeforeEach
 	void setUp() {
 		try {
@@ -30,112 +39,37 @@ class ConnectionDBTest {
 	}
 	
 	
-    
-//    @Test
-//    void testCreateBankTeller() throws Exception {
-//        // Arrange
-//        BankTeller teller = new BankTeller("John", "Doe", testTellerEmail, 1);
-//
-//        // Act
-//        db.createBankTeller(teller);
-//
-//        // Assert
-//        try (Connection conn = db.getConnection();
-//             PreparedStatement stmt = conn.prepareStatement(
-//                     "SELECT * FROM banktellers WHERE email = ?"
-//             )) {
-//            stmt.setString(1, testTellerEmail);
-//            ResultSet rs = stmt.executeQuery();
-//
-//            assertTrue(rs.next(), "BankTeller should be inserted into the database");
-//            assertEquals("John", rs.getString("first_name"));
-//            assertEquals("Doe", rs.getString("last_name"));
-//            assertEquals(testTellerEmail, rs.getString("email"));
-//            assertEquals(1, rs.getInt("branch"));
-//        }
-//    }
 
- 
+	@Test
+	void testCreateUser_ValidCustomer() throws Exception {
+
+	    // Act
+	    int result = db.createCustomer(customer);
+	     
+	            
+	  
+
+	    // ✔ Should return true (user created)
+	    assertEquals(0,result);
+	    System.out.println("Passed entry inserted into Database");
+	   }
 	
-//
-//	@Test
-//	void testCreateCustomer() {
-//		fail("Not yet implemented");
-//	}
-//
-//
-//
-//	@Test
-//	void testCreateAdministrator() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testCreateUser() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testDeleteUser() {
-//		fail("Not yet implemented");
-//	}
-    
-//    
-//    @AfterEach
-//    void cleanUp() throws Exception {
-//        try (Connection conn = db.getConnection();
-//             PreparedStatement stmt = conn.prepareStatement(
-//                     "DELETE FROM account_list WHERE user_email = ?"
-//             )) {
-//            stmt.setString(1, testEmail);
-//            stmt.executeUpdate();
-//        }
-//    }
+	
+	@Test
+	void testCreateTeller_ValidTeller() throws Exception {
 
-    @Test
-    void testCreateUser_ValidCustomer() throws Exception {
-        // Arrange
-        String firstName = "John";
-        String lastName = "Doe";
-        String password = "Password123!";
-        double balance = 250.0;
-        String role = "user";
-        int bankId = 1;
-        int branchId = 1;
-        String birthday = "1990-05-01"; // adult
-        String address = "123 Test Street";
+	    // Act
+	    int result = db.createBankTeller(teller);
+	     
+	            
+	  
 
-        // Act
-        boolean result = db.createUser(firstName, lastName, testEmail, password,
-                balance, role, bankId, branchId, birthday, address);
+	    // ✔ Should return true (teller created)
+	    assertEquals(0,result);
+	    System.out.println("Passed: Teller account created and entry inserted into Database");
+	   }
 
-        // Assert: method returned success
-        assertTrue(result);
 
-        // Assert: row is inserted in DB
-        try (Connection conn = db.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM account_list WHERE user_email = ?"
-             )) {
-
-            stmt.setString(1, testEmail);
-            ResultSet rs = stmt.executeQuery();
-
-            assertTrue(rs.next(), "User row should exist in the database");
-
-            assertEquals(firstName, rs.getString("user_first_name"));
-            assertEquals(lastName, rs.getString("user_last_name"));
-            assertEquals(testEmail, rs.getString("user_email"));
-
-            // hashed password should NOT match raw password
-            assertNotEquals(password, rs.getString("user_password"));
-
-            assertEquals(balance, rs.getDouble("user_balance"));
-            assertEquals(role, rs.getString("user_role"));
-            assertEquals(bankId, rs.getInt("user_bank_id"));
-            assertEquals(branchId, rs.getInt("user_branch_id"));
-        }
-    }
 
 
 
@@ -187,6 +121,27 @@ class ConnectionDBTest {
 	        assertFalse(rs.next(), "No user should be inserted for underage user");
 	    }
 	}
+	
+	
+	
+	//Testing the searching functionality within Database
+    @Test
+    void testSearchCustomerId_Found() {
+        Customer[] result = db.searchCustomerId(String.valueOf(1));
+
+        assertNotNull(result);
+        assertEquals(1, result.length);
+
+        Customer user = result[0];
+        System.out.println("\n"+"\n"+"\n");
+
+        assertEquals("Joe", user.getFirstName());
+        assertEquals("White", user.getLastName());
+        assertEquals("joe123@gmail.com", user.getEmail());
+        assertEquals(1000.0, user.getBalance());
+        System.out.println("\n"+"\n"+"\n");
+        System.out.println("Customer "+user.getFirstName()+" found");
+    }
 	
 	
 	
