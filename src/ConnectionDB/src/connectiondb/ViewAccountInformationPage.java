@@ -90,7 +90,8 @@ public class ViewAccountInformationPage {
             public void actionPerformed(ActionEvent e) {
                 String userInput = JOptionPane.showInputDialog("Enter new phone number");
                 if (userInput != null) {
-                    updateCustomerFields(userInput, "user_phone_number");
+                    updateCustomerFields(userInput, "user_phone");
+                    updateAccountInformationPage(shownUserID);
                 }
             }
         });
@@ -147,6 +148,8 @@ public class ViewAccountInformationPage {
             if(!(currentUserShown.get("user_role").equals("user"))){
                 phonePanel.setVisible(false);
                 birthdayPanel.setVisible(false);
+                editBirthday.setVisible(false);
+                editPhone.setVisible(false);
             } else{
 
                 if(currentUserShown.get("user_phone") == null){
