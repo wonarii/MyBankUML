@@ -1,7 +1,10 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 
 public class CreateBankBranchPage {
     private JTextField branchNameInput;
@@ -20,6 +23,8 @@ public class CreateBankBranchPage {
         this.driverScreen = driverScreen;
         updateBankOptions();
 
+        createButton.setEnabled(false);
+
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -35,8 +40,6 @@ public class CreateBankBranchPage {
                     String newBankBranchName = branchNameInput.getText();
                     String newBankLocation = branchLocationInput.getText();
                     String newBankPhoneNumber = phoneNumberInput.getText();
-
-
 
                     int status = BankBranch.createBankBranch(newBankBranchName, newBankLocation, newBankPhoneNumber, newBankID);
 
@@ -67,6 +70,39 @@ public class CreateBankBranchPage {
                 layout.show(parent, "adminDashboard");
             }
         });
+
+        DocumentListener documentListener = new DocumentListener() {
+            private void validateForm() {
+                boolean branchNameValid = isFieldValid(branchNameInput,"^\\s*\\S.*$");
+                boolean branchLocationValid = isFieldValid(branchLocationInput, "^\\s*\\S.*$");
+                boolean phoneNumberValid = isFieldValid(phoneNumberInput, "^[0-9]{10}$");
+
+                boolean valid = branchNameValid && branchLocationValid && phoneNumberValid;
+                createButton.setEnabled(valid);
+            }
+
+            @Override public void insertUpdate(DocumentEvent e) { validateForm(); }
+            @Override public void removeUpdate(DocumentEvent e) { validateForm(); }
+            @Override public void changedUpdate(DocumentEvent e) { validateForm(); }
+        };
+
+        branchNameInput.getDocument().addDocumentListener(documentListener);
+        branchLocationInput.getDocument().addDocumentListener(documentListener);
+        phoneNumberInput.getDocument().addDocumentListener(documentListener);
+    }
+
+    // Validator methods
+    private static boolean isFieldValid(JTextField field, String regexPattern) {
+        Pattern pattern = Pattern.compile(regexPattern);
+        boolean valid = pattern.matcher(field.getText()).matches();
+        if (field.getText().isEmpty()) {
+            field.setBackground(Color.WHITE);
+        } else if (valid) {
+            field.setBackground(new Color(200, 255, 200));
+        } else {
+            field.setBackground(new Color(255, 200, 200));
+        }
+        return valid;
     }
 
     private void createUIComponents() {
