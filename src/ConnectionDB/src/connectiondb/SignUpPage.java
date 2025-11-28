@@ -33,6 +33,8 @@ public class SignUpPage extends JFrame {
         updateBankOptions();
         updateBranchOptions();
 
+        signUpButton.setEnabled(false);
+
         // Return to login page when the back button is pressed
         backButton.addActionListener(new ActionListener() {
             @Override
@@ -143,7 +145,7 @@ public class SignUpPage extends JFrame {
     private static boolean isDateValid(JTextField field) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         formatter.setLenient(false);
-        if (field.getText().isEmpty()) {
+        if (field.getText().equals("YYYY-MM-DD") || field.getText().isEmpty()) {
             field.setBackground(Color.WHITE);
             return false;
         }
