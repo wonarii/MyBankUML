@@ -1,16 +1,20 @@
 import javax.swing.*;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.text.DecimalFormat;
+
 public class WithdrawPage {
-    private JTextField amountInput;
+    private JFormattedTextField amountInput;
     private JButton nextButton;
     private JButton cancelButton;
     private JPanel withdrawPanel;
     private JLabel currentDateLabel;
     private JLabel balanceField;
     private JLabel headerNameField;
+
 
     private DriverScreen driverScreen;
 
@@ -24,8 +28,11 @@ public class WithdrawPage {
                     int confirmation = JOptionPane.showConfirmDialog(withdrawPanel, "Are you sure you want to continue?", "Confirm", JOptionPane.YES_NO_OPTION);
 
                     if(confirmation == JOptionPane.YES_OPTION){
+
                         amountInput.getText();
                         double amount = Double.parseDouble(amountInput.getText());
+
+
                         int status = Transaction.createTransaction(amount, "withdraw");
 
                         if(status == 0){
@@ -77,6 +84,13 @@ public class WithdrawPage {
         withdrawPanel = new JPanel();
         currentDateLabel = new JLabel();
         currentDateLabel.setText((new java.sql.Date(System.currentTimeMillis())).toString());
+
+        DecimalFormat df = new DecimalFormat("0.00");
+        NumberFormatter formatter = new NumberFormatter(df);
+        formatter.setValueClass(Double.class);
+        formatter.setMinimum(0.00);
+
+        amountInput = new JFormattedTextField(formatter);
 
     }
 
