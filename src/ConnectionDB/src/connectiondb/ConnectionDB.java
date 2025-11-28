@@ -1164,6 +1164,20 @@ public class ConnectionDB {
         return updateField(email, "DELETE", null);
     }
 
+    // Update field
+    public void updateWithUserId(String userInput, String field, int userId) {
+        String query = "UPDATE account_list SET " + field + " = ? WHERE id = ?";
+
+        try (Connection con = getConnection()) {
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setString(1, userInput);
+            stmt.setInt(2, userId);
+            int rows = stmt.executeUpdate();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // --- Generic update helper (for most fields) ---
     private boolean updateField(String email, String fieldName, Object newValue) {
         String query = fieldName.equals("DELETE")
