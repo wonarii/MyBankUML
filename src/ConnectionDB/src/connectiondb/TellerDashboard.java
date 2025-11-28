@@ -17,6 +17,7 @@ public class TellerDashboard {
     private JScrollPane userAccountsScrollPane;
     private JTable userAccountTable;
     private JTextField customerTextField;
+    private JButton profileButton;
 
     private final int AMOUNTOFTABLEROWS = 4;
     private DefaultTableModel userAccountModel;
@@ -76,10 +77,32 @@ public class TellerDashboard {
             }
         });
 
+        profileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int userID = (int) Authenticator.getAuthenticatorInstance().getCurrentUser().get("id");
+                driverScreen.updateAccountInformationPage(userID);
+
+                Container parent = tellerDashboardPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "accountInformation");
+            }
+        });
+
         enterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 updateUserTable();
+            }
+        });
+
+        logOutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Redirect to login scene
+                Container parent = tellerDashboardPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "login");
             }
         });
 //        updateUserTable();
@@ -116,6 +139,7 @@ public class TellerDashboard {
         headerNameField.setText(tellerName);
         resetField();
 
+        System.out.println("Trying To Delete");
         updateUserTable();
     }
 
@@ -124,6 +148,7 @@ public class TellerDashboard {
      */
     public void updateUserTable(){
         try {
+            userAccountModel.setRowCount(0);
             JComboBox comboBox = customerComboBox;
             JTextField input = customerTextField;
 
@@ -145,7 +170,6 @@ public class TellerDashboard {
                 }
             }
 
-            userAccountModel.setRowCount(0);
             for (Customer tempCustomer : users) {
                 userAccountModel.addRow(tempCustomer.display());
             }

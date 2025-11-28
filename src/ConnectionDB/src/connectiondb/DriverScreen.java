@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class DriverScreen {
+public class DriverScreen extends JFrame {
     private JPanel activeScene;
 
     // Panels for the main scenes
@@ -33,7 +33,6 @@ public class DriverScreen {
     private TellerDashboard tellerDashboard;
     private ViewAccountInformationPage accountInformationPage;
     private CreateTellerAccountPage createTellerAccountPage;
-
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
@@ -104,6 +103,7 @@ public class DriverScreen {
         layout.show(activeScene, "login");
 
     }
+
     public CardLayout getCardLayout(){
         return layout;
     }
@@ -111,9 +111,6 @@ public class DriverScreen {
     public JPanel getPanel() {
         return activeScene;
     }
-
-
-
 
     // ----------------- Update Functions to update the data displayed when you want to ----------------
     // Example opening TransactionTable page should have the latest data, so call this function
@@ -152,5 +149,11 @@ public class DriverScreen {
 
     public void updateTellerDashboardPage(){
         tellerDashboard.updateTellerDashboardPage();
+    }
+    public void updateWithdrawPage(){
+        withdrawPage.updateWithdrawPage();
+    }
+    public void updateDepositPage(){
+        depositPage.updateDepositPage();
     }
 }

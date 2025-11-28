@@ -16,8 +16,8 @@ public class LoginPage extends JFrame {
 
     private DriverScreen driverScreen;
     public LoginPage(DriverScreen driverScreen) {
+        //Setup
         this.driverScreen = driverScreen;
-
         loginButton.setEnabled(false);
 
         // When login button is clicked
@@ -44,8 +44,8 @@ public class LoginPage extends JFrame {
                         driverScreen.updateTellerDashboardPage();
                         layout.show(parent, "tellerDashboard");
                     }
-
                 }
+                resetFields();
             }
         });
 
@@ -58,8 +58,6 @@ public class LoginPage extends JFrame {
                 Container parent = loginPane.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "signup");
-//                new SignUpPage();
-//                dispose();
             }
         });
 

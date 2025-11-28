@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,7 +20,13 @@ public class ViewAccountInformationPage {
     private JLabel birthdayField;
     private JPanel phonePanel;
     private JLabel phoneField;
+    private JButton editFirstName;
+    private JButton editLastName;
+    private JButton editBirthday;
+    private JButton editPhone;
     private JPanel birthdayPanel;
+    private JButton changePasswordButton;
+    private JButton resetPasswordButton;
 
     private int shownUserID;
 
@@ -47,6 +55,91 @@ public class ViewAccountInformationPage {
                 layout.show(parent, dashboard);
             }
         });
+
+        //When these buttons are clicked a JDialog is opened to edit the field
+        editFirstName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userInput = JOptionPane.showInputDialog("Enter new first name");
+                if (userInput != null) {
+                    boolean status = updateCustomerFields(userInput, "user_first_name");
+                    if (status) {
+                        JOptionPane.showMessageDialog(accountInformationPanel, "The field has been successfully updated!");
+                        updateAccountInformationPage(shownUserID);
+
+                    } else {
+                        JOptionPane.showMessageDialog(accountInformationPanel, "An error occurred while updating the field. Please try again!");
+                    }
+                }
+            }
+        });
+        editLastName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userInput = JOptionPane.showInputDialog("Enter new last name");
+                if (userInput != null) {
+                    boolean status = updateCustomerFields(userInput, "user_last_name");
+                    if (status) {
+                        JOptionPane.showMessageDialog(accountInformationPanel, "The field has been successfully updated!");
+                        updateAccountInformationPage(shownUserID);
+
+                    } else {
+                        JOptionPane.showMessageDialog(accountInformationPanel, "An error occurred while updating the field. Please try again!");
+                    }
+                }
+            }
+        });
+        editBirthday.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userInput = JOptionPane.showInputDialog("Enter new date of birth");
+                if (userInput != null) {
+                    boolean status = updateCustomerFields(userInput, "user_birthday");
+
+                    if (status) {
+                        JOptionPane.showMessageDialog(accountInformationPanel, "The field has been successfully updated!");
+                        updateAccountInformationPage(shownUserID);
+
+                    } else {
+                        JOptionPane.showMessageDialog(accountInformationPanel, "An error occurred while updating the field. Please try again!");
+                    }
+
+
+                }
+            }
+        });
+        editPhone.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userInput = JOptionPane.showInputDialog("Enter new phone number");
+                if (userInput != null) {
+                    boolean status = updateCustomerFields(userInput, "user_phone");
+
+                    if (status) {
+                        JOptionPane.showMessageDialog(accountInformationPanel, "The field has been successfully updated!");
+                        updateAccountInformationPage(shownUserID);
+
+                    } else {
+                        JOptionPane.showMessageDialog(accountInformationPanel, "An error occurred while updating the field. Please try again!");
+                    }
+                }
+
+
+            }
+        });
+        changePasswordButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ChangePassword.showChangePasswordScreen(driverScreen, accountInformationPanel);
+            }
+        });
+
+        resetPasswordButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ResetPassword.showResetPasswordScreen(driverScreen, shownUserID);
+            }
+        });
     }
 
     private void  createUIComponents() {
@@ -57,6 +150,17 @@ public class ViewAccountInformationPage {
 
     public JPanel getPanel() {
         return accountInformationPanel;
+    }
+    // Update information in the database
+    public boolean updateCustomerFields(String userInput, String fieldName) {
+        try {
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+
+            return db.updateWithUserId(userInput, fieldName, shownUserID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -69,13 +173,40 @@ public class ViewAccountInformationPage {
 
         Authenticator auth = Authenticator.getAuthenticatorInstance();
 
-        // Set up the Header Name which should be the current Logged in user
-        String currentUserName = ((String) auth.getCurrentUser().get("user_first_name")) + " " + ((String) auth.getCurrentUser().get("user_last_name"));
-        headerNameField.setText(currentUserName);
-
         try{
-            // Ideally this is a function implemented in the Authenticator or something
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
+
+            // if same id
+            if((int) auth.getCurrentUser().get("id") == shownUserID){
+                db.reloadUserData(shownUserID);
+
+                // Only Show Change Button
+                changePasswordButton.setVisible(true);
+                resetPasswordButton.setVisible(false);
+
+            } else {
+                if(auth.getCurrentUser().get("user_role").equals("admin") ||  auth.getCurrentUser().get("user_role").equals("teller")){
+                    changePasswordButton.setVisible(false);
+                    resetPasswordButton.setVisible(true);
+                }
+            }
+
+            // Set up the Header Name which should be the current Logged in user
+            String currentUserName = ((String) auth.getCurrentUser().get("user_first_name")) + " " + ((String) auth.getCurrentUser().get("user_last_name"));
+            headerNameField.setText(currentUserName);
+
+            if(auth.getCurrentUser().get("user_role").toString().equals("admin")){
+
+                driverScreen.updateAdminDashboardPage();
+            } else if(auth.getCurrentUser().get("user_role").toString().equals("teller")){
+                driverScreen.updateTellerDashboardPage();
+            }
+
+
+
+
+            // Ideally this is a function implemented in the Authenticator or something
+
             Map<String, Object> currentUserShown = db.getUserByID(shownUserID);
 
             institutionField.setText(String.format("%03d",(int) currentUserShown.get("user_bank_id")));
@@ -90,7 +221,10 @@ public class ViewAccountInformationPage {
             if(!(currentUserShown.get("user_role").equals("user"))){
                 phonePanel.setVisible(false);
                 birthdayPanel.setVisible(false);
+                editBirthday.setVisible(false);
+                editPhone.setVisible(false);
             } else{
+
 
                 if(currentUserShown.get("user_phone") == null){
                     phoneField.setText("");
@@ -98,23 +232,21 @@ public class ViewAccountInformationPage {
                     phoneField.setText(currentUserShown.get("user_phone").toString());
                 }
 
+
                 if(currentUserShown.get("user_birthday") == null){
                     birthdayField.setText("");
                 } else {
                     birthdayField.setText(currentUserShown.get("user_birthday").toString());
                 }
 
-
+                editBirthday.setVisible(true);
+                editPhone.setVisible(true);
+                birthdayPanel.setVisible(true);
                 phonePanel.setVisible(true);
             }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-
-        //Do all the set texts here or something
-
-
     }
 }

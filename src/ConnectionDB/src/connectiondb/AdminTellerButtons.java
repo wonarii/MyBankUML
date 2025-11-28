@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class AdminTellerButtons extends JDialog {
     private JLabel userIDField;
@@ -27,11 +28,12 @@ public class AdminTellerButtons extends JDialog {
 
         // Add Data to the window
         userIDField.setText(data[0].toString());
-        emailField.setText(data[1].toString());
-        firstNameField.setText(data[2].toString());
-        lastNameField.setText(data[3].toString());
-        bankField.setText(data[4].toString());
-        branchField.setText(data[5].toString());
+        // BankBranchID is currently using data[1]
+        emailField.setText(data[2].toString());
+        firstNameField.setText(data[3].toString());
+        lastNameField.setText(data[4].toString());
+        bankField.setText(data[5].toString());
+        branchField.setText(data[6].toString());
 
         viewAccountInformationButton.addActionListener(new ActionListener() {
             @Override
@@ -41,6 +43,30 @@ public class AdminTellerButtons extends JDialog {
                 Container parent = originalScene.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "accountInformation");
+            }
+        });
+
+        deleteTellerAccountButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int confirmation = JOptionPane.showConfirmDialog(adminTellerButtonsPanel, "Are you sure you want to delete this account?", "Confirm", JOptionPane.YES_NO_OPTION);
+                if (confirmation == JOptionPane.YES_OPTION) {
+                    try{
+                        ConnectionDB db = ConnectionDB.getDatabaseInstance();
+                        boolean status = db.deleteUser(data[2].toString());
+
+                        if(status == true){
+                            JOptionPane.showMessageDialog(adminTellerButtonsPanel, "Account was successfully deleted!");
+                            driverScreen.updateAdminDashboardPage();
+                            dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(adminTellerButtonsPanel, "Account failed to be deleted. Please try again later.");
+                        }
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(adminTellerButtonsPanel, "An error occurred while deleting the account. Please try again later.");
+                    }
+                }
+
             }
         });
 

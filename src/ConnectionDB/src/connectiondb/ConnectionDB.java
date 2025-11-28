@@ -728,6 +728,77 @@ public class ConnectionDB {
         }
     }
 
+    // --- Load user and verify password (for login) ---
+    public boolean reloadUserData(int id) {
+        String query = "SELECT * FROM account_list WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+
+                userData.clear();
+                userData.put("id", rs.getInt("id"));
+                userData.put("user_first_name", rs.getString("user_first_name"));
+                userData.put("user_last_name", rs.getString("user_last_name"));
+                userData.put("user_email", rs.getString("user_email"));
+                userData.put("user_birthday", rs.getString("user_birthday"));
+
+                Double balanceObj = (Double) rs.getObject("user_balance");
+                userData.put("user_balance", balanceObj);
+
+                userData.put("user_role", rs.getString("user_role"));
+                userData.put("user_bank", rs.getString("user_bank"));
+                userData.put("user_bank_id", rs.getInt("user_bank_id"));
+                userData.put("user_branch", rs.getString("user_branch"));
+                userData.put("user_branch_id", rs.getInt("user_branch_id"));
+                userData.put("user_phone",rs.getString("user_phone"));
+
+
+                return true;
+            } else {
+                System.out.println("Invalid credentials!");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error loading user data!");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // --- Load user and verify password (for login) ---
+    public boolean verifyPassword(String email, String password) {
+        String query = "SELECT * FROM account_list WHERE user_email = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String storedHash = rs.getString("user_password");
+                if (storedHash != null && storedHash.startsWith("$2y$")) {
+                    storedHash = "$2a$" + storedHash.substring(4);
+                }
+
+                if (storedHash == null || !BCrypt.checkpw(password, storedHash)) {
+                    System.out.println("Invalid credentials!");
+                    return false;
+                }
+
+                return true;
+            } else {
+                System.out.println("Invalid credentials!");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error loading user data!");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // --- Load user by ID ---
     public Map<String, Object> getUserByID(int userID) {
         String query = "SELECT * FROM account_list WHERE id = ?";
@@ -1131,6 +1202,23 @@ public class ConnectionDB {
     // --- Delete user ---
     public boolean deleteUser(String email) {
         return updateField(email, "DELETE", null);
+    }
+
+    // Update field
+    public boolean updateWithUserId(String userInput, String field, int userId) {
+        String query = "UPDATE account_list SET " + field + " = ? WHERE id = ?";
+
+        try (Connection con = getConnection()) {
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setString(1, userInput);
+            stmt.setInt(2, userId);
+            int rows = stmt.executeUpdate();
+
+            return true;
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // --- Generic update helper (for most fields) ---
