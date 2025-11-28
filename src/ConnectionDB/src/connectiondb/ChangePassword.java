@@ -23,7 +23,7 @@ public class ChangePassword extends JDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Compare current Password
-                int confirmation = JOptionPane.showConfirmDialog(changePasswordPanel, "Are you sure you want to change passwords?", "Confirm", JOptionPane.YES_NO_OPTION);
+                int confirmation = JOptionPane.showConfirmDialog(changePasswordPanel, "Are you sure you want to change password?", "Confirm", JOptionPane.YES_NO_OPTION);
                 if (confirmation == JOptionPane.YES_OPTION) {
                     try{
 
@@ -44,6 +44,7 @@ public class ChangePassword extends JDialog{
                             boolean successful = db.changePassword(userEmail,new String(newPasswordField.getPassword()));
 
                             if(successful == true){
+
                                 JOptionPane.showMessageDialog(changePasswordPanel, "Password was successfully changed!");
                                 dispose();
                             } else {
@@ -52,22 +53,25 @@ public class ChangePassword extends JDialog{
                         }
 
                     } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(changePasswordPanel, "An error occurred while deleting the branch.");
+                        JOptionPane.showMessageDialog(changePasswordPanel, "An error occurred while changing password. Please try again.");
                     }
                 }
             }
-
-                // compare new password with confirmation
-
-
         });
 
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                dispose();
             }
         });
+
+        setTitle("Change Password");
+        setModal(true);
+        add(changePasswordPanel);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
     public boolean compareCurrentPassword(){
