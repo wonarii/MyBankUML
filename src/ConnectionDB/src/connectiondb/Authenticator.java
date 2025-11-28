@@ -97,7 +97,8 @@ public class Authenticator {
             }
              return db.loadUserData(email, password);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.err.println(e.getMessage());
+            return false;
         }
     }
 }
