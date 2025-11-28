@@ -183,7 +183,7 @@ public class ConnectionDB {
     public Connection getConnection() throws SQLException {
         String url = "jdbc:mysql://127.0.0.1:3306/bankapp_db";
         String user = "root";
-        String dbPassword = "nis2005";
+        String dbPassword = "";
         return DriverManager.getConnection(url, user, dbPassword);
     }
 
@@ -1521,3 +1521,4 @@ public boolean updateBranch(int branchId, String newName, String newLocation) {
 }
 
 }
+
