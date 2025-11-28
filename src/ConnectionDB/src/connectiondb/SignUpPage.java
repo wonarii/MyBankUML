@@ -4,8 +4,13 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -25,13 +30,6 @@ public class SignUpPage extends JFrame {
     private JComboBox branchField;
 
     public SignUpPage() {
-//        setContentPane(contentPane);
-//        setTitle("Sign Up");
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        setBounds(100, 100, 550, 500);
-//        setLocationRelativeTo(null);
-//        setVisible(true);
-//        signUpButton.setEnabled(false);
         updateBankOptions();
         updateBranchOptions();
 
@@ -46,6 +44,28 @@ public class SignUpPage extends JFrame {
             }
         });
 
+        // Remove placeholder for DOB field when user writes in it
+        FocusListener focusListener = new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (dobField.getText().equals("YYYY-MM-DD")) {
+                    dobField.setText("");
+                    dobField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (dobField.getText().isEmpty()) {
+                    dobField.setText("YYYY-MM-DD");
+                    dobField.setForeground(Color.GRAY);
+                    dobField.setBackground(Color.WHITE);
+                }
+            }
+        };
+
+        dobField.addFocusListener(focusListener);
+
         // Live validation for all fields
         DocumentListener documentListener = new DocumentListener() {
             private void validateForm() {
@@ -54,7 +74,6 @@ public class SignUpPage extends JFrame {
                 boolean emailValid = isFieldValid(emailField, "^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
                 boolean phoneValid = isFieldValid(phoneField, "^[0-9]{10}$");
                 boolean dobValid = isDateValid(dobField);
-//                boolean branchValid = isFieldValid(branchField, "^[0-9]{2}$");
                 boolean doPasswordsMatch = doPasswordsMatch(passwordField, passwordField2);
 
                 boolean valid = firstNameValid && lastNameValid && emailValid && dobValid && phoneValid && doPasswordsMatch;
@@ -70,7 +89,6 @@ public class SignUpPage extends JFrame {
         emailField.getDocument().addDocumentListener(documentListener);
         dobField.getDocument().addDocumentListener(documentListener);
         phoneField.getDocument().addDocumentListener(documentListener);
-//        branchField.getDocument().addDocumentListener(documentListener);
         passwordField.getDocument().addDocumentListener(documentListener);
         passwordField2.getDocument().addDocumentListener(documentListener);
 
@@ -81,17 +99,18 @@ public class SignUpPage extends JFrame {
                 // Call Authenticator class to write to db
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
                 int status = auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (Bank) bankDropDown.getSelectedItem(), phoneField.getText(), dobField.getText(), passwordField.getText(), (BankBranch)  branchField.getSelectedItem());
-                if(status == 0){
+                if(status == 0 && verifyAge()) {
                     JOptionPane.showMessageDialog(contentPane, "Sign up was successful!");
                     resetFields();
 
                     Container parent = contentPane.getParent();
                     CardLayout layout = (CardLayout) parent.getLayout();
                     layout.show(parent, "login");
+                } else if (!verifyAge()) {
+                    JOptionPane.showMessageDialog(contentPane, "You must be over 18 years of age to sign up. Please ask for help from a parent.");
                 } else {
                     JOptionPane.showMessageDialog(contentPane, "Sign up was unsuccessful, please try again.");
                 }
-                // Redirect to login page
 
             }
         });
@@ -180,6 +199,15 @@ public class SignUpPage extends JFrame {
         for (BankBranch branch : branches) {
             branchField.addItem(branch);
         }
+    }
+
+    public boolean verifyAge() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dob = LocalDate.parse(dobField.getText(), formatter);
+        if (Period.between(dob, LocalDate.now()).getYears() > 18) {
+            return true;
+        }
+        return false;
     }
 
 //    public static void main(String[] args) {
