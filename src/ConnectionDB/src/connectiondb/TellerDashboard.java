@@ -116,6 +116,7 @@ public class TellerDashboard {
         headerNameField.setText(tellerName);
         resetField();
 
+        System.out.println("Trying To Delete");
         updateUserTable();
     }
 
@@ -124,6 +125,7 @@ public class TellerDashboard {
      */
     public void updateUserTable(){
         try {
+            userAccountModel.setRowCount(0);
             JComboBox comboBox = customerComboBox;
             JTextField input = customerTextField;
 
@@ -145,7 +147,6 @@ public class TellerDashboard {
                 }
             }
 
-            userAccountModel.setRowCount(0);
             for (Customer tempCustomer : users) {
                 userAccountModel.addRow(tempCustomer.display());
             }
