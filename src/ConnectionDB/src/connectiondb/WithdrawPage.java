@@ -9,6 +9,8 @@ public class WithdrawPage {
     private JButton cancelButton;
     private JPanel withdrawPanel;
     private JLabel currentDateLabel;
+    private JLabel balanceField;
+    private JLabel headerNameField;
 
     private DriverScreen driverScreen;
 
@@ -59,6 +61,17 @@ public class WithdrawPage {
         });
     }
 
+
+    public void updateWithdrawPage(){
+        updateUserName();
+        updateBalance();
+
+    }
+
+    public void updateBalance(){
+        balanceField.setText("$" + Customer.getBalanceFromDatabase());
+    }
+
     private void createUIComponents() {
         // TODO: place custom component creation code here
         withdrawPanel = new JPanel();
@@ -73,6 +86,16 @@ public class WithdrawPage {
 
     public void resetFields() {
         amountInput.setText("0.00");
+    }
+
+    public void updateUserName(){
+        Authenticator auth = Authenticator.getAuthenticatorInstance();
+        if (auth.getCurrentUser() != null) {
+            headerNameField.setText((String) auth.getCurrentUser().get("user_first_name")  + " " + auth.getCurrentUser().get("user_last_name"));
+        } else {
+            headerNameField.setText("Friend");
+        }
+
     }
 
 

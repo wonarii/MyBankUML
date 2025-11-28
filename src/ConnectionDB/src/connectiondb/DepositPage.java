@@ -9,6 +9,8 @@ public class DepositPage {
     private JButton cancelButton;
     private JPanel depositPanel;
     private JLabel currentDateLabel;
+    private JLabel balanceField;
+    private JLabel headerNameField;
 
     private DriverScreen driverScreen;
 
@@ -49,6 +51,7 @@ public class DepositPage {
                 }
             }
         });
+
         //TODO: For the layout, based on the current user account, switch userDashboard to bank teller or something
         cancelButton.addActionListener(new ActionListener() {
             @Override
@@ -69,12 +72,31 @@ public class DepositPage {
 
     }
 
+    public void updateDepositPage(){
+        updateUserName();
+        updateBalance();
+    }
+
+    public void updateBalance(){
+        balanceField.setText("$" + Customer.getBalanceFromDatabase());
+    }
+
     public void resetFields() {
         amountInput.setText("0.00");
     }
 
     public JPanel getPanel() {
         return depositPanel;
+    }
+
+    public void updateUserName(){
+        Authenticator auth = Authenticator.getAuthenticatorInstance();
+        if (auth.getCurrentUser() != null) {
+            headerNameField.setText((String) auth.getCurrentUser().get("user_first_name")  + " " + auth.getCurrentUser().get("user_last_name"));
+        } else {
+            headerNameField.setText("Friend");
+        }
+
     }
 
 }
