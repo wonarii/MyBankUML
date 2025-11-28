@@ -183,17 +183,20 @@ public class ViewAccountInformationPage {
                 // Only Show Change Button
                 changePasswordButton.setVisible(true);
                 resetPasswordButton.setVisible(false);
+                editBirthday.setEnabled(false);
 
             } else {
                 if(auth.getCurrentUser().get("user_role").equals("admin") ||  auth.getCurrentUser().get("user_role").equals("teller")){
                     changePasswordButton.setVisible(false);
                     resetPasswordButton.setVisible(true);
+                    editBirthday.setEnabled(true);
                 }
             }
 
             // Set up the Header Name which should be the current Logged in user
             String currentUserName = ((String) auth.getCurrentUser().get("user_first_name")) + " " + ((String) auth.getCurrentUser().get("user_last_name"));
             headerNameField.setText(currentUserName);
+
 
             if(auth.getCurrentUser().get("user_role").toString().equals("admin")){
 
@@ -238,7 +241,7 @@ public class ViewAccountInformationPage {
                     birthdayField.setText(currentUserShown.get("user_birthday").toString());
                 }
 
-                editBirthday.setVisible(false);
+                editBirthday.setVisible(true);
                 editPhone.setVisible(true);
                 birthdayPanel.setVisible(true);
                 phonePanel.setVisible(true);
