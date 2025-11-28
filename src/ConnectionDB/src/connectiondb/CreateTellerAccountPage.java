@@ -60,24 +60,28 @@ public class CreateTellerAccountPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                // Should prob have this somehwere else
-                String tempPassword = firstNameField.getText() + "123";
-
-                BankTeller bankTeller = new BankTeller(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (BankBranch) branchField.getSelectedItem(), (Bank) bankField.getSelectedItem(), tempPassword);
-                Authenticator auth = Authenticator.getAuthenticatorInstance();
-                int status = auth.createBankTeller(bankTeller);
-
-                if(status == 0){
-                    JOptionPane.showMessageDialog(createTellerAccountPanel, "Teller account creation was successful!");
-                    resetFields();
-
-                    driverScreen.updateAdminDashboardPage();
-
-                    Container parent = createTellerAccountPanel.getParent();
-                    CardLayout layout = (CardLayout) parent.getLayout();
-                    layout.show(parent, "adminDashboard");
+                if(doesEmailExist()){
+                    JOptionPane.showMessageDialog(createTellerAccountPanel, "Account creation was unsuccessful, please try again.");
                 } else {
-                    JOptionPane.showMessageDialog(createTellerAccountPanel, "Teller account creation was unsuccessful, please try again.");
+                    // Should prob have this somehwere else
+                    String tempPassword = firstNameField.getText() + "123";
+
+                    BankTeller bankTeller = new BankTeller(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (BankBranch) branchField.getSelectedItem(), (Bank) bankField.getSelectedItem(), tempPassword);
+                    Authenticator auth = Authenticator.getAuthenticatorInstance();
+                    int status = auth.createBankTeller(bankTeller);
+
+                    if (status == 0) {
+                        JOptionPane.showMessageDialog(createTellerAccountPanel, "Teller account creation was successful!");
+                        resetFields();
+
+                        driverScreen.updateAdminDashboardPage();
+
+                        Container parent = createTellerAccountPanel.getParent();
+                        CardLayout layout = (CardLayout) parent.getLayout();
+                        layout.show(parent, "adminDashboard");
+                    } else {
+                        JOptionPane.showMessageDialog(createTellerAccountPanel, "Teller account creation was unsuccessful, please try again.");
+                    }
                 }
 
 
@@ -128,6 +132,20 @@ public class CreateTellerAccountPage extends JFrame {
             bankField.addItem(bank);
         }
         updateBranchOptions();
+    }
+
+    public boolean doesEmailExist(){
+        try{
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            if(db.getUserId(emailField.getText()) != null){
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public void updateBranchOptions(){

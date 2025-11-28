@@ -74,29 +74,34 @@ public class CreateUserAccountPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Authenticator auth = Authenticator.getAuthenticatorInstance();
-                int status = auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (Bank) bankField.getSelectedItem(), phoneField.getText(), dobField.getText(), passwordField.getText(),(BankBranch) branchField.getSelectedItem());
 
-                if(status == 0){
-                    JOptionPane.showMessageDialog(createUserAccountPanel, "Account creation was successful!");
-                    resetFields();
-
-                    String dashboard;
-                    if(auth.getCurrentUser().get("user_role").toString().equals("admin")){
-                        driverScreen.updateAdminDashboardPage();
-                        dashboard = "adminDashboard";
-                    } else if (auth.getCurrentUser().get("user_role").toString().equals("teller")){
-                        driverScreen.updateTellerDashboardPage();
-                        dashboard = "tellerDashboard";
-                    } else {
-                        // This shouldnt ever happen since creating User Account is an admin / teller thing
-                        dashboard = "userDashboard";
-                    }
-
-                    Container parent = createUserAccountPanel.getParent();
-                    CardLayout layout = (CardLayout) parent.getLayout();
-                    layout.show(parent, dashboard);
+                if(doesEmailExist()){
+                    JOptionPane.showMessageDialog(createUserAccountPanel, "Account creation was unsuccessful. That email is already associated to an account, please try again.");
                 } else {
-                    JOptionPane.showMessageDialog(createUserAccountPanel, "Account creation was unsuccessful, please try again.");
+                    int status = auth.signUp(firstNameField.getText(), lastNameField.getText(), emailField.getText(), (Bank) bankField.getSelectedItem(), phoneField.getText(), dobField.getText(), passwordField.getText(), (BankBranch) branchField.getSelectedItem());
+
+                    if (status == 0) {
+                        JOptionPane.showMessageDialog(createUserAccountPanel, "Account creation was successful!");
+                        resetFields();
+
+                        String dashboard;
+                        if (auth.getCurrentUser().get("user_role").toString().equals("admin")) {
+                            driverScreen.updateAdminDashboardPage();
+                            dashboard = "adminDashboard";
+                        } else if (auth.getCurrentUser().get("user_role").toString().equals("teller")) {
+                            driverScreen.updateTellerDashboardPage();
+                            dashboard = "tellerDashboard";
+                        } else {
+                            // This shouldnt ever happen since creating User Account is an admin / teller thing
+                            dashboard = "userDashboard";
+                        }
+
+                        Container parent = createUserAccountPanel.getParent();
+                        CardLayout layout = (CardLayout) parent.getLayout();
+                        layout.show(parent, dashboard);
+                    } else {
+                        JOptionPane.showMessageDialog(createUserAccountPanel, "Account creation was unsuccessful, please try again.");
+                    }
                 }
                  // Return to bank teller dashboard
             }
@@ -168,6 +173,21 @@ public class CreateUserAccountPage extends JFrame {
         if (Arrays.equals(password, password2) && password.length > 0 && password2.length > 0) {
             return true;
         } return false;
+    }
+
+
+    public boolean doesEmailExist(){
+        try{
+            ConnectionDB db = ConnectionDB.getDatabaseInstance();
+            if(db.getUserId(emailField.getText()) != null){
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
