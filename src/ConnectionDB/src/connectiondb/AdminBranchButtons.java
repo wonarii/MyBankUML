@@ -29,7 +29,8 @@ public class AdminBranchButtons extends JDialog{
         branchNameField.setText(data[1].toString());
         locationField.setText(data[2].toString());
         branchPhoneField.setText(data[3].toString());
-        bankIDField.setText(data[4].toString());
+        // Bank name is index 4
+        bankIDField.setText(data[5].toString());
 
 
 

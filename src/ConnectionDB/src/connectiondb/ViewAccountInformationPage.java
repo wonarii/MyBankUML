@@ -183,11 +183,13 @@ public class ViewAccountInformationPage {
                 // Only Show Change Button
                 changePasswordButton.setVisible(true);
                 resetPasswordButton.setVisible(false);
+                editBirthday.setEnabled(false);
 
             } else {
                 if(auth.getCurrentUser().get("user_role").equals("admin") ||  auth.getCurrentUser().get("user_role").equals("teller")){
                     changePasswordButton.setVisible(false);
                     resetPasswordButton.setVisible(true);
+                    editBirthday.setEnabled(true);
                 }
             }
 
@@ -195,15 +197,15 @@ public class ViewAccountInformationPage {
             String currentUserName = ((String) auth.getCurrentUser().get("user_first_name")) + " " + ((String) auth.getCurrentUser().get("user_last_name"));
             headerNameField.setText(currentUserName);
 
+
             if(auth.getCurrentUser().get("user_role").toString().equals("admin")){
 
                 driverScreen.updateAdminDashboardPage();
             } else if(auth.getCurrentUser().get("user_role").toString().equals("teller")){
                 driverScreen.updateTellerDashboardPage();
+            } else if (auth.getCurrentUser().get("user_role").toString().equals("user")){
+                driverScreen.updateUserDashboard();
             }
-
-
-
 
             // Ideally this is a function implemented in the Authenticator or something
 

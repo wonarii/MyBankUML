@@ -1,10 +1,12 @@
 import javax.swing.*;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 public class DepositPage {
-    private JTextField amountInput;
+    private JFormattedTextField amountInput;
     private JButton nextButton;
     private JButton cancelButton;
     private JPanel depositPanel;
@@ -69,6 +71,13 @@ public class DepositPage {
         depositPanel = new JPanel();
         currentDateLabel = new JLabel();
         currentDateLabel.setText((new java.sql.Date(System.currentTimeMillis())).toString());
+
+        DecimalFormat df = new DecimalFormat("0.00");
+        NumberFormatter formatter = new NumberFormatter(df);
+        formatter.setValueClass(Double.class);
+        formatter.setMinimum(0.00);
+
+        amountInput = new JFormattedTextField(formatter);
 
     }
 
