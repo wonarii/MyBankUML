@@ -36,7 +36,7 @@ CREATE TABLE `account_list` (
   `id` int(11) NOT NULL,
   `user_first_name` varchar(100) NOT NULL,
   `user_last_name` varchar(100) NOT NULL,
-  `user_birthday` date NOT NULL,
+  `user_birthday` date Default NULL,
   `user_email` varchar(255) NOT NULL,
   `user_password` varchar(100) NOT NULL,
   `user_role` varchar(100) NOT NULL,

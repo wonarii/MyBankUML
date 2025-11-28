@@ -41,6 +41,7 @@ public class LoginPage extends JFrame {
                         driverScreen.updateUserDashboard();
                         layout.show(parent, "userDashboard");
                     } else if(userRole.equals("teller")){
+                        driverScreen.updateTellerDashboardPage();
                         layout.show(parent, "tellerDashboard");
                     }
                 }

@@ -17,6 +17,7 @@ public class TellerDashboard {
     private JScrollPane userAccountsScrollPane;
     private JTable userAccountTable;
     private JTextField customerTextField;
+    private JButton profileButton;
 
     private final int AMOUNTOFTABLEROWS = 4;
     private DefaultTableModel userAccountModel;
@@ -69,11 +70,32 @@ public class TellerDashboard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 driverScreen.updateCreateUserAccountPage();
+                resetField();
                 Container parent = tellerDashboardPanel.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "createUserAccount");
             }
         });
+
+        profileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int userID = (int) Authenticator.getAuthenticatorInstance().getCurrentUser().get("id");
+                driverScreen.updateAccountInformationPage(userID);
+
+                Container parent = tellerDashboardPanel.getParent();
+                CardLayout layout = (CardLayout) parent.getLayout();
+                layout.show(parent, "accountInformation");
+            }
+        });
+
+        enterButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateUserTable();
+            }
+        });
+//        updateUserTable();
     }
 
     private void createUIComponents() {
@@ -81,7 +103,7 @@ public class TellerDashboard {
         tellerDashboardPanel = new JPanel();
 
         // ---------------------- User/Customer Account ---------------------------------
-        String[] userColumns = {"Account ID","Email", "First Name","Last Name", "Bank" , "Branch", "Balance"};      // Table Column Names
+        String[] userColumns = {"Account ID", "Branch ID","Email", "First Name","Last Name", "Bank" , "Branch", "Balance"};      // Table Column Names
 
         // Make a model for userAccounts and lock the fields so they can't be edited in the UI
         userAccountModel = new DefaultTableModel(userColumns, 0){
@@ -93,8 +115,10 @@ public class TellerDashboard {
         // Set up Table stuff
         userAccountTable = new JTable(userAccountModel);                                                // Initialize the User Account Table
         userAccountTable.getColumnModel().getColumn(0).setPreferredWidth(25);                // lower the column width of the Account ID
+        userAccountTable.getColumnModel().getColumn(1).setPreferredWidth(25);                // lower the column width of the Account ID
         userAccountTable.setRowHeight(25);
 
+        updateUserTable();
 
     }
 
@@ -103,10 +127,10 @@ public class TellerDashboard {
         String tellerName = auth.getCurrentUser().get("user_first_name").toString() + " " + auth.getCurrentUser().get("user_last_name");
         tellerNameField.setText(tellerName);
         headerNameField.setText(tellerName);
+        resetField();
 
+        System.out.println("Trying To Delete");
         updateUserTable();
-
-
     }
 
     /**
@@ -114,13 +138,12 @@ public class TellerDashboard {
      */
     public void updateUserTable(){
         try {
-
-
+            userAccountModel.setRowCount(0);
             JComboBox comboBox = customerComboBox;
             JTextField input = customerTextField;
 
             ConnectionDB db = ConnectionDB.getDatabaseInstance();
-            Customer[] users = new Customer[]{};
+            Customer[] users;
 
             if (input == null || input.getText().equals("")) {
                 users = db.getAllCustomer();
@@ -133,16 +156,16 @@ public class TellerDashboard {
                 } else if (comboBox.getSelectedItem().equals("Name")) {
                     users = db.searchCustomerName(input.getText());
                 } else {
-                    db.getAllCustomer();
+                    users = db.getAllCustomer();
                 }
             }
-            userAccountModel.setRowCount(0);
+
             for (Customer tempCustomer : users) {
                 userAccountModel.addRow(tempCustomer.display());
             }
             generateEmptyFillerRows(userAccountModel);
         } catch (Exception e) {
-
+            System.err.println(e);
         }
     }
 
@@ -158,5 +181,9 @@ public class TellerDashboard {
     public JPanel getPanel(){
 
         return tellerDashboardPanel;
+    }
+
+    public void resetField(){
+        customerTextField.setText("");
     }
 }

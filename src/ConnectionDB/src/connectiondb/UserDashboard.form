@@ -109,7 +109,7 @@
                 </constraints>
                 <properties>
                   <font size="14"/>
-                  <text value="View Transaction History"/>
+                  <text value="Transaction History"/>
                 </properties>
               </component>
               <component id="a7781" class="javax.swing.JButton" binding="viewAccountInformationButton" default-binding="true">
@@ -118,7 +118,7 @@
                 </constraints>
                 <properties>
                   <font size="14"/>
-                  <text value="View Account Information"/>
+                  <text value="Account Information"/>
                 </properties>
               </component>
               <hspacer id="d3b0a">
@@ -193,7 +193,7 @@
             </constraints>
             <properties>
               <background color="-4203522"/>
-              <text value="LogOut"/>
+              <text value="Log Out"/>
             </properties>
           </component>
           <component id="20b69" class="javax.swing.JLabel" binding="headerUserNameField">

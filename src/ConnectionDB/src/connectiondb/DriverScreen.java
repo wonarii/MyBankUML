@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class DriverScreen {
+public class DriverScreen extends JFrame {
     private JPanel activeScene;
 
     // Panels for the main scenes
@@ -103,6 +103,7 @@ public class DriverScreen {
         layout.show(activeScene, "login");
 
     }
+
     public CardLayout getCardLayout(){
         return layout;
     }
@@ -130,6 +131,7 @@ public class DriverScreen {
     }
 
     public void updateAdminDashboardPage(){
+
         adminDashboard.updateAdminDashboardPage();
     }
 
@@ -147,5 +149,11 @@ public class DriverScreen {
 
     public void updateTellerDashboardPage(){
         tellerDashboard.updateTellerDashboardPage();
+    }
+    public void updateWithdrawPage(){
+        withdrawPage.updateWithdrawPage();
+    }
+    public void updateDepositPage(){
+        depositPage.updateDepositPage();
     }
 }

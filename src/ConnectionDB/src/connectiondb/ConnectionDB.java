@@ -216,13 +216,23 @@ public class ConnectionDB {
     }
 
     public int createBankTeller(BankTeller bankTeller) {
-        String query = "INSERT INTO banktellers (first_name, last_name, email, branch) values (?, ?, ?, ?)";
+        String query = "INSERT INTO account_list (user_first_name, user_last_name, user_birthday, user_email, user_password, user_role, user_balance, user_bank_id, user_bank, user_branch_id, user_branch, user_phone) values (?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            String hashedPassword = hashPassword(bankTeller.getPassword());
+
             stmt.setString(1, bankTeller.getFirstName());
             stmt.setString(2, bankTeller.getLastName());
-            stmt.setString(3, bankTeller.getEmail());
-            stmt.setInt(4, bankTeller.getBranch().getBranchId());
+            stmt.setNull(3, Types.DATE);
+            stmt.setString(4, bankTeller.getEmail());
+            stmt.setString(5, hashedPassword);
+            stmt.setString(6, bankTeller.ROLE);
+            stmt.setNull(7, Types.DOUBLE);
+            stmt.setInt(8, bankTeller.getBank().getBankID());
+            stmt.setString(9, bankTeller.getBank().getBankName());
+            stmt.setInt(10, bankTeller.getBranch().getBranchId());
+            stmt.setString(11, bankTeller.getBranch().getBranchName());
+            stmt.setNull(12, Types.VARCHAR);
 
             int rs = stmt.executeUpdate();
             return 0;

@@ -25,6 +25,7 @@ public class UserDashboard {
         withdrawButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                driverScreen.updateWithdrawPage();
                 Container parent = userDashboardPanel.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
 
@@ -34,6 +35,7 @@ public class UserDashboard {
         depositButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                driverScreen.updateDepositPage();
                 Container parent = userDashboardPanel.getParent();
                 CardLayout layout = (CardLayout) parent.getLayout();
                 layout.show(parent, "deposit");
@@ -69,7 +71,8 @@ public class UserDashboard {
     }
     // TODO update with database
     public void updateBalanceField() {
-            balanceField.setText("$" + Customer.getBalanceFromDatabase());
+
+        balanceField.setText("$" + Customer.getBalanceFromDatabase());
     }
 
     public void updateUserName(){
